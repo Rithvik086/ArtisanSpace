@@ -17,9 +17,9 @@ Make sure you have the following installed on your system:
 3. **Install the dependencies**
    ```sh
       npm install
-4. **Add a .env file (which will be provided to each team member separately)
+4. Add a .env file (which will be provided to each team member separately)
 5. **Run the express server**
    ```sh
       node app.js
-6. ** change the routes accordingly to view routes **
+6.  change the routes accordingly to view routes 
       
