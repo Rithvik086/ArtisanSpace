@@ -10,4 +10,16 @@ Make sure you have the following installed on your system:
 
 1. **Clone the repository**
    ```sh
-  
+   git clone https://github.com/Rithvik086/ArtisanSpace.git
+2. **Open a terminal on the cloned repository and move to the Appropriate directory**
+   ```sh
+      cd ArtisanSpace/ 
+3. **Install the dependencies**
+   ```sh
+      npm install
+4. **Add a .env file (which will be provided to each team member separately)
+5. **Run the express server**
+   ```sh
+      node app.js
+6. ** change the routes accordingly to view routes **
+      
