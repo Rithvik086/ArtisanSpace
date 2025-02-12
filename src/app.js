@@ -20,6 +20,7 @@ const app = express();
 const port = 3000;
 const hostname = '127.0.0.1';
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -29,12 +30,18 @@ app.get('/', (req, res) => {
 
 app.set('view engine', 'ejs');
 
-// app.get('/auth', (req, res) => {
-//   res.render('auth');
-// });
+app.get(['/signup', '/'], (req, res) => {
+  res.render('auth', { page: 'signup' });
+});
 
-app.use('/auth',authroutes)
-app.use('/users',useroutes)
+app.get('/login', (req, res) => {
+  res.render('auth', { page: 'login' });
+});
+
+
+
+ app.use('/auth',authroutes)
+ app.use('/users',useroutes)
 
 // Starts an Express server locally on port 3000
 app.listen(port, hostname, () => {
