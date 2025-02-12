@@ -13,7 +13,7 @@ Make sure you have the following installed on your system:
    git clone https://github.com/Rithvik086/ArtisanSpace.git
 2. **Open a terminal on the cloned repository and move to the Appropriate directory**
    ```sh
-      cd ArtisanSpace/ 
+      cd ArtisanSpace/src/
 3. **Install the dependencies**
    ```sh
       npm install
