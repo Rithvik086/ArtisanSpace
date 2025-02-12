@@ -1,10 +1,28 @@
-function flipCard() {
+function flipCard(route) {
     const card = document.querySelector('.cardpar');
     card.classList.toggle('flipped');
-  }
+    history.pushState(null, '', '/' + route);
+}
 
-  function flipCard() {
-    document.querySelector('.cardpar').classList.toggle('flipped');
+window.addEventListener('popstate', () => {
+    updateCardFlip();
+});
+
+// Ensure correct card state on page load
+window.addEventListener('DOMContentLoaded', () => {
+    updateCardFlip();
+    document.querySelectorAll('.carousel').forEach(initCarousel);
+});
+
+function updateCardFlip() {
+    const path = window.location.pathname;
+    const card = document.querySelector('.cardpar');
+
+    if (path === '/login') {
+        card.classList.add('flipped');
+    } else {
+        card.classList.remove('flipped');
+    }
 }
 
 // Carousel functionality
@@ -44,6 +62,3 @@ function initCarousel(carouselElement) {
     // Auto-advance slides
     setInterval(nextSlide, 3000);
 }
-
-// Initialize both carousels
-document.querySelectorAll('.carousel').forEach(initCarousel);

@@ -22,13 +22,11 @@ password:{
 role : {
     type : String,
     required : true,
-enum : ["admin","artisan","customer"]
+enum : ["admin","artisan","customer","manager"]
 }
 
 },
-{
-    timestamps : true
-}
+
 )
 
 
