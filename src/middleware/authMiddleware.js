@@ -19,7 +19,7 @@ const verifytoken = (req, res, next) => {
             return res.status(400).json({ message: "Invalid token" }); // Add return to stop execution
         }
     } else {
-        return res.status(401).json({ message: "No token provided." }); // Ensure response if no auth header
+        return res.status(401).render('accessdenied') // Ensure response if no auth header
     }
 };
 
