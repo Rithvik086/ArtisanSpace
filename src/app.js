@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authroutes from "./routes/authroutes.js"
 import useroutes from './routes/userRoutes.js'
+import verifytoken from './middleware/authMiddleware.js';  // Adjust the path based on your folder structure
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,7 +24,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use((req, res, next) => {
+  if (req.path === '/login' || req.path === '/signup' || req.path == '/') {
+      return next(); 
+  }
+  verifytoken(req, res, next); 
+});
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
