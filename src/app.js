@@ -4,7 +4,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authroutes from "./routes/authroutes.js"
 import useroutes from './routes/userRoutes.js'
-import verifytoken from './middleware/authMiddleware.js';  // Adjust the path based on your folder structure
+import verifytoken from './middleware/authMiddleware.js';
+import cookieParser from 'cookie-parser';  
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,6 +22,7 @@ const app = express();
 const port = 3000;
 const hostname = '127.0.0.1';
 app.use(express.json());
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -28,7 +30,7 @@ app.use((req, res, next) => {
   if (req.path === '/login' || req.path === '/signup' || req.path == '/') {
       return next(); 
   }
-  verifytoken(req, res, next); 
+next()
 });
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -47,7 +49,7 @@ app.get('/login', (req, res) => {
 
 
  app.use('/auth',authroutes)
- app.use('/users',useroutes)
+ app.use('/users',verifytoken, useroutes)
 
 // Starts an Express server locally on port 3000
 app.listen(port, hostname, () => {
