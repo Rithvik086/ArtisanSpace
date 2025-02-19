@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 
 const signup = async (req, res) => {
     const { username, email, password, role } = req.body;
-    console.log('body',username,password,email,role);
+    //console.log('body',username,password,email,role);
     //salt is the team number
     const hashpass = await bcrypt.hash(password, 9);
 
@@ -38,7 +38,18 @@ const login = async (req, res) => {
         id:user._id , role: user.role
     }, process.env.JWT_SECRET, {expiresIn: "1h"});
 
-    res.status(200).json({token})
+
+
+
+
+    res.cookie("token",token,{
+        //modify to use https while in production during deployment
+        httpOnly : true,
+        sameSite: "Strict",
+        maxAge: 3600000,
+    });
+
+    res.status(200).json({message: "Login successful" })
 
 }
 
