@@ -11,9 +11,8 @@ const verifytoken = (req, res, next) => {
      }
 
      try{
-        const decoded = jwt.verify(token,process.env.JWT_SECRET)
-        req.user = decoded;
-        next()
+        req.user = jwt.verify(token,process.env.JWT_SECRET)
+        next();
 
      }catch(err){
         res.clearCookie("token");
@@ -24,4 +23,3 @@ const verifytoken = (req, res, next) => {
 };
 
 export default verifytoken;
- 
