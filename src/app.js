@@ -26,17 +26,12 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use((req, res, next) => {
-  if (req.path === '/login' || req.path === '/signup' || req.path == '/') {
-    return next();
-  }
-  next()
-});
 app.get('/', (req, res) => {
   res.render('HomePage')
 });
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.get(['/signup', '/'], (req, res) => {
   res.render('auth', { page: 'signup' });
@@ -46,10 +41,14 @@ app.get('/login', (req, res) => {
   res.render('auth', { page: 'login' });
 });
 
+app.use('/auth',authroutes)
+app.use('/users',verifytoken, useroutes)
 
 
-app.use('/auth', authroutes)
-app.use('/users', verifytoken, useroutes)
+app.all('*', verifytoken, (req, res) => {
+  res.send('This route is accessible');
+});
+
 
 // Starts an Express server locally on port 3000
 app.listen(port, hostname, () => {
