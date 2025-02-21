@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import authroutes from "./routes/authroutes.js"
 import useroutes from './routes/userRoutes.js'
 import verifytoken from './middleware/authMiddleware.js';
-import cookieParser from 'cookie-parser';  
+import cookieParser from 'cookie-parser';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.render('HomePage')
 });
 
 app.set('view engine', 'ejs');

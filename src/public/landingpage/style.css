@@ -1,0 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&family=Kranky&display=swap");
+
+/* page specific CSS */
+
+.navbar {
+  background-color: #fc5a6d;
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.navbar button {
+  background-color: white;
+  color: #fc5a6d;
+  border: 2px solid white;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar button:hover {
+  background-color: #ff7f8d;
+  color: white;
+  border-color: #ff7f8d;
+}
+
+.navbutton {
+  display: flex;
+  gap: 10px;
+}
+
+.navitem {
+  display: flex;
+  gap: 20px;
+}
+
+.navitem .item {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navitem .item:hover {
+  color: #ffe4e6;
+}
+
+.mainimage {
+  width: 100%;
+  height: 75vh; /* Full viewport height */
+  background: url("/images/landingpage/mainimage.jpg") no-repeat center
+    center/cover;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.mainimage p {
+  text-align: center;
+  font-size: 16px;
+  width: 500px;
+}
+.mainimage h1 {
+  font-size: 70px;
+  letter-spacing: 20px;
+  font-family: "Baloo Bhai 2";
+}
+
+.mainimage h3 {
+  font-size: 28px;
+  font-style: italic;
+}
+
+.seconelem {
+  padding: 80px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.seconelem img {
+  width: 50%;
+  max-width: 561px;
+  height: auto;
+}
+.welcomecontent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.welcomecontent h1 {
+  font-size: 35px;
+  font-family: "Baloo Bhai 2";
+  color: #484848;
+}
+
+.welcomecontent p {
+  font-size: 16px;
+  color: #484848;
+  line-height: 24px;
+  margin-bottom: 24px;
+  width: 400px;
+  text-align: center;
+}
