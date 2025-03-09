@@ -9,35 +9,9 @@
   </head>
 
   <body>
-    <div></div>
-    <header>
-      <div class="backimageheader"></div>
-
-      <div class="headelems">
-        <div class="logo">
-          <img src="/images/logo.png" alt="logo" />
-        </div>
-        <div class="search-bar">
-          <input type="search" />
-          <button type="submit">Search</button>
-        </div>
-      </div>
-    </header>
+    <%- include("partials/header") %>
     <main>
-      <nav class="navbar">
-        <div class="navitem">
-          <div class="item">Item</div>
-          <div class="item">Item</div>
-          <div class="item">Item</div>
-          <div class="item">Item</div>
-        </div>
-        <div class="navbutton">
-          <a href="/login"><button type="button">Login</button></a>
-
-          <a href="/signup"><button type="button">Signup</button></a>
-        </div>
-      </nav>
-
+      <%- include("partials/navbar") %>
       <div class="mainimage">
         <h3>We Make Things With love</h3>
         <h1>HANDMADE</h1>
@@ -64,33 +38,6 @@
         </div>
       </div>
     </main>
-
-    <footer class="footer">
-      <div class="topfooter">
-        <div class="topfooter1">
-          <p class="logop">AS</p>
-          <p>
-            It is a long established fact that a reader will be distracted by
-            the readable content of a page when looking at its layout.
-          </p>
-        </div>
-        <div class="footerhelp">
-          <p class="help">Help</p>
-          <p>Find your Product</p>
-          <p>Contact</p>
-          <p>Order History</p>
-        </div>
-
-        <div class="ourinfo">
-          <p class="info">Our Information</p>
-          <p>IIIT SriCity</p>
-          <p>+91 0000000000</p>
-          <p>Artisanspace@gmail.com</p>
-        </div>
-      </div>
-      <div class="bottomfooter">
-        Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
-      </div>
-    </footer>
+    <%- include("partials/footer") %>
   </body>
 </html>
