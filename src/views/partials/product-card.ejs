@@ -1,0 +1,16 @@
+<div class="product-card">
+  <% if(product.sale) { %>
+    <span class="sale-badge">SALE!</span>
+    <% } %>
+      <img src="<%= product.image %>" alt="<%= product.name %>" width="200" height="300" />
+      <h3>
+        <%= product.name %>
+      </h3>
+      <p class="old-price">
+        <%= product.oldPrice %>
+      </p>
+      <p class="new-price">
+        <%= product.newPrice %> inc. GST
+      </p>
+      <button>Add to Cart</button>
+</div>
