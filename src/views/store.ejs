@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title></title>
+  <link rel="stylesheet" href="/header&footer.css">
+  <style>
+    body {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: bisque;
+    }
+
+    .container {
+      padding: 40px;
+      width: 80%;
+      height: 80%;
+      display: grid;
+      grid-auto-columns: auto;
+      /* grid-template-columns: 25% 25% 25% 25%; */
+      gap: 20px;
+      border-radius: 20px;
+      background-color: darkgoldenrod;
+    }
+
+    .product-card {
+      border: 2px solid black;
+      border-radius: 5px;
+      background-color: aquamarine;
+      padding: 15px;
+      text-align: center;
+      width: 250px;
+      height: 300px;
+    }
+
+    .sale-badge {
+      background-color: brown;
+      border-radius: 3px;
+      color: white;
+      padding: 5px;
+      position: relative;
+      top: -5px;
+      left: -13px;
+    }
+
+    .old-price {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .new-price {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include("partials/header") %>
+    <div class="container">
+      <% products.forEach(product=> { %>
+        <%- include("partials/product-card", {product}) %>
+          <%})%>
+    </div>
+</body>
+
+</html>
