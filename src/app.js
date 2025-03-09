@@ -41,7 +41,7 @@ app.get("/login", (req, res) => {
 });
 
 app.use("/auth", authroutes);
-app.use("/users", useroutes);
+app.use("/", useroutes);
 
 app.all("*", verifytoken, (req, res) => {
   res.send("This route is accessible");

@@ -45,7 +45,7 @@ const login = async (req, res) => {
   });
 
   // res.status(200).json({ message: "Login successful" });
-  res.redirect("/");
+  res.redirect(`/${user.role}`);
 };
 
 export { signup, login };
