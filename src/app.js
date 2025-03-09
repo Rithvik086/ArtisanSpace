@@ -43,8 +43,9 @@ app.get("/login", (req, res) => {
 app.use("/auth", authroutes);
 app.use("/users", useroutes);
 
-app.all("*", verifytoken, (req, res) => {
-  res.send("This route is accessible");
+app.all("*", (req, res) => {
+  // res.send("This route is accessible");
+  res.render("accessdenied");
 });
 
 // Starts an Express server locally on port 3000
