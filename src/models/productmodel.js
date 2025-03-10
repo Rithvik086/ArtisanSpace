@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-const productPath = "./products.json";
+const productPath = "../products.json";
 
 async function ensureFileExists(filePath) {
   try {
