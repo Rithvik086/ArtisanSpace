@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Authentication</title>
     <link rel="stylesheet" href="/auths/style.css">
 </head>
+
 <body>
     <div class="container">
         <div class="cardpar">
@@ -14,13 +16,13 @@
                     <div class="logo"></div>
                     <p>Sign-up</p>
                     <div class="form">
-<form action="/auth/signup" method="post">
-                        <input class="inpuser" type="text" placeholder="username" required name="username">
-                        <input type="email" placeholder="Email" required name="email">
-                        <input type="password" placeholder="Password" name="password">
-                        <input type="text" placeholder="role" name="role">
-                        <button type="submit">Sign Up</button>
-                    </form>
+                        <form action="/signup" method="post">
+                            <input class="inpuser" type="text" placeholder="username" required name="username">
+                            <input type="email" placeholder="Email" required name="email">
+                            <input type="password" placeholder="Password" name="password">
+                            <input type="text" placeholder="role" name="role">
+                            <button type="submit">Sign Up</button>
+                        </form>
                         <div class="login-text">
                             Already have an account? <a href="#" onclick="flipCard('login')">login here</a>
                         </div>
@@ -64,11 +66,11 @@
                     <div class="logolog"></div>
                     <p>Login-in</p>
                     <div class="form">
-                        <form action="/auth/login" method="post">
-                        <input type="text" placeholder="username" required name="username">
-                        <input type="password" placeholder="Password" name="password">
-                        <button type="submit">Log in</button>
-                    </form>
+                        <form action="/login" method="post">
+                            <input type="text" placeholder="username" required name="username">
+                            <input type="password" placeholder="Password" name="password">
+                            <button type="submit">Log in</button>
+                        </form>
                         <div class="signup-text">
                             Don't have an account? <a href="#" onclick="flipCard('signup')">SignUp here</a>
                         </div>
@@ -78,5 +80,6 @@
         </div>
     </div>
     <script src="/auths/script.js"></script>
-  </body>
+</body>
+
 </html>
