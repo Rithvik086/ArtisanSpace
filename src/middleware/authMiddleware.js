@@ -1,27 +1,22 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const verifytoken = (req, res, next) => {
-    let token;
-    let authHeader = req.headers.authorization; // Express stores headers in lowercase
+  if (req.path === "/login" || req.path === "/signup") {
+    return next();
+  }
 
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-        token = authHeader.split(" ")[1];
+  let token = req.cookies.token;
+  if (!token) {
+    return res.status(401).render("accessdenied");
+  }
 
-        if (!token) {
-            return res.status(401).json({ message: "Auth denied, no token provided." });
-        }
-
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = decoded; // Attach user info to request
-            next(); // Move to next middleware
-        } catch (err) {
-            return res.status(400).json({ message: "Invalid token" }); // Add return to stop execution
-        }
-    } else {
-        return res.status(401).render('accessdenied') // Ensure response if no auth header
-    }
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch (err) {
+    res.clearCookie("token");
+    return res.redirect("/login");
+  }
 };
 
 export default verifytoken;
- 

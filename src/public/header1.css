@@ -1,0 +1,148 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+header {
+  width: 100%;
+  height: 129px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: black;
+  position: relative;
+  /* Add this */
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.backimageheader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/images/header&footer/artrithvik_11zon.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+  z-index: -1;
+}
+.headelems {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.logo {
+  position: relative;
+  left: -60px;
+  width: 350px;
+  width: 350px;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 5px;
+
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-bar input {
+  border: none;
+  border-radius: 5px;
+  padding: 8px;
+  outline: none;
+}
+
+.search-bar button {
+  background-color: #fc5a6d;
+  border: none;
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+.navbar {
+  background-color: #f8ead8; /* Light beige (swapped from dark brown) */
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.navbar button {
+  background-color: #5c4033; /* Dark brown (swapped from light beige) */
+  color: #f8ead8; /* Changed to light beige for contrast */
+  border: 2px solid #5c4033; /* Updated border color */
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar button:hover {
+  background-color: #8b4513; /* Saddle brown */
+  color: #f8ead8; /* Light beige */
+  border-color: #8b4513;
+}
+
+.navbutton {
+  display: flex;
+  gap: 10px;
+}
+
+.navitem {
+  display: flex;
+  gap: 20px;
+}
+
+.navitem .item {
+  color: #5c4033; /* Dark brown (swapped from light beige) */
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navitem .item:hover {
+  color: #8b4513; /* Saddle brown */
+}
