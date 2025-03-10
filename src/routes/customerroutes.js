@@ -20,10 +20,13 @@ router.get("/orders", (req, res) => {
 res.render("customer/customerorders",{role:custrole})
 
 });
+
 router.get("/aboutus", (req, res) => {
 res.render("customer/Aboutus",{role:custrole})
-
 });
+router.get("/contactus", (req, res) => {
+  res.render("customer/customercontactus",{role:custrole})
+  });
 const products = [
   {
     name: "Brass Buddha Door Knocker",
