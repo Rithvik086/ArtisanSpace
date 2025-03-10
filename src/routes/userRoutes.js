@@ -2,8 +2,10 @@ import express from "express";
 import verifytoken from "../middleware/authMiddleware.js";
 
 import authorizeroles from "../middleware/roleMiddleware.js";
-import customerroles from "../routes/customerroutes.js";
-
+import adminroutes from "../routes/adminroutes.js"
+import manager from "../routes/managerroutes.js"
+import customerroutes from "../routes/customerroutes.js";
+import artisanroutes from "../routes/artisanroutes.js"
 const router = express.Router();
 
 router.use(verifytoken);
@@ -12,7 +14,10 @@ router.use(verifytoken);
 //     res.render("store", { products });
 // });
 
-router.use("/customer", customerroles);
+// router.use("/admin", customerroutes);
+//  router.use("/manager", customerroutes);
+// router.use("/artisan", customerroutes);
+router.use("/customer", customerroutes);
 
 router.get("/admin", authorizeroles("admin"), (req, res) => {
   res.json({ message: "Welcome Admin" });
@@ -22,9 +27,7 @@ router.get("/manager", authorizeroles("admin", "manager"), (req, res) => {
   res.json({ message: "Welcome Manager" });
 });
 
-router.get("/manager", authorizeroles("admin", "manager"), (req, res) => {
-  res.json({ message: "Welcome Manager" });
-});
+
 
 router.get(
   "/artisan",
