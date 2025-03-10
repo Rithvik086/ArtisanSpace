@@ -23,7 +23,6 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
-
 app.get("/", (req, res) => {
   const token = req.cookies.token;
   res.render("HomePage", { token });

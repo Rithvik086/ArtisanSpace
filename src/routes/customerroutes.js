@@ -3,12 +3,17 @@ import { getProducts } from "../models/productmodel.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {});
+const custrole = "customer";
 
-router.get("/workshop", (req, res) => {
-  res.render("workshop");
+router.get("/", (req, res) => {
+  res.render("customer/customerhome", { role: custrole });
 });
-router.get("/settings", (req, res) => {});
+router.get("/workshop", (req, res) => {
+  res.render("customer/workshop", { role: custrole });
+});
+router.get("/settings", (req, res) => {
+  res.json({ message: "settings" });
+});
 
 router.get("/orders", (req, res) => {});
 
