@@ -116,16 +116,16 @@
 </head>
 
 <body>
-    <%- include("partials/navbar2") %>
-      <div class="container2">
+  <%- include("../partials/navbar2" ), {role} %>
+  <div class="container2">
 
-        <ul class="product-list">
-          <% products.forEach(product=> { %>
-            <li><%- include("partials/product-card", {product}) %></li>
-            <%})%>
-        </ul>
-      </div>
-    <%- include("partials/footer") %>
+    <ul class="product-list">
+      <% products.forEach(product=> { %>
+      <li><%- include("../partials/product-card", {product}) %></li>
+      <%})%>
+    </ul>
+  </div>
+  <%- include("../partials/footer") %>
 </body>
 
 </html>

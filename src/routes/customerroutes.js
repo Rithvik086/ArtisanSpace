@@ -2,13 +2,28 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {});
-router.get("/workshop", (req, res) => {
-  res.render("workshop");
-});
-router.get("/settings", (req, res) => {});
+const custrole = "customer"
 
-router.get("/orders", (req, res) => {});
+router.get("/", (req, res) => {
+  res.render("customer/customerhome",{role: custrole })
+
+
+});
+router.get("/workshop", (req, res) => {
+  res.render("customer/workshop",{role : custrole});
+});
+router.get("/settings", (req, res) => {
+  res.json({ message: "settings" });
+});
+
+router.get("/orders", (req, res) => {
+res.render("customer/customerorders",{role:custrole})
+
+});
+router.get("/aboutus", (req, res) => {
+res.render("customer/Aboutus",{role:custrole})
+
+});
 const products = [
   {
     name: "Brass Buddha Door Knocker",
@@ -120,7 +135,7 @@ const products = [
   },
 ];
 router.get("/store", (req, res) => {
-  res.render("store", { products });
+  res.render("customer/store", { products , role:custrole });
 });
 export default router;
 

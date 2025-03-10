@@ -24,8 +24,8 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
-
 app.get("/", (req, res) => {
+  const role = req.role
   res.render("HomePage");
 });
 
