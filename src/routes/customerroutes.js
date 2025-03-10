@@ -15,7 +15,12 @@ router.get("/settings", (req, res) => {
   res.json({ message: "settings" });
 });
 
-router.get("/orders", (req, res) => {});
+router.get("/orders", (req, res) => {
+  res.render("customer/customerorders", {role : custrole})
+});
+router.get("/contactus", (req, res) => {
+  res.render("customer/customercontactus", {role : custrole})
+});
 
 router.get("/store", async (req, res) => {
   try {
@@ -30,10 +35,11 @@ router.get("/store", async (req, res) => {
     const paginatedProducts = products.slice(startIndex, endIndex);
 
     const totalProducts = await products;
-    res.render("store", {
+    res.render("customer/store", {
       products: paginatedProducts,
       currentPage: page,
       totalPages: Math.ceil(products.length / limit),
+      role : custrole
     });
   } catch (error) {
     res.status(500).send(error.message);

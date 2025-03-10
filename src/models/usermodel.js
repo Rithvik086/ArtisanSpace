@@ -28,7 +28,7 @@
 // export default mongoose.model("User", userSchema);
 
 import fs from "fs/promises";
-const userPath = "./users.json";
+const userPath = "../users.json";
 
 // Ensure file exists
 async function ensureFileExists(filePath) {

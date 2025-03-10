@@ -141,11 +141,11 @@
 </head>
 
 <body>
-  <%- include("partials/navbar2") %>
+  <%- include("../partials/navbar2",{role}) %>
   <div class="content">
     <ul class="product-list">
       <% products.forEach(product=> { %>
-      <li><%- include("partials/product-card", {product}) %></li>
+      <li><%- include("../partials/product-card", {product}) %></li>
       <%})%>
     </ul>
     <ul class="pagination">
@@ -165,7 +165,7 @@
       <ul />
 
   </div>
-  <%- include("partials/footer") %>
+  <%- include("../partials/footer") %>
 </body>
 
 </html>
