@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authroutes from "./routes/authroutes.js";
 import useroutes from "./routes/userRoutes.js";
-import verifytoken from "./middleware/authMiddleware.js";
 import cookieParser from "cookie-parser";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,8 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
-  const role = req.role
-  res.render("HomePage");
+  const token = req.cookies.token;
+  res.render("HomePage", { token });
 });
 
 app.set("view engine", "ejs");
@@ -40,7 +39,7 @@ app.get("/login", (req, res) => {
   res.render("auth", { page: "login" });
 });
 
-app.use("/auth", authroutes);
+app.use("/", authroutes);
 app.use("/", useroutes);
 
 app.all("*", (req, res) => {

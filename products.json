@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1741626782944,
+    "name": "first",
+    "image": "idk",
+    "oldPrice": 1800,
+    "newPrice": 1600,
+    "quantity": 4,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741626865825,
+    "name": "second",
+    "image": "idk",
+    "oldPrice": 2000,
+    "newPrice": 1800,
+    "quantity": 4,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628103421,
+    "name": "Brass Buddha Door Knocker",
+    "image": "../public/images/logo.png",
+    "oldPrice": 1999,
+    "newPrice": 1799,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628103422,
+    "name": "Brass Dancing Lord Ganesha Idol",
+    "image": "/images/ganesha-idol1.jpg",
+    "oldPrice": 3999,
+    "newPrice": 3599,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288617,
+    "name": "a",
+    "image": "../public/images/logo.png",
+    "oldPrice": 1999,
+    "newPrice": 1799,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288619,
+    "name": "b",
+    "image": "/images/ganesha-idol1.jpg",
+    "oldPrice": 3999,
+    "newPrice": 3599,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288627,
+    "name": "c",
+    "image": "/images/ganesha-idol2.jpg",
+    "oldPrice": 999,
+    "newPrice": 899,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288628,
+    "name": "d",
+    "image": "/images/ganesha-idol3.jpg",
+    "oldPrice": 2999,
+    "newPrice": 2699,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288629,
+    "name": "3",
+    "image": "/images/buddha-knocker.jpg",
+    "oldPrice": 1999,
+    "newPrice": 1799,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288630,
+    "name": "f",
+    "image": "/images/ganesha-idol1.jpg",
+    "oldPrice": 3999,
+    "newPrice": 3599,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288631,
+    "name": "g",
+    "image": "/images/ganesha-idol2.jpg",
+    "oldPrice": 999,
+    "newPrice": 899,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288632,
+    "name": "h",
+    "image": "/images/ganesha-idol3.jpg",
+    "oldPrice": 2999,
+    "newPrice": 2699,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288633,
+    "name": "i",
+    "image": "/images/ganesha-idol3.jpg",
+    "oldPrice": 2999,
+    "newPrice": 2699,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288634,
+    "name": "j",
+    "image": "../public/images/logo.png",
+    "oldPrice": 1999,
+    "newPrice": 1799,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288635,
+    "name": "k",
+    "image": "/images/ganesha-idol1.jpg",
+    "oldPrice": 3999,
+    "newPrice": 3599,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288635,
+    "name": "l",
+    "image": "/images/ganesha-idol2.jpg",
+    "oldPrice": 999,
+    "newPrice": 899,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288636,
+    "name": "m",
+    "image": "/images/ganesha-idol3.jpg",
+    "oldPrice": 2999,
+    "newPrice": 2699,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288636,
+    "name": "n",
+    "image": "/images/buddha-knocker.jpg",
+    "oldPrice": 1999,
+    "newPrice": 1799,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288637,
+    "name": "o",
+    "image": "/images/ganesha-idol1.jpg",
+    "oldPrice": 3999,
+    "newPrice": 3599,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288637,
+    "name": "p",
+    "image": "/images/ganesha-idol2.jpg",
+    "oldPrice": 999,
+    "newPrice": 899,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288638,
+    "name": "q",
+    "image": "/images/ganesha-idol3.jpg",
+    "oldPrice": 2999,
+    "newPrice": 2699,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  },
+  {
+    "id": 1741628288638,
+    "name": "r",
+    "image": "/images/ganesha-idol3.jpg",
+    "oldPrice": 2999,
+    "newPrice": 2699,
+    "quantity": 3,
+    "description": "A beautifully crafted brass Buddha door knocker."
+  }
+]
