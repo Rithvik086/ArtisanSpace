@@ -30,10 +30,10 @@
       color: #fc5a6d;
     }
 
-    .container2 {
+    .content {
       font-family: "Baloo Bhai 2";
       font-size: 16px;
-      margin: 40px 0;
+      margin: 60px 0;
     }
 
     .product-list {
@@ -41,7 +41,7 @@
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 60px;
       padding: 0;
     }
 
@@ -112,20 +112,60 @@
       color: #fc5a6d;
       border: 2px solid #fc5a6d;
     }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .pagination a {
+      font-weight: bold;
+      margin: 5px;
+      padding: 6px 12px;
+      border-radius: 5px;
+      text-decoration: none;
+      background: #f8ead8;
+      color: #5c4033;
+    }
+
+    .pagination a:hover {
+      background: #f5d6ae;
+    }
+
+    .pagination a.active {
+      color: white;
+      background: #5c4033;
+    }
   </style>
 </head>
 
 <body>
-    <%- include("partials/navbar2") %>
-      <div class="container2">
+  <%- include("partials/navbar2") %>
+  <div class="content">
+    <ul class="product-list">
+      <% products.forEach(product=> { %>
+      <li><%- include("partials/product-card", {product}) %></li>
+      <%})%>
+    </ul>
+    <ul class="pagination">
+      <% if (currentPage> 1) { %>
+      <a href="/customer/store?page=<%= currentPage - 1 %>">Previous</a>
+      <% } %>
 
-        <ul class="product-list">
-          <% products.forEach(product=> { %>
-            <li><%- include("partials/product-card", {product}) %></li>
-            <%})%>
-        </ul>
-      </div>
-    <%- include("partials/footer") %>
+      <% for (let i=1; i <=totalPages; i++) { %>
+      <a href="/customer/store?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
+        <%= i %>
+      </a>
+      <% } %>
+
+      <% if (currentPage < totalPages) { %>
+      <a href="/customer/store?page=<%= currentPage + 1 %>">Next</a>
+      <% } %>
+      <ul />
+
+  </div>
+  <%- include("partials/footer") %>
 </body>
 
 </html>
