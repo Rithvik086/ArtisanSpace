@@ -1,6 +1,7 @@
 import { addUser, findUserByName } from "../models/usermodel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { sendMail } from "../utils/emailService.js";
 
 const signup = async (req, res) => {
   const { username, email, password, role } = req.body;
@@ -12,6 +13,11 @@ const signup = async (req, res) => {
   // await newUser.save();
   try {
     await addUser(username, email, hashpass, role);
+    await sendMail(
+      email,
+      "Successfully Registered",
+      "You have successfully registered to ArtisanSpace. <3"
+    );
     res.redirect("/login");
   } catch (error) {
     res.status(400).send(error.message);
@@ -53,4 +59,13 @@ const login = async (req, res) => {
   res.redirect(`/${user.role}`);
 };
 
-export { signup, login };
+const logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "Strict",
+  });
+
+  res.redirect("/");
+};
+
+export { signup, login, logout };

@@ -16,10 +16,10 @@ router.get("/settings", (req, res) => {
 });
 
 router.get("/orders", (req, res) => {
-  res.render("customer/customerorders", {role : custrole})
+  res.render("customer/customerorders", { role: custrole });
 });
 router.get("/contactus", (req, res) => {
-  res.render("customer/customercontactus", {role : custrole})
+  res.render("customer/customercontactus", { role: custrole });
 });
 
 router.get("/store", async (req, res) => {
@@ -39,7 +39,7 @@ router.get("/store", async (req, res) => {
       products: paginatedProducts,
       currentPage: page,
       totalPages: Math.ceil(products.length / limit),
-      role : custrole
+      role: custrole,
     });
   } catch (error) {
     res.status(500).send(error.message);

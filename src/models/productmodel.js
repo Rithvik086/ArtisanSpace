@@ -1,5 +1,11 @@
 import fs from "fs/promises";
-const productPath = "../products.json";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const productPath = path.join(__dirname, "../../products.json");
 
 async function ensureFileExists(filePath) {
   try {
