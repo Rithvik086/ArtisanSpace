@@ -12,7 +12,7 @@ const transporter = mail.createTransport({
 export const sendMail = async (email, subject, msg) => {
   try {
     const mailOptions = {
-      from: process.env.MAIL,
+      from: "artisanspace09@gmail.com",
       to: email,
       subject: subject,
       text: msg,
