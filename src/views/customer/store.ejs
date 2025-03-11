@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title></title>
+  <link rel="stylesheet" href="/navbar2.css">
+  <link rel="stylesheet" href="/customer/store.css">
+  <link rel="stylesheet" href="/footer.css">
+</head>
+
+<body>
+  <%- include("../partials/navbar2",{role}) %>
+  <div class="content">
+    <ul class="product-list">
+      <% products.forEach(product=> { %>
+      <li><%- include("../partials/product-card", {product}) %></li>
+      <%})%>
+    </ul>
+    <ul class="pagination">
+      <% if (currentPage> 1) { %>
+      <a href="/customer/store?page=<%= currentPage - 1 %>">Previous</a>
+      <% } %>
+
+      <% for (let i=1; i <=totalPages; i++) { %>
+      <a href="/customer/store?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
+        <%= i %>
+      </a>
+      <% } %>
+
+      <% if (currentPage < totalPages) { %>
+      <a href="/customer/store?page=<%= currentPage + 1 %>">Next</a>
+      <% } %>
+      <ul />
+
+  </div>
+  <%- include("../partials/footer") %>
+</body>
+
+</html>

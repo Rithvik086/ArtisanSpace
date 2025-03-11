@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authroutes from "./routes/authroutes.js";
 import useroutes from "./routes/userRoutes.js";
-import verifytoken from "./middleware/authMiddleware.js";
 import cookieParser from "cookie-parser";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,6 +12,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import dbConnect from "./config/dbconnect.js";
+import { sendMail } from "./utils/emailService.js";
 
 dbConnect();
 
@@ -24,15 +24,15 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
-
 app.get("/", (req, res) => {
-  res.render("HomePage");
+  const token = req.cookies.token;
+  res.render("HomePage", { token });
 });
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.get(["/signup", "/"], (req, res) => {
+app.get("/signup", (req, res) => {
   res.render("auth", { page: "signup" });
 });
 
@@ -40,7 +40,7 @@ app.get("/login", (req, res) => {
   res.render("auth", { page: "login" });
 });
 
-app.use("/auth", authroutes);
+app.use("/", authroutes);
 app.use("/", useroutes);
 
 app.all("*", (req, res) => {

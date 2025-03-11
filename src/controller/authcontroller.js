@@ -1,6 +1,7 @@
-import User from "../models/usermodel.js";
+import { addUser, findUserByName } from "../models/usermodel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { sendMail } from "../utils/emailService.js";
 
 const signup = async (req, res) => {
   const { username, email, password, role } = req.body;
@@ -8,16 +9,26 @@ const signup = async (req, res) => {
   //salt is the team number
   const hashpass = await bcrypt.hash(password, 9);
 
-  const newUser = new User({ username, email, password: hashpass, role });
-  await newUser.save();
-
-  res.redirect("/login");
+  // const newUser = new User({ username, email, password: hashpass, role });
+  // await newUser.save();
+  try {
+    await addUser(username, email, hashpass, role);
+    await sendMail(
+      email,
+      "Successfully Registered",
+      "You have successfully registered to ArtisanSpace. <3"
+    );
+    res.redirect("/login");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 };
 
 const login = async (req, res) => {
   const { username, password } = req.body;
 
-  const user = await User.findOne({ username });
+  // const user = await User.findOne({ username });
+  const user = await findUserByName(username);
   if (!user) {
     return res.status(404).json({ message: "user not found" });
   }
@@ -34,7 +45,7 @@ const login = async (req, res) => {
       role: user.role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "24h" },
+    { expiresIn: "24h" }
   );
 
   res.cookie("token", token, {
@@ -48,4 +59,13 @@ const login = async (req, res) => {
   res.redirect(`/${user.role}`);
 };
 
-export { signup, login };
+const logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "Strict",
+  });
+
+  res.redirect("/");
+};
+
+export { signup, login, logout };

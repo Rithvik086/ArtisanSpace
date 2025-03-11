@@ -1,0 +1,137 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  padding: 2rem;
+}
+
+.container {
+  display: flex;
+  max-width: 1200px;
+  height: 10%;
+  background: #f8ead8;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.image-section {
+  flex: 1;
+  max-width: 50%;
+}
+
+.contact-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.form-section {
+  flex: 1;
+  padding: 4rem;
+  background: #f8ead8;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #deb887;
+  background-color: #fff8dc;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  font-family: "Baloo Bhai 2";
+  transition: border-color 0.3s ease;
+}
+
+textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #333;
+}
+
+.contact-btn {
+  width: 100%;
+  padding: 1rem;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.contact-btn:hover {
+  background: #333;
+}
+
+.contact-info {
+  margin-top: 2rem;
+  color: #666;
+}
+
+.contact-info p {
+  margin: 0.5rem 0;
+}
+
+.contact-info a {
+  color: #333;
+  text-decoration: none;
+}
+
+.social-links {
+  margin-top: 2rem;
+}
+
+.social-links a {
+  color: #333;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .image-section {
+    max-width: 100%;
+    height: 300px;
+  }
+
+  .form-section {
+    padding: 2rem;
+  }
+}
