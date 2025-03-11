@@ -12,8 +12,65 @@
 
 <body>
   <%- include('../partials/navbar2', { role }) %>
-  <main></main>
+
+  <main>
+    <div class="mainimage">
+      <h3>We Make Things With love</h3>
+      <h1>HANDMADE</h1>
+      <p>
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente
+        eligendi repudiandae vero quis? Nostrum provident repellendus alias
+        incidunt, perferendis aut blanditiis dicta nisi, magni enim sint
+        magnam quidem eius temporibus maxime facere?
+      </p>
+    </div>
+    <div class="seconelem">
+      <img src="/images/landingpage/artisan.jpg" alt="" srcset="" />
+      <div class="welcomecontent">
+        <h1>Welcome To ArtisanSpace</h1>
+        <p>
+          It is a long established fact that a reader will be distracted by
+          the readable content of a page when looking at its layout. The point
+          of using Lorem Ipsum is that it has a more-or-less normal
+          distribution of letters, as opposed to using 'Content here, content
+          here', making it look like readable English. Many desktop publishing
+          packages and web page editors now use Lorem Ipsum as their default
+          model text, and a search for 'lorem ipsum' will uncover
+        </p>
+      </div>
+    </div>
+    <div class="slider-container">
+      <div class="slider">
+        <% products.forEach(product => {%>
+        <a href="/products/<%= product.id %>">
+          <img src="<%= product.image %>" alt="<%= product.name %>">
+        </a>
+        <%}) %>
+      </div>
+    </div>
+  </main>
   <%- include("../partials/footer") %>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const slider = document.querySelector(".slider");
+
+      function moveSlider() {
+        const firstImage = slider.firstElementChild;
+        const imgWidth = firstImage.offsetWidth + 20;
+
+        slider.style.transition = "transform 0.7s ease-in-out";
+        slider.style.transform = `translateX(-${imgWidth}px)`;
+
+        setTimeout(() => {
+          slider.appendChild(firstImage);
+          slider.style.transition = "none";
+          slider.style.transform = "translateX(0)";
+        }, 700);
+      }
+
+      setInterval(moveSlider, 4000);
+    });
+  </script>
 </body>
 
 </html>

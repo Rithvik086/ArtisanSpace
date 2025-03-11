@@ -2,7 +2,7 @@
   {
     "id": 1741626782944,
     "name": "first",
-    "image": "idk",
+    "image": "/images/authimages/art10.png",
     "oldPrice": 1800,
     "newPrice": 1600,
     "quantity": 4,
@@ -11,7 +11,7 @@
   {
     "id": 1741626865825,
     "name": "second",
-    "image": "idk",
+    "image": "/images/authimages/art11.jpg",
     "oldPrice": 2000,
     "newPrice": 1800,
     "quantity": 4,
@@ -20,7 +20,7 @@
   {
     "id": 1741628103421,
     "name": "Brass Buddha Door Knocker",
-    "image": "../public/images/logo.png",
+    "image": "/images/authimages/art12.png",
     "oldPrice": 1999,
     "newPrice": 1799,
     "quantity": 3,
@@ -29,7 +29,7 @@
   {
     "id": 1741628103422,
     "name": "Brass Dancing Lord Ganesha Idol",
-    "image": "/images/ganesha-idol1.jpg",
+    "image": "/images/authimages/art13.jpg",
     "oldPrice": 3999,
     "newPrice": 3599,
     "quantity": 3,
@@ -38,7 +38,7 @@
   {
     "id": 1741628288617,
     "name": "a",
-    "image": "../public/images/logo.png",
+    "image": "/images/authimages/art14.jpg",
     "oldPrice": 1999,
     "newPrice": 1799,
     "quantity": 3,
@@ -47,7 +47,7 @@
   {
     "id": 1741628288619,
     "name": "b",
-    "image": "/images/ganesha-idol1.jpg",
+    "image": "/images/authimages/art15.png",
     "oldPrice": 3999,
     "newPrice": 3599,
     "quantity": 3,

@@ -1,23 +1,9 @@
 [
   {
-    "id": 1741644277346,
-    "username": "Daksh Rao",
-    "email": "rao.daksh555@gmail.com",
-    "password": "$2a$09$Y7T.ztgQ5KHq8aeCgbWr9unaNd3qBNJ46cUVskpuGUYOERAZbzhu6",
-    "role": "admin"
-  },
-  {
-    "id": 1741673305173,
+    "id": 1741721436225,
     "username": "admin",
     "email": "admin@admin",
-    "password": "$2a$09$KTXdU0ly3xl2nUfTehaD2.awb5wVB3WRgpluZZIagB02Dzllb.h5m",
+    "password": "$2a$09$FOBzxD1M.HnpRHzuYBKhIedKI2zPgyYJl5fUrdLqIeCfnEj6.4Cx.",
     "role": "admin"
-  },
-  {
-    "id": 1741674659464,
-    "username": "customer",
-    "email": "customer@cusomer",
-    "password": "$2a$09$IrWPREnG83emJinFk/Pg6urPXL5atXFkMwdaljvqA5S9SyyoQKM3e",
-    "role": "customer"
   }
 ]

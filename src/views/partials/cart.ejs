@@ -1,0 +1,16 @@
+<% cart.cart.forEach( item => { %>
+<% let product = products.find(product => product.id === item.productId) %>
+<div class="cart-item">
+  <img src="<%= product.image %>" alt="<%= product.name %>" class="product-img">
+  <div class="product-details">
+    <h3><%= product.name %></h3>
+    <p><%= "₹"+product.newPrice %></p>
+  </div>
+  <div class="quantity-controls">
+    <button class="quantity-btn" onclick="updateCart('<%= userId %>', '<%= item.productId %>', 'del')">-</button>
+    <span class="quantity-number" id="quantity-<%= item.productId %>"><%= item.quantity %></span>
+    <button class="quantity-btn" onclick="updateCart('<%= userId %>', '<%= item.productId %>', 'add')">+</button>
+  </div>
+  <p class="remove">✖ REMOVE</p>
+</div>
+<% }) %>
