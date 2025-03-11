@@ -21,6 +21,9 @@ router.get("/orders", (req, res) => {
 router.get("/contactus", (req, res) => {
   res.render("customer/customercontactus", { role: custrole });
 });
+router.get("/aboutus", (req, res) => {
+  res.render("customer/Aboutus", { role: custrole });
+});
 
 router.get("/store", async (req, res) => {
   try {
