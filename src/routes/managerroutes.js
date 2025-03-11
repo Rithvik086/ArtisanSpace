@@ -1,17 +1,18 @@
 import express from "express";
 const router = express.Router();
+const mngrole = "manager";
 router.get("/", (req, res) => {
-    res.json({ message: "Welcome manager" });
+    res.render("manager/managerdashboard",{role:mngrole});
 
   
 });
 router.get("/content-moderation", (req, res) => {
-    res.json({ message: "moderation page coming soon" });
+    res.render("manager/managercontentmoderation",{role:mngrole});
 
   
 });
 router.get("/listing", (req, res) => {
-    res.json({ message: "listing page coming soon" });
+    res.render("manager/managerlisting",{role:mngrole});
 
   
 });
