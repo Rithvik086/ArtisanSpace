@@ -1,7 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&family=Kranky&display=swap");
-
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 body {
   width: 100vw;
+  margin: 0;
   display: flex;
   flex-direction: column;
 }
