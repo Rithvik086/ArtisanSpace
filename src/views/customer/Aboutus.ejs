@@ -1,15 +1,613 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/navbar2.css" />
-    <link rel="stylesheet" href="/footer.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AboutUs</title>
+  <link rel="stylesheet" href="/navbar2.css" />
+  <link rel="stylesheet" href="/footer.css" />
+  <style>
+    body {
+      margin: 0;
+    }
+
+    .about-container {
+      --primary-color: #5c4033;
+      --secondary-color: #d4b996;
+      --accent-color: #f0e6d2;
+      --text-color: #333333;
+      --light-text: #ffffff;
+      --background-color: #faf7f2;
+      --section-padding: 5rem 2rem;
+      --border-radius: 8px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      /* margin: 0; */
+      /* padding: 0; */
+      color: var(--text-color);
+      background-color: var(--background-color);
+      line-height: 1.6;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    h2:after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: var(--secondary-color);
+      margin: 0.8rem auto;
+    }
+
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/Aboutus/7.png');
+      background-size: cover;
+      background-position: center;
+      color: var(--light-text);
+      text-align: center;
+      padding: 8px 2px;
+      margin-bottom: 2px;
+    }
+
+    .hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-section h1 {
+  color: var(--light-text);
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+    .tagline {
+      font-size: 1.5rem;
+      font-style: italic;
+    }
+
+    /* Introduction Section */
+    .intro-section {
+      padding: var(--section-padding);
+      background-color: #fff;
+    }
+
+    .intro-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .intro-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .intro-image {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    /* Craftsmanship Section */
+    .craftsmanship-section {
+      padding: var(--section-padding);
+      background-color: var(--accent-color);
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .value-card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      text-align: center;
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .value-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .value-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1rem;
+    }
+
+    .value-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .craftsmanship-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+
+    .craft-image {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .craft-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .sustainability-highlight {
+      background-color: rgba(139, 90, 43, 0.1);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      margin-top: 2rem;
+    }
+
+    /* Team Section */
+    .team-section {
+      padding: var(--section-padding);
+      background-color: #fff;
+    }
+
+    .team-intro {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 3rem;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 3rem;
+    }
+
+    .team-member {
+      text-align: center;
+    }
+
+    .member-image {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .member-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .member-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    /* Customer Section */
+    .customer-section {
+      padding: var(--section-padding);
+      background-color: var(--accent-color);
+    }
+
+    .customer-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .customer-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .customer-image {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .testimonial {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      margin-top: 2rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    blockquote {
+      font-style: italic;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    cite {
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* Call to Action Section */
+    .cta-section {
+      padding: var(--section-padding);
+      background-color: var(--primary-color);
+      color: var(--light-text);
+      text-align: center;
+    }
+
+    .cta-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .cta-section h2 {
+      color: var(--light-text);
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .primary-btn {
+      background-color: var(--light-text);
+      color: var(--primary-color);
+    }
+
+    .primary-btn:hover {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+    }
+
+    .secondary-btn {
+      background-color: transparent;
+      color: var(--light-text);
+      border: 2px solid var(--light-text);
+    }
+
+    .secondary-btn:hover {
+      background-color: var(--light-text);
+      color: var(--primary-color);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .hero-section {
+    padding: 6rem 1.5rem;
+  }
+  
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+  
+      .tagline {
+        font-size: 1.2rem;
+      }
+
+      .section-container {
+        padding: 0 1.5rem;
+      }
+
+      .intro-content,
+      .craftsmanship-content,
+      .customer-content {
+        flex-direction: column;
+      }
+
+      .intro-image,
+      .craft-image,
+      .customer-image {
+        order: -1;
+        margin-bottom: 2rem;
+      }
+
+      .team-grid {
+        gap: 2rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <%- include('../partials/navbar2', { role }) %>
-    <main></main>
-        <%- include("../partials/footer") %>
+  <%- include('../partials/navbar2', { role }) %>
+  <main class="about-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1>About Artisan Heaven</h1>
+        <p class="tagline">Where tradition meets craftsmanship</p>
+      </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section class="intro-section">
+      <div class="section-container">
+        <h2>Our Story</h2>
+        <div class="intro-content">
+          <div class="intro-text">
+            <p>At Artisan Haven, we believe in the beauty of handcrafted items that tell a story. Each piece in our collection is thoughtfully created by skilled artisans who pour their heart and soul into their craft. We celebrate the imperfections that make handmade items unique and the traditions that have been passed down through generations.</p>
+            <p>Founded in 2015, our journey began with a simple passion: to preserve traditional craftsmanship while supporting artisans and sustainable practices.</p>
+          </div>
+          <div class="intro-image">
+            <img src="/images/Aboutus/4.png" alt="The story of Artisan Haven" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Craftsmanship and Values Section -->
+    <section class="craftsmanship-section">
+      <div class="section-container">
+        <h2>Our Craftsmanship & Values</h2>
+        <div class="values-grid">
+          <% 
+                    const craftValues = [
+                      {
+                        title: "Authentic Craftsmanship",
+                        icon: "/images/icons/craftsmanship.svg",
+                        description: "Every item is meticulously handcrafted using time-honored techniques that have been perfected over generations."
+                      },
+                      {
+                        title: "Sustainable Materials",
+                        icon: "/images/icons/sustainable.svg",
+                        description: "We source only the finest sustainable materials, ensuring our products are as kind to the planet as they are beautiful."
+                      },
+                      {
+                        title: "Fair Trade Practices",
+                        icon: "/images/icons/fair-trade.svg",
+                        description: "We believe in fair compensation for our artisans, creating economic opportunities in communities around the world."
+                      },
+                      {
+                        title: "Unique Designs",
+                        icon: "/images/icons/unique.svg",
+                        description: "No two pieces are exactly alike, ensuring you receive a one-of-a-kind treasure with its own character and charm."
+                      }
+                    ];
+                  %>
+
+          <% craftValues.forEach(function(value) { %>
+          <div class="value-card">
+            <div class="value-icon">
+              <img src="/images/Aboutus/3.png" alt="<%= value.title %> icon" />
+            </div>
+            <h3><%= value.title %></h3>
+            <p><%= value.description %></p>
+          </div>
+          <% }); %>
+        </div>
+        <div class="craftsmanship-content">
+          <div class="craft-image">
+            <img src="/images/Aboutus/9.png" alt="Our craftsmanship process" />
+          </div>
+          <div class="craft-text">
+            <p>Our artisans combine traditional techniques with contemporary design sensibilities to create pieces that honor the past while embracing the present. Each item passes through many hands and undergoes multiple stages of crafting before it's deemed worthy of the Artisan Haven name. From selecting the finest raw materials to applying the final touches, every step is performed with precision and care.</p>
+            <div class="sustainability-highlight">
+              <h3>Our Commitment to Sustainability</h3>
+              <p>We're committed to minimizing our environmental footprint. From using reclaimed wood and natural dyes to implementing zero-waste packaging solutions, sustainability is woven into every aspect of our business. We believe that beautiful things shouldn't come at the expense of our planet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+      <div class="section-container">
+        <h2>Meet Our Artisans</h2>
+        <p class="team-intro">Behind every Artisan Haven piece is a talented individual with a passion for their craft. Our team brings together diverse skills and backgrounds, united by a shared commitment to excellence and authenticity.</p>
+
+        <div class="team-grid">
+          <% 
+                    const teamMembers = [
+                      {
+                        name: "Elena Rodriguez",
+                        title: "Founder & Master Weaver",
+                        image: "/images/team/elena.jpg",
+                        bio: "Elena founded Artisan Haven after traveling the world and learning traditional weaving techniques from master craftspeople. Her vision was to create a platform where artisanal skills are celebrated and preserved."
+                      },
+                      {
+                        name: "Marcus Chen",
+                        title: "Wood Craftsman",
+                        image: "/images/team/marcus.jpg",
+                        bio: "With over 20 years of experience working with wood, Marcus creates stunning furniture and home accessories that showcase the natural beauty of sustainable hardwoods."
+                      },
+                      {
+                        name: "Amara Okafor",
+                        title: "Ceramic Artist",
+                        image: "/images/team/amara.jpg",
+                        bio: "Amara's distinctive ceramic pieces blend traditional African patterns with modern minimalist design, resulting in functional art that tells a story."
+                      }
+                    ];
+                  %>
+
+          <% teamMembers.forEach(function(member) { %>
+          <div class="team-member">
+            <div class="member-image">
+              <img src="/images/Aboutus/3.png" alt="<%= member.name %>" />
+            </div>
+            <h3><%= member.name %></h3>
+            <p class="member-title"><%= member.title %></p>
+            <p class="member-bio"><%= member.bio %></p>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customer Focus Section -->
+    <section class="customer-section">
+      <div class="section-container">
+        <h2>Our Commitment to You</h2>
+        <div class="customer-content">
+          <div class="customer-text">
+            <p>At Artisan Haven, you're not just a customer – you're part of our story. We're committed to providing exceptional service and creating meaningful connections between our artisans and the people who cherish their work. Each purchase supports not only our craftspeople but also the preservation of traditional skills that might otherwise be lost to time.</p>
+            <div class="testimonial">
+              <blockquote>"The handcrafted bowl I purchased from Artisan Haven isn't just a beautiful object – it's a daily reminder of the human touch and care that went into creating it. I love knowing the story behind my purchase and the artisan who made it."</blockquote>
+              <cite>— Sarah Thompson, Portland, OR</cite>
+            </div>
+          </div>
+          <div class="customer-image">
+            <img src="/images/Aboutus/8.png" alt="Happy customers with our products" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+      <div class="cta-container">
+        <h2>Bring Artisan Craftsmanship Into Your Life</h2>
+        <p>Discover our collection of handcrafted treasures or work with our artisans to create a custom piece that's uniquely yours.</p>
+        <div class="cta-buttons">
+          <a href="/collections" class="btn primary-btn">Explore Our Collections</a>
+          <a href="/contact" class="btn secondary-btn">Request Custom Order</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <%- include("../partials/footer") %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          const targetId = this.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
+
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80, // Adjust for fixed header if needed
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+
+      // Animate elements when they come into view
+      const animateOnScroll = function() {
+        const elements = document.querySelectorAll('.value-card, .team-member, .testimonial');
+
+        elements.forEach(element => {
+          const elementPosition = element.getBoundingClientRect().top;
+          const windowHeight = window.innerHeight;
+
+          if (elementPosition < windowHeight - 100) {
+            element.classList.add('animate');
+          }
+        });
+      };
+
+      // Add animation class to CSS
+      const style = document.createElement('style');
+      style.textContent = `
+      .value-card, .team-member, .testimonial {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+      
+      .value-card.animate, .team-member.animate, .testimonial.animate {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      .team-member:nth-child(2) {
+        transition-delay: 0.2s;
+      }
+      
+      .team-member:nth-child(3) {
+        transition-delay: 0.4s;
+      }
+      
+      .value-card:nth-child(2) {
+        transition-delay: 0.2s;
+      }
+      
+      .value-card:nth-child(3) {
+        transition-delay: 0.4s;
+      }
+    `;
+      document.head.appendChild(style);
+
+      // Run on load
+      animateOnScroll();
+
+      // Run on scroll
+      window.addEventListener('scroll', animateOnScroll);
+    });
+  </script>
 </body>
+
 </html>

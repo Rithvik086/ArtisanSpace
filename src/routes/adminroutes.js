@@ -1,14 +1,16 @@
 import express from 'express'
 
 const router = express.Router();
+
+const admrole = "admin";
 router.get("/", (req, res) => {
-    res.json({ message: "Welcome admin" });
+    res.render("admin/admindashboard",{role:admrole});
 
   
 });
 
-router.get("/suppport-ticket", (req, res) => {
-    res.json({ message: "support page coming soon" });
+router.get("/support-ticket", (req, res) => {
+   res.render("admin/adminsupportticket",{role:admrole});
   
 });
 
