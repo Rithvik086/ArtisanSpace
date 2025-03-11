@@ -1,93 +1,9 @@
 [
   {
-    "id": 1741610838472,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$Ri8t.RIoCm.ZCNU1qZRAze2eZXjLBkENJlciY0L3LODMuodFnrwkO",
-    "role": "admin"
-  },
-  {
-    "id": 1741610905266,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$GLWdToYd08EGrhah4AgE9ufnAJqT0FfAwxOPdheeqiQY0LUVlSZSS",
-    "role": "admin"
-  },
-  {
-    "id": 1741611067095,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$s/DgQ6CANKTtDZfhBRpWsOSUFcRGO46rFsWV0rkkzTnPYrBMyBN1u",
-    "role": "admin"
-  },
-  {
-    "id": 1741611104049,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$9UqToPfBP3msWsC1HdrwIuL9kE6wt8iCpYWK8WDs0OrOoONMSgGIm",
-    "role": "admin"
-  },
-  {
-    "id": 1741611125753,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$.NYyqOXhEY.ilu4cClxR6OpiLyDeAAKa95Mvz3dK0L4MyA85zTA2i",
-    "role": "admin"
-  },
-  {
-    "id": 1741611191577,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$pVhZGfsPBNSmwRtfURMzDeRXdsaOZL5Uw2Z/sEih02x5t5BQkx2su",
-    "role": "admin"
-  },
-  {
-    "id": 1741611209922,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$Va6kz09othMc4zoFf9pqPesbipuOqI6dZHw8nW3P7x.0TxJ3TbaBe",
-    "role": "admin"
-  },
-  {
-    "id": 1741611278659,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$aXE/a6RPccvXqtckkbIp4OAU8M5TzhU7jE1sWM8n/i.4Xh9BDVFL6",
-    "role": "admin"
-  },
-  {
-    "id": 1741624680160,
-    "username": "admin",
-    "email": "admin@admin",
-    "password": "$2a$09$Yd195ieuljKMm3f4my3luOiDPEPPaA8lR1Ri76yXYHD/j4sbVNj0S",
-    "role": "admin"
-  },
-  {
-    "id": 1741625253074,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$45Hko7YvNbzEMUmdTsrkzO/u0b.XY4HAHr0mOulTnMNPwxB5CPpnG",
-    "role": "admin"
-  },
-  {
-    "id": 1741625264406,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$LSsx23hi1CoHJAAW2l5R2uvxSQAvQTqEbXOtcr2/F/tbSclUzXpWC",
-    "role": "admin"
-  },
-  {
-    "id": 1741625347662,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$OK.W6OrXOC78tD..Fb2B3.O70H8M9yJnuDNHvo2WXXWlBmscrZ6Wi",
-    "role": "admin"
-  },
-  {
-    "id": 1741625398246,
-    "username": "daksh",
-    "email": "test@teat",
-    "password": "$2a$09$qojqpjr4TcdF54wpq4Nmp.JXTH8qvfP2JxdNt6Qii.Y0Rq7ZWUpHK",
+    "id": 1741644277346,
+    "username": "Daksh Rao",
+    "email": "rao.daksh555@gmail.com",
+    "password": "$2a$09$Y7T.ztgQ5KHq8aeCgbWr9unaNd3qBNJ46cUVskpuGUYOERAZbzhu6",
     "role": "admin"
   }
 ]

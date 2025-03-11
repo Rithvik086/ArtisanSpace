@@ -12,6 +12,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import dbConnect from "./config/dbconnect.js";
+import { sendMail } from "./utils/emailService.js";
 
 dbConnect();
 
@@ -31,7 +32,7 @@ app.get("/", (req, res) => {
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.get(["/signup", "/"], (req, res) => {
+app.get("/signup", (req, res) => {
   res.render("auth", { page: "signup" });
 });
 

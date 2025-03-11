@@ -28,7 +28,13 @@
 // export default mongoose.model("User", userSchema);
 
 import fs from "fs/promises";
-const userPath = "../users.json";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const userPath = path.join(__dirname, "../../users.json");
 
 // Ensure file exists
 async function ensureFileExists(filePath) {
@@ -73,6 +79,6 @@ export async function addUser(username, email, hashpass, role) {
 }
 
 export async function findUserByName(username) {
-  const users = await readData();
+  const users = await readData(userPath);
   return users.find((user) => user.username === username) || null;
 }
