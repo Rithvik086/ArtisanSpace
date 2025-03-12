@@ -42,10 +42,6 @@ app.get("/login", (req, res) => {
 app.use("/", authroutes);
 app.use("/", useroutes);
 
-app.get("/delete", (req, res) => {
-  removeUser(1741799581988);
-  res.send("Deleted");
-});
 app.all("*", (req, res) => {
   // res.send("This route is accessible");
   res.render("accessdenied");

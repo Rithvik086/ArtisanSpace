@@ -30,8 +30,8 @@
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import path from "path";
-import { removeCart } from "./cartmodel";
-import { removeUserProduct } from "./productmodel";
+import { removeCart } from "./cartmodel.js";
+import { removeUserProduct } from "./productmodel.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

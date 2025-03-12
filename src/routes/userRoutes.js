@@ -7,7 +7,7 @@ import customerroutes from "../routes/customerroutes.js";
 import artisanroutes from "../routes/artisanroutes.js";
 const router = express.Router();
 
-// router.use(verifytoken);
+router.use(verifytoken);
 
 // router.get("/store", (req, res) => {
 //     res.render("store", { products });
