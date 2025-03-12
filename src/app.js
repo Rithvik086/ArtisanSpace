@@ -12,6 +12,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import dbConnect from "./config/dbconnect.js";
+import { removeUser } from "./models/usermodel.js";
 
 dbConnect();
 
@@ -24,8 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
-  const token = req.cookies.token;
-  res.render("HomePage", { token });
+  res.render("HomePage");
 });
 
 app.set("view engine", "ejs");
@@ -42,6 +42,10 @@ app.get("/login", (req, res) => {
 app.use("/", authroutes);
 app.use("/", useroutes);
 
+app.get("/delete", (req, res) => {
+  removeUser(1741799581988);
+  res.send("Deleted");
+});
 app.all("*", (req, res) => {
   // res.send("This route is accessible");
   res.render("accessdenied");
