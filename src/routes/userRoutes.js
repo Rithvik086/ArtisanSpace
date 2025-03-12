@@ -7,7 +7,7 @@ import customerroutes from "../routes/customerroutes.js";
 import artisanroutes from "../routes/artisanroutes.js";
 const router = express.Router();
 
-router.use(verifytoken);
+// router.use(verifytoken);
 
 // router.get("/store", (req, res) => {
 //     res.render("store", { products });
@@ -16,8 +16,9 @@ router.use(verifytoken);
 // router.use("/admin", customerroutes);
 //  router.use("/manager", customerroutes);
 // router.use("/artisan", customerroutes);
-router.use("/customer", customerroutes);
 router.use("/admin", adminroutes);
+router.use("/artisan", artisanroutes);
+router.use("/customer", customerroutes);
 router.use("/manager", managerroutes);
 
 router.get("/admin", authorizeroles("admin"), (req, res) => {

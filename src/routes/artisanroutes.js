@@ -1,6 +1,8 @@
 import express from 'express'
 const router = express.Router();
 
+const astrole = "artisan";
+
 router.get("/", (req, res) => {
     res.json({ message: "Welcome Artisan" });
 
@@ -14,7 +16,7 @@ router.get("/workshops", (req, res) => {
 });
 
 router.get("/listings", (req, res) => {
-    res.json({ message: "listing page coming soon " });
+    res.render("artisan/artisanlisting",{role: astrole});
 
   
 });
