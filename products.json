@@ -1,6 +1,7 @@
 [
   {
     "id": 1741626782944,
+    "aId": 1741721436225,
     "name": "first",
     "image": "/images/authimages/art10.png",
     "oldPrice": 1800,
@@ -10,6 +11,7 @@
   },
   {
     "id": 1741626865825,
+    "aId": 1741721436225,
     "name": "second",
     "image": "/images/authimages/art11.jpg",
     "oldPrice": 2000,
@@ -19,6 +21,7 @@
   },
   {
     "id": 1741628103421,
+    "aId": 1741721436225,
     "name": "Brass Buddha Door Knocker",
     "image": "/images/authimages/art12.png",
     "oldPrice": 1999,
@@ -28,6 +31,7 @@
   },
   {
     "id": 1741628103422,
+    "aId": 1741721436225,
     "name": "Brass Dancing Lord Ganesha Idol",
     "image": "/images/authimages/art13.jpg",
     "oldPrice": 3999,
@@ -37,6 +41,7 @@
   },
   {
     "id": 1741628288617,
+    "aId": 1741721436225,
     "name": "a",
     "image": "/images/authimages/art14.jpg",
     "oldPrice": 1999,
@@ -46,6 +51,7 @@
   },
   {
     "id": 1741628288619,
+    "aId": 1741721436225,
     "name": "b",
     "image": "/images/authimages/art15.png",
     "oldPrice": 3999,
@@ -55,6 +61,7 @@
   },
   {
     "id": 1741628288627,
+    "aId": 1741721436225,
     "name": "c",
     "image": "/images/ganesha-idol2.jpg",
     "oldPrice": 999,
@@ -64,6 +71,7 @@
   },
   {
     "id": 1741628288628,
+    "aId": 1741721436225,
     "name": "d",
     "image": "/images/ganesha-idol3.jpg",
     "oldPrice": 2999,
@@ -73,6 +81,7 @@
   },
   {
     "id": 1741628288629,
+    "aId": 1741721436225,
     "name": "3",
     "image": "/images/buddha-knocker.jpg",
     "oldPrice": 1999,
@@ -82,6 +91,7 @@
   },
   {
     "id": 1741628288630,
+    "aId": 1741721436225,
     "name": "f",
     "image": "/images/ganesha-idol1.jpg",
     "oldPrice": 3999,
@@ -91,6 +101,7 @@
   },
   {
     "id": 1741628288631,
+    "aId": 1741721436225,
     "name": "g",
     "image": "/images/ganesha-idol2.jpg",
     "oldPrice": 999,
@@ -100,6 +111,7 @@
   },
   {
     "id": 1741628288632,
+    "aId": 1741721436225,
     "name": "h",
     "image": "/images/ganesha-idol3.jpg",
     "oldPrice": 2999,
@@ -109,6 +121,7 @@
   },
   {
     "id": 1741628288633,
+    "aId": 1741721436225,
     "name": "i",
     "image": "/images/ganesha-idol3.jpg",
     "oldPrice": 2999,
@@ -118,6 +131,7 @@
   },
   {
     "id": 1741628288634,
+    "aId": 1741721436225,
     "name": "j",
     "image": "../public/images/logo.png",
     "oldPrice": 1999,
@@ -127,6 +141,7 @@
   },
   {
     "id": 1741628288635,
+    "aId": 1741721436225,
     "name": "k",
     "image": "/images/ganesha-idol1.jpg",
     "oldPrice": 3999,
@@ -136,6 +151,7 @@
   },
   {
     "id": 1741628288635,
+    "aId": 1741721436225,
     "name": "l",
     "image": "/images/ganesha-idol2.jpg",
     "oldPrice": 999,
@@ -145,6 +161,7 @@
   },
   {
     "id": 1741628288636,
+    "aId": 1741721436225,
     "name": "m",
     "image": "/images/ganesha-idol3.jpg",
     "oldPrice": 2999,
@@ -154,6 +171,7 @@
   },
   {
     "id": 1741628288636,
+    "aId": 1741721436225,
     "name": "n",
     "image": "/images/buddha-knocker.jpg",
     "oldPrice": 1999,
@@ -163,6 +181,7 @@
   },
   {
     "id": 1741628288637,
+    "aId": 1741721436225,
     "name": "o",
     "image": "/images/ganesha-idol1.jpg",
     "oldPrice": 3999,
@@ -172,6 +191,7 @@
   },
   {
     "id": 1741628288637,
+    "aId": 1741721436225,
     "name": "p",
     "image": "/images/ganesha-idol2.jpg",
     "oldPrice": 999,
@@ -181,6 +201,7 @@
   },
   {
     "id": 1741628288638,
+    "aId": 1741721436225,
     "name": "q",
     "image": "/images/ganesha-idol3.jpg",
     "oldPrice": 2999,
@@ -190,6 +211,7 @@
   },
   {
     "id": 1741628288638,
+    "aId": 1741721436225,
     "name": "r",
     "image": "/images/ganesha-idol3.jpg",
     "oldPrice": 2999,

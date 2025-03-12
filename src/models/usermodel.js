@@ -30,6 +30,8 @@
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import path from "path";
+import { removeCart } from "./cartmodel";
+import { removeUserProduct } from "./productmodel";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -85,7 +87,7 @@ export async function addUser(username, email, hashpass, role) {
   users.push(newUser);
   await writeData(users, userPath);
   console.log("User added");
-  return { success: true, user: newUser }; 
+  return { success: true, user: newUser };
 }
 
 export async function findUserByName(username) {
@@ -93,13 +95,21 @@ export async function findUserByName(username) {
   return users.find((user) => user.username === username) || null;
 }
 
+export async function getUsers() {
+  return await readData(userPath);
+}
+
 export async function removeUser(userId) {
   const users = await readData(userPath);
   const userIndex = users.findIndex((user) => user.id === userId);
 
   if (userIndex !== -1) {
-    users.splice(userIndex, 1);
-    writeData(users, userPath);
+    users.splice(userIndex, 1); //const users will work because array is mutable, but we can't reassign it
+    await writeData(users, userPath);
+
+    await removeCart(userId);
+
+    await removeUserProduct(userId);
 
     console.log("User deleted successfully.");
   } else {
