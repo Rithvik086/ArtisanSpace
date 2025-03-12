@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import path from "path";
+import { write } from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -89,4 +90,26 @@ export async function deleteItem(userId, productId) {
   }
   await writeData(carts, cartPath);
   console.log("Product deleted from cart");
+}
+
+export async function removeCompleteItem(userId, productId) {
+  userId = parseInt(userId);
+  productId = parseInt(productId);
+  const carts = await readData(cartPath);
+
+  let userCart = carts.find((cart) => cart.userId === userId);
+
+  if (userCart) {
+    if (userCart.cart.length > 1) {
+      let productIndex = userCart.cart.findIndex(
+        (item) => item.productId === productId
+      );
+      userCart.cart.splice(productIndex, 1);
+    } else {
+      let userIndex = carts.findIndex((cart) => cart.userId === userId);
+      carts.splice(userIndex, 1);
+    }
+  }
+  await writeData(carts, cartPath);
+  console.log("Product completely deleted");
 }

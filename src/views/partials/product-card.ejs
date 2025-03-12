@@ -16,6 +16,6 @@
         <%= "₹"+product.newPrice %> inc. GST
       </span>
     </p>
-    <button>Add to Cart</button>
+    <button onclick="updateCart('<%= userId %>', '<%= product.id %>')">Add to Cart</button>
   </div>
 </div>
