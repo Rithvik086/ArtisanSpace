@@ -1,19 +1,10 @@
 [
   {
-    "userId": null,
+    "userId": 1741721436225,
     "cart": [
       {
         "productId": 1741626865825,
-        "quantity": 1
-      }
-    ]
-  },
-  {
-    "userId": null,
-    "cart": [
-      {
-        "productId": 1741626865825,
-        "quantity": 1
+        "quantity": 3
       }
     ]
   }
