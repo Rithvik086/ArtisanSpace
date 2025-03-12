@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import { userExist } from "../models/usermodel.js";
 
-const verifytoken = (req, res, next) => {
+const verifytoken = async (req, res, next) => {
   if (req.path === "/login" || req.path === "/signup") {
     return next();
   }
@@ -9,10 +10,14 @@ const verifytoken = (req, res, next) => {
   if (!token) {
     return res.status(401).render("accessdenied");
   }
-
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
-    next();
+    if (await userExist(req.user.id)) {
+      next();
+    } else {
+      res.clearCookie("token");
+      return res.redirect("/signup");
+    }
   } catch (err) {
     res.clearCookie("token");
     return res.redirect("/login");

@@ -1,6 +1,5 @@
 import express from "express";
 import verifytoken from "../middleware/authMiddleware.js";
-
 import authorizeroles from "../middleware/roleMiddleware.js";
 import adminroutes from "../routes/adminroutes.js";
 import managerroutes from "../routes/managerroutes.js";
@@ -8,7 +7,7 @@ import customerroutes from "../routes/customerroutes.js";
 import artisanroutes from "../routes/artisanroutes.js";
 const router = express.Router();
 
-// router.use(verifytoken);
+router.use(verifytoken);
 
 // router.get("/store", (req, res) => {
 //     res.render("store", { products });

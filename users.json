@@ -5,5 +5,12 @@
     "email": "admin@admin",
     "password": "$2a$09$FOBzxD1M.HnpRHzuYBKhIedKI2zPgyYJl5fUrdLqIeCfnEj6.4Cx.",
     "role": "admin"
+  },
+  {
+    "id": 1741811543435,
+    "username": "customer",
+    "email": "customer@customer",
+    "password": "$2a$09$pNQTRRasQCdRYBQLXwPxiufHbp9TqcJIFfR7/99rgNUYsOXXvvX7.",
+    "role": "customer"
   }
 ]

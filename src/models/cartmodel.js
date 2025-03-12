@@ -1,8 +1,7 @@
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import path from "path";
-import { write } from "fs";
-
+import { getUsers } from "./usermodel.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -106,10 +105,31 @@ export async function removeCompleteItem(userId, productId) {
       );
       userCart.cart.splice(productIndex, 1);
     } else {
-      let userIndex = carts.findIndex((cart) => cart.userId === userId);
-      carts.splice(userIndex, 1);
+      let cartIndex = carts.findIndex((cart) => cart.userId === userId);
+      carts.splice(cartIndex, 1);
     }
   }
   await writeData(carts, cartPath);
   console.log("Product completely deleted");
+}
+
+export async function removeProductFromAllCarts(productId) {
+  const users = await getUsers();
+
+  for (let user of users) {
+    await removeCompleteItem(user.id, productId);
+  }
+}
+
+export async function removeCart(userId) {
+  const carts = await readData(cartPath);
+
+  const cartIndex = carts.findIndex((cart) => cart.userId === userId);
+
+  if (cartIndex !== -1) {
+    carts.splice(cartIndex, 1);
+    await writeData(carts, cartPath);
+  } else {
+    console.log("Cart not found in DB");
+  }
 }

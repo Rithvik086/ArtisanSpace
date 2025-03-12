@@ -30,6 +30,8 @@
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import path from "path";
+import { removeCart } from "./cartmodel.js";
+import { removeUserProduct } from "./productmodel.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,12 +57,21 @@ async function writeData(data, filePath) {
   await fs.writeFile(filePath, JSON.stringify(data, null, 2));
 }
 
+export async function userExist(userId) {
+  const users = await readData(userPath);
+  const user = users.find((user) => user.id === userId);
+  if (user) {
+    console.log("Worked");
+    return true;
+  } else {
+    console.log("Worked-not");
+    return false;
+  }
+}
+
 export async function addUser(username, email, hashpass, role) {
   const users = await readData(userPath);
 
-  if (users.find((user) => user.username === username)) {
-    throw new Error("Username already exists.");
-  }
   if (users.find((user) => user.email === email)) {
     throw new Error("Email already exists.");
   }
@@ -76,10 +87,32 @@ export async function addUser(username, email, hashpass, role) {
   users.push(newUser);
   await writeData(users, userPath);
   console.log("User added");
-  return { success: true, user: newUser }; 
+  return { success: true, user: newUser };
 }
 
 export async function findUserByName(username) {
   const users = await readData(userPath);
   return users.find((user) => user.username === username) || null;
+}
+
+export async function getUsers() {
+  return await readData(userPath);
+}
+
+export async function removeUser(userId) {
+  const users = await readData(userPath);
+  const userIndex = users.findIndex((user) => user.id === userId);
+
+  if (userIndex !== -1) {
+    users.splice(userIndex, 1); //const users will work because array is mutable, but we can't reassign it
+    await writeData(users, userPath);
+
+    await removeCart(userId);
+
+    await removeUserProduct(userId);
+
+    console.log("User deleted successfully.");
+  } else {
+    console.log("User dosen't exist");
+  }
 }
