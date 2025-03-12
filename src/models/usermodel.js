@@ -76,6 +76,7 @@ export async function addUser(username, email, hashpass, role) {
   users.push(newUser);
   await writeData(users, userPath);
   console.log("User added");
+  return { success: true, user: newUser }; 
 }
 
 export async function findUserByName(username) {

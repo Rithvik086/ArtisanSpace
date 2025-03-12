@@ -7,5 +7,23 @@
         "quantity": 3
       }
     ]
+  },
+  {
+    "userId": null,
+    "cart": [
+      {
+        "productId": 1741628103421,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "userId": 1741797080725,
+    "cart": [
+      {
+        "productId": 1741626865825,
+        "quantity": 1
+      }
+    ]
   }
 ]
