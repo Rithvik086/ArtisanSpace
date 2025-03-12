@@ -17,15 +17,8 @@
       <button id="cartBtn">Cart</button>
       <button id="historyBtn">Product History</button>
     </div>
-
     <div id="contentBox">
-      <div id="cartBox" class="box">
-        <h3>Shopping Cart</h3>
-        <div class="products">
-          <%- include("../partials/cart", {cart, products, userId}) %>
-        </div>
-        <div class="total">Total Amount: $35</div>
-      </div>
+      <%- include("../partials/cart", {cart, products, userId, amount}) %>
     </div>
   </main>
   <%- include("../partials/footer") %>
@@ -53,49 +46,25 @@
           },
         });
         const html = await response.text();
-        document.querySelector(".products").innerHTML = html;
+        document.getElementById("contentBox").innerHTML = html;
       } catch (error) {
         console.error("Error refreshing cart:", error);
       }
     }
 
 
-    function loadCart() {
-      document.getElementById("contentBox").innerHTML = `
-  <div id="cartBox" class="box">
-    <h3>Shopping Cart</h3>
-    <div class="products">
-      <div class="cart-item">
-        <img src="https://via.placeholder.com/80" alt="Product 1" class="product-img">
-        <div class="product-details">
-          <h3>Product 1</h3>
-          <p>Price: $10</p>
-        </div>
-        <div class="quantity-controls">
-          <button class="quantity-btn" onclick="updateQuantity(this, -1)">-</button>
-          <span class="quantity-number">2</span>
-          <button class="quantity-btn" onclick="updateQuantity(this, 1)">+</button>
-        </div>
-        <p class="remove" onclick="removeItem(this)">✖ REMOVE</p>
-      </div>
-
-      <div class="cart-item">
-        <img src="https://via.placeholder.com/80" alt="Product 2" class="product-img">
-        <div class="product-details">
-          <h3>Product 2</h3>
-          <p>Price: $15</p>
-        </div>
-        <div class="quantity-controls">
-          <button class="quantity-btn" onclick="updateQuantity(this, -1)">-</button>
-          <span class="quantity-number">1</span>
-          <button class="quantity-btn" onclick="updateQuantity(this, 1)">+</button>
-        </div>
-        <p class="remove" onclick="removeItem(this)">✖ REMOVE</p>
-      </div>
-    </div>
-    <div class="total">Total Amount: $35</div>
-  </div>
-  `;
+    async function loadCart() {
+      try {
+        const response = await fetch("/customer/orders", {
+          headers: {
+            "X-Requested-With": "XMLHttpRequest"
+          },
+        });
+        const html = await response.text();
+        document.getElementById("contentBox").innerHTML = html;
+      } catch (error) {
+        console.error("Error refreshing cart:", error);
+      }
     }
 
     function loadHistory() {

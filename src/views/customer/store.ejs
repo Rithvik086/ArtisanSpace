@@ -15,7 +15,7 @@
   <div class="content">
     <ul class="product-list">
       <% products.forEach(product=> { %>
-      <li><%- include("../partials/product-card", {product}) %></li>
+      <li><%- include("../partials/product-card", {product, userId}) %></li>
       <%})%>
     </ul>
     <ul class="pagination">
@@ -36,6 +36,20 @@
 
   </div>
   <%- include("../partials/footer") %>
+  <script>
+    async function updateCart(userId, productId) {
+      try {
+        const response = await fetch(`/customer/store?userId=${userId}&productId=${productId}`, {
+          method: "POST"
+        });
+
+        const data = await response.json();
+        console.log(data.message);
+      } catch (error) {
+        console.log("Error updating cart: ", error);
+      }
+    }
+  </script>
 </body>
 
 </html>
