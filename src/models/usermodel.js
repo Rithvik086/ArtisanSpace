@@ -61,10 +61,8 @@ export async function userExist(userId) {
   const users = await readData(userPath);
   const user = users.find((user) => user.id === userId);
   if (user) {
-    console.log("Worked");
     return true;
   } else {
-    console.log("Worked-not");
     return false;
   }
 }
@@ -100,6 +98,7 @@ export async function getUsers() {
 }
 
 export async function removeUser(userId) {
+  userId = parseInt(userId);
   const users = await readData(userPath);
   const userIndex = users.findIndex((user) => user.id === userId);
 

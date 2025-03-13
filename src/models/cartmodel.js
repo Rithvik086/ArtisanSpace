@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import path from "path";
 import { getUsers } from "./usermodel.js";
+import { productCount } from "./productmodel.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -37,27 +38,42 @@ export async function getCart(userId) {
   }
 }
 
+export async function getCartProductQuantity(userId, productId) {
+  userId = parseInt(userId);
+  productId = parseInt(productId);
+  const cart = await getCart(userId);
+
+  const product = cart.cart.find((product) => product.productId === productId);
+  return product.quantity;
+}
+
 export async function addItem(userId, productId) {
   userId = parseInt(userId);
   productId = parseInt(productId);
   const carts = await readData(cartPath);
+  const produtQuantity = await productCount(productId);
+  const cartQuantity = await getCartProductQuantity(userId, productId);
 
-  let userCart = carts.find((cart) => cart.userId === userId);
+  if (produtQuantity > cartQuantity) {
+    let userCart = carts.find((cart) => cart.userId === userId);
 
-  if (userCart) {
-    let product = userCart.cart.find((item) => item.productId === productId);
+    if (userCart) {
+      let product = userCart.cart.find((item) => item.productId === productId);
 
-    if (product) {
-      product.quantity += 1;
+      if (product) {
+        product.quantity += 1;
+      } else {
+        userCart.cart.push({ productId, quantity: 1 });
+      }
     } else {
-      userCart.cart.push({ productId, quantity: 1 });
+      carts.push({ userId, cart: [{ productId, quantity: 1 }] });
     }
-  } else {
-    carts.push({ userId, cart: [{ productId, quantity: 1 }] });
-  }
 
-  await writeData(carts, cartPath);
-  console.log("Product added to cart");
+    await writeData(carts, cartPath);
+    console.log("Product added to cart");
+  } else {
+    console.log("No more product in inventory");
+  }
 }
 
 export async function deleteItem(userId, productId) {
@@ -114,6 +130,7 @@ export async function removeCompleteItem(userId, productId) {
 }
 
 export async function removeProductFromAllCarts(productId) {
+  productId = parseInt(productId);
   const users = await getUsers();
 
   for (let user of users) {
@@ -122,6 +139,7 @@ export async function removeProductFromAllCarts(productId) {
 }
 
 export async function removeCart(userId) {
+  userId = parseInt(userId);
   const carts = await readData(cartPath);
 
   const cartIndex = carts.findIndex((cart) => cart.userId === userId);
