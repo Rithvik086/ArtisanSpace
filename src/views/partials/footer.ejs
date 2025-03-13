@@ -9,9 +9,15 @@
     </div>
     <div class="footerhelp">
       <p class="help">Help</p>
-      <p>Find your Product</p>
-      <p>Contact</p>
-      <p>Order History</p>
+      <a href="/aboutus" style="text-decoration: none; color: black"><p>AboutUs</p></a>
+      
+      <%if(role == "customer" || role == "artisan"){%>
+      <a href="/<%= role%>/contactus" style="text-decoration: none; color: black;"><p>Contact</p></a>
+      <%}%>
+      
+      <%if(role == "customer"){%>
+      <a href="/customer/orders" style="text-decoration: none; color: black;"><p>Order History</p></a>
+    <%}%>
     </div>
 
     <div class="ourinfo">

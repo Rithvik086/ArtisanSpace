@@ -1,4 +1,5 @@
 import express from "express";
+
 import verifytoken from "../middleware/authMiddleware.js";
 import authorizeroles from "../middleware/roleMiddleware.js";
 import adminroutes from "../routes/adminroutes.js";
@@ -44,5 +45,7 @@ router.get(
     res.json({ message: "Welcome Customer" });
   }
 );
-
+router.get("/aboutus", (req, res) => {
+  res.render("Aboutus", { role: req.user.role});
+});
 export default router;
