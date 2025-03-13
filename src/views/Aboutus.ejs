@@ -379,7 +379,7 @@
 </head>
 
 <body>
-  <%- include('../partials/navbar2', { role }) %>
+  <%- include('partials/navbar2', { role }) %>
   <main class="about-container">
     <!-- Hero Section -->
     <section class="hero-section">
@@ -535,7 +535,7 @@
       </div>
     </section>
   </main>
-  <%- include("../partials/footer") %>
+  <%- include("partials/footer",{role}) %>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Smooth scrolling for anchor links
