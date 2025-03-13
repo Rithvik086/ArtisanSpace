@@ -27,6 +27,7 @@ async function writeData(data, filePath) {
 }
 
 export async function addProduct(artisanId, name, image, oldPrice, quantity) {
+  artisanId = parseInt(artisanId);
   const products = await readData(productPath);
 
   if (products.find((product) => product.name === name)) {
@@ -49,6 +50,7 @@ export async function addProduct(artisanId, name, image, oldPrice, quantity) {
 }
 
 export async function delProduct(productId) {
+  productId = parseInt(productId);
   const products = await readData(productPath);
 
   const productIndex = products.findIndex(
@@ -72,6 +74,7 @@ export async function getProducts() {
 }
 
 export async function removeUserProduct(userId) {
+  userId = parseInt(userId);
   const products = await readData(productPath);
 
   for (let product of products) {
@@ -79,4 +82,12 @@ export async function removeUserProduct(userId) {
       await delProduct(product.id);
     }
   }
+}
+
+export async function productCount(productId) {
+  productId = parseInt(productId);
+  const products = await readData(productPath);
+
+  const product = products.find((product) => product.id === productId);
+  return product.quantity;
 }
