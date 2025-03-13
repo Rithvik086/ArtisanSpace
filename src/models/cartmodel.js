@@ -42,9 +42,15 @@ export async function getCartProductQuantity(userId, productId) {
   userId = parseInt(userId);
   productId = parseInt(productId);
   const cart = await getCart(userId);
-
-  const product = cart.cart.find((product) => product.productId === productId);
-  return product.quantity;
+  if (cart.cart.length > 0) {
+    const product = cart.cart.find(
+      (product) => product.productId === productId
+    );
+    if (product) {
+      return product.quantity;
+    }
+  }
+  return 0;
 }
 
 export async function addItem(userId, productId) {
