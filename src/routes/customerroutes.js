@@ -84,7 +84,6 @@ router.get("/store", async (req, res) => {
 
     const paginatedProducts = products.slice(startIndex, endIndex);
 
-    const totalProducts = await products;
     res.render("customer/store", {
       products: paginatedProducts,
       currentPage: page,

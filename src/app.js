@@ -12,7 +12,6 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import dbConnect from "./config/dbconnect.js";
-import { removeUser } from "./models/usermodel.js";
 
 dbConnect();
 

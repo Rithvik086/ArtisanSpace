@@ -45,7 +45,7 @@ export async function addProduct(artisanId, name, image, oldPrice, quantity) {
   };
 
   products.push(newProduct);
-  await writeData(products, produstPath);
+  await writeData(products, productPath);
   console.log("Product added");
 }
 
@@ -54,7 +54,7 @@ export async function delProduct(productId) {
   const products = await readData(productPath);
 
   const productIndex = products.findIndex(
-    (product) => product.id === productId
+    (product) => product.id === productId,
   );
 
   if (productIndex !== -1) {
