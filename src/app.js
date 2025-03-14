@@ -23,8 +23,10 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
-  res.render("HomePage");
+  const role = req.user ? req.user.role : null;
+  res.render("HomePage", {role});
 });
 
 app.set("view engine", "ejs");
