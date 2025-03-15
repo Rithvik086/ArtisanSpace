@@ -20,7 +20,10 @@
               <input class="inpuser" type="text" placeholder="username" required name="username">
               <input type="email" placeholder="Email" required name="email">
               <input type="password" placeholder="Password" name="password">
-              <input type="text" placeholder="role" name="role">
+              <select name="role" required>
+                <option value="customer">Customer</option>
+                <option value="artisan">Artisan</option>
+              </select>
               <button type="submit">Sign Up</button>
             </form>
             <div class="login-text">

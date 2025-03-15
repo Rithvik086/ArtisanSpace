@@ -75,7 +75,8 @@ body {
 }
 
 .slider-container {
-  width: 71%;
+  width: 100%;
+  max-width: 1240px;
   margin: auto;
   overflow: hidden;
   position: relative;
@@ -89,9 +90,11 @@ body {
 }
 
 .slider img {
+  /* width: 100%; */
   width: 400px;
+  max-width: 400px;
   height: 300px;
   object-fit: cover;
-  border-radius: 5px;
+  border-radius: 10px;
   flex-shrink: 0;
 }

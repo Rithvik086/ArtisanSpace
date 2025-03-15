@@ -108,6 +108,11 @@ hr {
   border: 2px solid #fc5a6d;
 }
 
+.details button:active {
+  background-color: #fc5a6d;
+  color: #fc5a6d;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
