@@ -99,7 +99,9 @@ p {
   color: #5c4033;
 }
 
-input {
+input,
+select {
+  font-size: 12px;
   padding: 12px;
   border: 2px solid #deb887;
   border-radius: 8px;
@@ -181,4 +183,3 @@ input {
 .dot.active {
   background-color: white;
 }
-
