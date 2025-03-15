@@ -1,7 +1,7 @@
 <div id="cartBox" class="box">
   <h3>Shopping Cart</h3>
   <div class="products">
-    <% cart.cart.forEach( item => { %>
+    <% cart.forEach( item => { %>
     <% let product = products.find(product => product.id === item.productId) %>
     <div class="cart-item">
       <img src="<%= product.image %>" alt="<%= product.name %>" class="product-img">
