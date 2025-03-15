@@ -29,7 +29,7 @@ router.get("/orders", async (req, res) => {
   const cart = await getCart(userId);
 
   let amount = 0;
-  for (const item of cart.cart) {
+  for (const item of cart) {
     const product = products.find((product) => product.id === item.productId);
     amount += item.quantity * product.newPrice;
   }
@@ -67,7 +67,6 @@ router.post("/orders", async (req, res) => {
 router.get("/contactus", (req, res) => {
   res.render("customer/customercontactus", { role: custrole });
 });
-
 
 router.get("/store", async (req, res) => {
   try {

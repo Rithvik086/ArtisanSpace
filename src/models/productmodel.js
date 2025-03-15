@@ -32,7 +32,7 @@ export async function addProduct(
   image,
   oldPrice,
   quantity,
-  description
+  description,
 ) {
   artisanId = parseInt(artisanId);
   oldPrice = parseFloat(oldPrice);
@@ -64,7 +64,7 @@ export async function delProduct(productId) {
   const products = await readData(productPath);
 
   const productIndex = products.findIndex(
-    (product) => product.id === productId
+    (product) => product.id === productId,
   );
 
   if (productIndex !== -1) {
