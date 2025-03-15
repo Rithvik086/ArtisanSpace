@@ -2,84 +2,84 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Authentication</title>
-    <link rel="stylesheet" href="/auths/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authentication</title>
+  <link rel="stylesheet" href="/auths/style.css">
 </head>
 
 <body>
-    <div class="container">
-        <div class="cardpar">
-            <div class="cardsign">
-                <div class="left-sidesign">
-                    <div class="logo"></div>
-                    <p>Sign-up</p>
-                    <div class="form">
-                        <form action="/signup" method="post">
-                            <input class="inpuser" type="text" placeholder="username" required name="username">
-                            <input type="email" placeholder="Email" required name="email">
-                            <input type="password" placeholder="Password" name="password">
-                            <input type="text" placeholder="role" name="role">
-                            <button type="submit">Sign Up</button>
-                        </form>
-                        <div class="login-text">
-                            Already have an account? <a href="#" onclick="flipCard('login')">login here</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="right-sidesign">
-                    <div class="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item">
-                                <img src="/images/authimages/art10.png" alt="Sign up feature 1">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/images/authimages/art11.jpg" alt="Sign up feature 2">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/images/authimages/art12.png" alt="Sign up feature 3">
-                            </div>
-                        </div>
-                        <div class="carousel-dots"></div>
-                    </div>
-                </div>
+  <div class="container">
+    <div class="cardpar">
+      <div class="cardsign">
+        <div class="left-sidesign">
+          <div class="logo"></div>
+          <p>Sign-up</p>
+          <div class="form">
+            <form action="/signup" method="post">
+              <input class="inpuser" type="text" placeholder="username" required name="username">
+              <input type="email" placeholder="Email" required name="email">
+              <input type="password" placeholder="Password" name="password">
+              <input type="text" placeholder="role" name="role">
+              <button type="submit">Sign Up</button>
+            </form>
+            <div class="login-text">
+              Already have an account? <a href="#" onclick="flipCard('login')">login here</a>
             </div>
-            <div class="cardlog">
-                <div class="left-sidelog">
-                    <div class="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item">
-                                <img src="/images/authimages/art13.jpg" alt="Login feature 1">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/images/authimages/art14.jpg" alt="Login feature 2">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/images/authimages/art15.png" alt="Login feature 3">
-                            </div>
-                        </div>
-                        <div class="carousel-dots"></div>
-                    </div>
-                </div>
-                <div class="right-sidelog">
-                    <div class="logolog"></div>
-                    <p>Login-in</p>
-                    <div class="form">
-                        <form action="/login" method="post">
-                            <input type="text" placeholder="username" required name="username">
-                            <input type="password" placeholder="Password" name="password">
-                            <button type="submit">Log in</button>
-                        </form>
-                        <div class="signup-text">
-                            Don't have an account? <a href="#" onclick="flipCard('signup')">SignUp here</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+        <div class="right-sidesign">
+          <div class="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item">
+                <img src="/images/authimages/art10.png" alt="Sign up feature 1">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/authimages/art11.jpg" alt="Sign up feature 2">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/authimages/art12.png" alt="Sign up feature 3">
+              </div>
+            </div>
+            <div class="carousel-dots"></div>
+          </div>
+        </div>
+      </div>
+      <div class="cardlog">
+        <div class="left-sidelog">
+          <div class="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item">
+                <img src="/images/authimages/art13.jpg" alt="Login feature 1">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/authimages/art14.jpg" alt="Login feature 2">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/authimages/art15.png" alt="Login feature 3">
+              </div>
+            </div>
+            <div class="carousel-dots"></div>
+          </div>
+        </div>
+        <div class="right-sidelog">
+          <div class="logolog"></div>
+          <p>Login-in</p>
+          <div class="form">
+            <form action="/login" method="post">
+              <input type="text" placeholder="username" required name="username">
+              <input type="password" placeholder="Password" name="password">
+              <button type="submit">Log in</button>
+            </form>
+            <div class="signup-text">
+              Don't have an account? <a href="#" onclick="flipCard('signup')">SignUp here</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <script src="/auths/script.js"></script>
+  </div>
+  <script src="/auths/script.js"></script>
 </body>
 
 </html>

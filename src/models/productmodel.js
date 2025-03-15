@@ -26,8 +26,17 @@ async function writeData(data, filePath) {
   await fs.writeFile(filePath, JSON.stringify(data, null, 2));
 }
 
-export async function addProduct(artisanId, name, image, oldPrice, quantity) {
+export async function addProduct(
+  artisanId,
+  name,
+  image,
+  oldPrice,
+  quantity,
+  description
+) {
   artisanId = parseInt(artisanId);
+  oldPrice = parseFloat(oldPrice);
+  quantity = parseInt(quantity);
   const products = await readData(productPath);
 
   if (products.find((product) => product.name === name)) {
@@ -42,10 +51,11 @@ export async function addProduct(artisanId, name, image, oldPrice, quantity) {
     oldPrice: parseFloat(oldPrice),
     newPrice: Math.floor(parseFloat(oldPrice) - parseFloat(oldPrice) * 0.1),
     quantity,
+    description,
   };
 
   products.push(newProduct);
-  await writeData(products, produstPath);
+  await writeData(products, productPath);
   console.log("Product added");
 }
 
