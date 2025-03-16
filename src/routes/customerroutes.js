@@ -1,5 +1,6 @@
 import express from "express";
 import { getProducts } from "../models/productmodel.js";
+import authorizerole from "../middleware/roleMiddleware.js";
 import {
   addItem,
   deleteItem,
@@ -8,8 +9,9 @@ import {
 } from "../models/cartmodel.js";
 
 const router = express.Router();
-
 const custrole = "customer";
+
+router.use(authorizerole("admin", "manager", "artisan", "customer"));
 
 router.get("/", async (req, res) => {
   const products = await getProducts();

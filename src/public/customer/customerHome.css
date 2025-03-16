@@ -4,6 +4,10 @@ body {
   margin: 0;
 }
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
 .mainimage {
   width: 100%;
   height: 94vh; /* Full viewport height */
