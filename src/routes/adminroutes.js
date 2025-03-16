@@ -6,14 +6,17 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { addUser, findUserByName } from "../models/usermodel.js";
+import authorizerole from "../middleware/roleMiddleware.js";
 // Middleware to parse JSON
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const custrespath = path.resolve(__dirname, "../../customerresponse.json");
 
 const router = express.Router();
-
 const admrole = "admin";
+
+router.use(authorizerole("admin"));
+
 router.get("/", async (req, res) => {
   await updateResponse(custrespath);
   const responses = await loadcustData(custrespath);

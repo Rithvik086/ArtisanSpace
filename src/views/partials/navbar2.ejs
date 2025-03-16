@@ -6,23 +6,21 @@
         <% if(role == "customer"){ %>
         <li><a href="/customer">Home</a></li>
         <li><a href="/customer/store">Store</a></li>
-        <li><a href="/customer/workshop">Workshops</a></li>
         <li><a href="/customer/orders">Orders</a></li>
+        <li><a href="/customer/workshop">Workshops</a></li>
         <li><a href="/logout">Logout</a></li>
 
         <% } else if (role === "admin") { %>
         <li><a href="/admin">Dashboard</a></li>
-        <li><a href="/admin/support-ticket">support-ticket</a></li>
+        <li><a href="/admin/support-ticket">Support-ticket</a></li>
         <li><a href="/logout">Logout</a></li>
 
 
         <% } else if (role === "artisan") { %>
-        <li><a href="dashboard">dashboard</a></li>
-        <li><a href="listings">listings</a></li>
-        <li><a href="/artisan/workshops">workshops</a></li>
+        <li><a href="dashboard">Dashboard</a></li>
+        <li><a href="listings">Listings</a></li>
+        <li><a href="/artisan/Workshops">Workshops</a></li>
         <li><a href="/logout">Logout</a></li>
-        <li><a href="/customer/aboutus">About Us</a></li>
-        <li><a href="/customer/contactus">Contact</a></li>
 
 
         <% } else if (role === "manager") { %>

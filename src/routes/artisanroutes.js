@@ -1,11 +1,13 @@
 import express from "express";
 import upload from "../middleware/multer.js";
+import authorizerole from "../middleware/roleMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
 import { addProduct } from "../models/productmodel.js";
 
 const router = express.Router();
-
 const astrole = "artisan";
+
+router.use(authorizerole("admin", "manager", "artisan"));
 
 router.get("/", (req, res) => {
   res.json({ message: "Welcome Artisan" });
@@ -35,7 +37,7 @@ router.post("/listings", upload.single("image"), async (req, res) => {
       result.secure_url,
       price,
       quantity,
-      description
+      description,
     );
 
     res.status(201).json({ message: "Product added successfully" });

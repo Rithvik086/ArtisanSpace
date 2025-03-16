@@ -91,10 +91,10 @@ hr {
 }
 
 .details button {
-  background-color: #fc5a6d;
+  background-color: #f8ead8;
   border: none;
   border-radius: 8px;
-  color: white;
+  color: #5c4033;
   font-size: 14px;
   font-weight: bold;
   width: 100px;
@@ -103,14 +103,14 @@ hr {
 }
 
 .details button:hover {
-  background-color: white;
-  color: #fc5a6d;
-  border: 2px solid #fc5a6d;
+  background-color: #f5d6ae;
+  /* color: #fc5a6d; */
 }
 
 .details button:active {
-  background-color: #fc5a6d;
-  color: #fc5a6d;
+  border: 2px solid #5c4033;
+  /* background-color: #fc5a6d;
+  color: #fc5a6d; */
 }
 
 .pagination {
