@@ -432,3 +432,112 @@ body::-webkit-scrollbar {
     gap: 1rem;
   }
 }
+
+/* Add these styles to your existing CSS file */
+
+/* Product Table */
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table th,
+.products-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.products-table th {
+  background-color: var(--light-color);
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+
+.products-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Product Image */
+.product-image {
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Visibility Button */
+.visibility-btn {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: var(--transition);
+}
+
+.hide-btn {
+  background-color: var(--warning-color);
+  color: #856404;
+}
+
+.hide-btn:hover {
+  background-color: #e0a800;
+}
+
+.show-btn {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.show-btn:hover {
+  background-color: #218838;
+}
+
+.edit-product-btn {
+  background-color: var(--info-color);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: var(--transition);
+}
+
+.edit-product-btn:hover {
+  background-color: #138496;
+}
+
+.delete-product-btn {
+  background-color: var(--danger-color);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: var(--transition);
+}
+
+.delete-product-btn:hover {
+  background-color: #c82333;
+}
+
+/* Form Textarea */
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
