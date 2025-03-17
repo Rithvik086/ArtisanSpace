@@ -67,8 +67,20 @@ async function updateResponse() {
     // console.log("📂 Existing Data in JSON:\n", alreadydata);
     // console.log("📥 Latest Fetched Data:\n", latestdata);
 
-    const alreadyid = new Set(alreadydata.map(entry=>entry.email));
-    let filterdData = latestdata.filter(entry => !alreadyid.has(entry.email));
+    // Better filtering that excludes empty responses
+const alreadyid = new Set(alreadydata.map(entry => entry.email));
+let filterdData = latestdata.filter(entry => 
+    // Check if email exists and is not empty
+    entry.email && 
+    entry.email.trim() !== "" && 
+    // Check if it's not a duplicate
+    !alreadyid.has(entry.email) &&
+    // Optional: validate other required fields
+    entry.fullName && 
+    entry.fullName.trim() !== "" &&
+    entry.message && 
+    entry.message.trim() !== ""
+);
 
     // console.log("🧐 New Entries:\n", filterdData);
 

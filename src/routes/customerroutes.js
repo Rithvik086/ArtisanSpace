@@ -66,10 +66,6 @@ router.post("/orders", async (req, res) => {
   }
 });
 
-router.get("/contactus", (req, res) => {
-  res.render("customer/customercontactus", { role: custrole });
-});
-
 router.get("/store", async (req, res) => {
   try {
     const userId = req.user.id;

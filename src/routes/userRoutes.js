@@ -17,4 +17,11 @@ router.use("/manager", managerroutes);
 router.get("/aboutus", (req, res) => {
   res.render("Aboutus", { role: req.user.role });
 });
+router.get("/contactus", (req, res) => {
+  res.render("customercontactus", { role: req.user.role });
+});
+
+router.get("/customorder",(req, res)=>{
+  res.render("customorder",{role : req.user.role});
+})
 export default router;
