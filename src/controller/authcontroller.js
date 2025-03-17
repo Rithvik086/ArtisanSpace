@@ -5,8 +5,11 @@ import { sendMail } from "../utils/emailService.js";
 
 const signup = async (req, res) => {
   const { username, email, password, role } = req.body;
-  //console.log('body',username,password,email,role);
-  //salt is the team number
+
+  username = username.toLowerCase();
+  email = email.toLowerCase();
+  role = role.toLowerCase();
+
   const hashpass = await bcrypt.hash(password, 9);
 
   // const newUser = new User({ username, email, password: hashpass, role });
