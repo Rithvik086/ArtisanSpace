@@ -78,7 +78,11 @@ document
       passwordError.style.display = "none";
     }
     inputs.forEach((input) => {
-      input.value = input.value.trim(); // Trim spaces from both ends
+      if (input.type !== "password") {
+        input.value = input.value.trim().toLowerCase();
+      } else {
+        input.value = input.value.trim();
+      }
     });
   });
 
@@ -87,6 +91,6 @@ document
   .addEventListener("submit", function (event) {
     const inputs = this.querySelectorAll("input");
     inputs.forEach((input) => {
-      input.value = input.value.trim();
+      input.value = input.value.trim().toLowerCase();
     });
   });

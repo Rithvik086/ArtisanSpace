@@ -84,8 +84,13 @@
       document.getElementById("product-form").addEventListener("submit", async function(event) {
         event.preventDefault();
 
+        const inputs = this.querySelectorAll("input");
         const formData = new FormData(this);
         const statusMessage = document.getElementById("status-message");
+
+        inputs.forEach(input => {
+          input.value = input.value.trim();
+        })
 
         try {
           const response = await fetch(this.action, {
