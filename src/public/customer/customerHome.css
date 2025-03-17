@@ -94,11 +94,10 @@ body::-webkit-scrollbar {
 }
 
 .slider img {
-  /* width: 100%; */
   width: 400px;
   max-width: 400px;
   height: 300px;
-  object-fit: cover;
+  object-fit: fill;
   border-radius: 10px;
   flex-shrink: 0;
 }
