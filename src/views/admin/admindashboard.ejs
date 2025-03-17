@@ -77,7 +77,7 @@
                 
                 <td class="actions">
                   <button class="edit-btn" data-id="">Edit</button>
-                  <button class="delete-btn" data-id="">Delete</button>
+                  <button class="delete-btn" data-id="<%=user.id %>">Delete</button>
                 </td>
               </tr>
               <% }); %>
@@ -148,7 +148,7 @@
       </div>
 
       <!-- Feedback Tab Content -->
-      <<div class="tab-content" id="feedback-content">
+      <div class="tab-content" id="feedback-content">
         <h3>Customer Feedback</h3>
         <div class="feedback-cards">
           <% responses.forEach(item => { %>
