@@ -142,22 +142,40 @@ if (addUserForm) {
     // Confirm Delete
     const deleteConfirmBtn = document.querySelector(".delete-confirm-btn")
     if (deleteConfirmBtn) {
-      deleteConfirmBtn.addEventListener("click", () => {
+      deleteConfirmBtn.addEventListener("click", async () => {
         if (userIdToDelete) {
-          // Here you would typically send a delete request to your server
-          console.log("Deleting user with ID:", userIdToDelete)
-  
-          // For demo purposes, let's remove the row from the table
-          const row = document.querySelector(`tr[data-id="${userIdToDelete}"]`)
-          if (row) {
-            row.remove()
+          try {
+            // Send delete request to backend API
+            const response = await fetch(`/admin/delete-user/${userIdToDelete}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              }
+            });
+    
+            const result = await response.json();
+    
+            if (result.success) {
+              console.log("User deleted successfully:", userIdToDelete);
+              
+              // Remove the row from the table
+              const row = document.querySelector(`tr[data-id="${userIdToDelete}"]`);
+              if (row) {
+                row.remove();
+              }
+              
+              // Close modal and reset userIdToDelete
+              deleteModal.classList.remove("active");
+              userIdToDelete = null;
+            } else {
+              alert("Error deleting user: " + result.message);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Failed to delete user. Try again!");
           }
-  
-          // Close modal and reset userIdToDelete
-          deleteModal.classList.remove("active")
-          userIdToDelete = null
         }
-      })
+      });
     }
   
     // Function to add a new user to the table
@@ -178,10 +196,10 @@ if (addUserForm) {
               <td>${userData.name}</td>
               <td>${userData.email}</td>
               <td>${userData.role}</td>
-              <td><span class="status-badge ${userData.status.toLowerCase()}">${userData.status}</span></td>
+        
               <td class="actions">
                   <button class="edit-btn" data-id="${userId}">Edit</button>
-                  <button class="delete-btn" data-id="${userId}">Delete</button>
+                  <button class="delete-btn" data-id="<%=user.id %>">Delete</button>
               </td>
           `
   

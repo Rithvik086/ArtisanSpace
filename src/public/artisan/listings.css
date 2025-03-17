@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   font-family: "Baloo Bhai 2", cursive;
   background-color: #f8f8f8;

@@ -16,10 +16,15 @@
           <div class="logo"></div>
           <p>Sign-up</p>
           <div class="form">
-            <form action="/signup" method="post">
+            <form action="/signup" method="post" id="signup-form">
               <input class="inpuser" type="text" placeholder="username" required name="username">
               <input type="email" placeholder="Email" required name="email">
-              <input type="password" placeholder="Password" name="password">
+              <div>
+                <input type="password" placeholder="Password" name="password" id="password">
+                <p id="passwordError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+                  Password must be exactly 8 characters long.
+                </p>
+              </div>
               <select name="role" required>
                 <option value="customer">Customer</option>
                 <option value="artisan">Artisan</option>
@@ -69,7 +74,7 @@
           <div class="logolog"></div>
           <p>Login-in</p>
           <div class="form">
-            <form action="/login" method="post">
+            <form action="/login" method="post" id="login-form">
               <input type="text" placeholder="username" required name="username">
               <input type="password" placeholder="Password" name="password">
               <button type="submit">Log in</button>

@@ -99,6 +99,7 @@ export async function getUsers() {
 
 export async function removeUser(userId) {
   userId = parseInt(userId);
+  try{
   const users = await readData(userPath);
   const userIndex = users.findIndex((user) => user.id === userId);
 
@@ -111,7 +112,22 @@ export async function removeUser(userId) {
     await removeUserProduct(userId);
 
     console.log("User deleted successfully.");
+    return {
+      success: true,
+      message: "User deleted successfully"
+    };
   } else {
-    console.log("User dosen't exist");
+    console.log("User doesn't exist");
+    return {
+      success: false,
+      message: "User doesn't exist"
+    };
   }
+} catch (error) {
+  console.error("Error removing user:", error);
+  return {
+    success: false,
+    message: error.message || "Failed to remove user"
+  };
+}
 }
