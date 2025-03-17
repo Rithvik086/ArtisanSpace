@@ -74,6 +74,10 @@ export async function addUser(username, email, hashpass, role) {
     throw new Error("Email already exists.");
   }
 
+  if (users.find((user) => user.username === username)) {
+    throw new Error("Username already exists.");
+  }
+
   const newUser = {
     id: Date.now(),
     username,
@@ -99,35 +103,35 @@ export async function getUsers() {
 
 export async function removeUser(userId) {
   userId = parseInt(userId);
-  try{
-  const users = await readData(userPath);
-  const userIndex = users.findIndex((user) => user.id === userId);
+  try {
+    const users = await readData(userPath);
+    const userIndex = users.findIndex((user) => user.id === userId);
 
-  if (userIndex !== -1) {
-    users.splice(userIndex, 1); //const users will work because array is mutable, but we can't reassign it
-    await writeData(users, userPath);
+    if (userIndex !== -1) {
+      users.splice(userIndex, 1); //const users will work because array is mutable, but we can't reassign it
+      await writeData(users, userPath);
 
-    await removeCart(userId);
+      await removeCart(userId);
 
-    await removeUserProduct(userId);
+      await removeUserProduct(userId);
 
-    console.log("User deleted successfully.");
-    return {
-      success: true,
-      message: "User deleted successfully"
-    };
-  } else {
-    console.log("User doesn't exist");
+      console.log("User deleted successfully.");
+      return {
+        success: true,
+        message: "User deleted successfully",
+      };
+    } else {
+      console.log("User doesn't exist");
+      return {
+        success: false,
+        message: "User doesn't exist",
+      };
+    }
+  } catch (error) {
+    console.error("Error removing user:", error);
     return {
       success: false,
-      message: "User doesn't exist"
+      message: error.message || "Failed to remove user",
     };
   }
-} catch (error) {
-  console.error("Error removing user:", error);
-  return {
-    success: false,
-    message: error.message || "Failed to remove user"
-  };
-}
 }
