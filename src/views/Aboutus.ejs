@@ -384,7 +384,7 @@
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-content">
-        <h1>About Artisan Heaven</h1>
+        <h1>About ArtisanSpace</h1>
         <p class="tagline">Where tradition meets craftsmanship</p>
       </div>
     </section>
@@ -396,7 +396,7 @@
         <div class="intro-content">
           <div class="intro-text">
             <p>At Artisan Haven, we believe in the beauty of handcrafted items that tell a story. Each piece in our collection is thoughtfully created by skilled artisans who pour their heart and soul into their craft. We celebrate the imperfections that make handmade items unique and the traditions that have been passed down through generations.</p>
-            <p>Founded in 2015, our journey began with a simple passion: to preserve traditional craftsmanship while supporting artisans and sustainable practices.</p>
+            <p>Founded in 2025, our journey began with a simple passion: to preserve traditional craftsmanship while supporting artisans and sustainable practices.</p>
           </div>
           <div class="intro-image">
             <img src="/images/Aboutus/4.png" alt="The story of Artisan Haven" />
@@ -414,22 +414,22 @@
                     const craftValues = [
                       {
                         title: "Authentic Craftsmanship",
-                        icon: "/images/icons/craftsmanship.svg",
+                        icon: "/images/Aboutus/authenticcraft.jpg",
                         description: "Every item is meticulously handcrafted using time-honored techniques that have been perfected over generations."
                       },
                       {
                         title: "Sustainable Materials",
-                        icon: "/images/icons/sustainable.svg",
+                        icon: "/images/Aboutus/Firozabad Glass.jpg",
                         description: "We source only the finest sustainable materials, ensuring our products are as kind to the planet as they are beautiful."
                       },
                       {
                         title: "Fair Trade Practices",
-                        icon: "/images/icons/fair-trade.svg",
+                        icon: "/images/Aboutus/fair trade.png",
                         description: "We believe in fair compensation for our artisans, creating economic opportunities in communities around the world."
                       },
                       {
                         title: "Unique Designs",
-                        icon: "/images/icons/unique.svg",
+                        icon: "/images/Aboutus/rickshaw toy.webp",
                         description: "No two pieces are exactly alike, ensuring you receive a one-of-a-kind treasure with its own character and charm."
                       }
                     ];
@@ -438,7 +438,7 @@
           <% craftValues.forEach(function(value) { %>
           <div class="value-card">
             <div class="value-icon">
-              <img src="/images/Aboutus/3.png" alt="<%= value.title %> icon" />
+              <img src="<%= value.icon %>" alt="<%= value.title %> icon" />
             </div>
             <h3><%= value.title %></h3>
             <p><%= value.description %></p>
@@ -470,22 +470,22 @@
           <% 
                     const teamMembers = [
                       {
-                        name: "Elena Rodriguez",
-                        title: "Founder & Master Weaver",
-                        image: "/images/team/elena.jpg",
-                        bio: "Elena founded Artisan Haven after traveling the world and learning traditional weaving techniques from master craftspeople. Her vision was to create a platform where artisanal skills are celebrated and preserved."
+                        name: "Dara Sai Vivash",
+                        title: "Master Weaver & Sculptor",
+                        image: "/images/Aboutus/vivash.jpeg",
+                        bio: "Vivash founded Artisan Haven after traveling the world and learning traditional weaving techniques from master craftspeople. His vision was to create a platform where artisanal skills are celebrated and preserved."
                       },
                       {
-                        name: "Marcus Chen",
+                        name: "Vasu Dilware",
                         title: "Wood Craftsman",
-                        image: "/images/team/marcus.jpg",
-                        bio: "With over 20 years of experience working with wood, Marcus creates stunning furniture and home accessories that showcase the natural beauty of sustainable hardwoods."
+                        image: "/images/Aboutus/vasu.jpg",
+                        bio: "With over 20 years of experience working with wood, Vasu creates stunning furniture and home accessories that showcase the natural beauty of sustainable hardwoods."
                       },
                       {
-                        name: "Amara Okafor",
+                        name: "Gautam Chauhan",
                         title: "Ceramic Artist",
-                        image: "/images/team/amara.jpg",
-                        bio: "Amara's distinctive ceramic pieces blend traditional African patterns with modern minimalist design, resulting in functional art that tells a story."
+                        image: "/images/Aboutus/gautam.jpeg",
+                        bio: "Gautam's distinctive ceramic pieces blend traditional African patterns with modern minimalist design, resulting in functional art that tells a story."
                       }
                     ];
                   %>
@@ -493,7 +493,7 @@
           <% teamMembers.forEach(function(member) { %>
           <div class="team-member">
             <div class="member-image">
-              <img src="/images/Aboutus/3.png" alt="<%= member.name %>" />
+              <img src="<%= member.image %>" alt="<%= member.name %>" />
             </div>
             <h3><%= member.name %></h3>
             <p class="member-title"><%= member.title %></p>
@@ -513,7 +513,7 @@
             <p>At Artisan Haven, you're not just a customer – you're part of our story. We're committed to providing exceptional service and creating meaningful connections between our artisans and the people who cherish their work. Each purchase supports not only our craftspeople but also the preservation of traditional skills that might otherwise be lost to time.</p>
             <div class="testimonial">
               <blockquote>"The handcrafted bowl I purchased from Artisan Haven isn't just a beautiful object – it's a daily reminder of the human touch and care that went into creating it. I love knowing the story behind my purchase and the artisan who made it."</blockquote>
-              <cite>— Sarah Thompson, Portland, OR</cite>
+              <cite>— Aadesh Phadke, Pune, MH</cite>
             </div>
           </div>
           <div class="customer-image">
@@ -530,7 +530,7 @@
         <p>Discover our collection of handcrafted treasures or work with our artisans to create a custom piece that's uniquely yours.</p>
         <div class="cta-buttons">
           <a href="/customer/store" class="btn primary-btn">Explore Our Collections</a>
-          <a href="/contact" class="btn secondary-btn">Request Custom Order</a>
+          <a href="/customorder" class="btn secondary-btn">Request Custom Order</a>
         </div>
       </div>
     </section>

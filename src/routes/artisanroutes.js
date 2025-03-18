@@ -10,11 +10,11 @@ const astrole = "artisan";
 router.use(authorizerole("admin", "manager", "artisan"));
 
 router.get("/", (req, res) => {
-  res.json({ message: "Welcome Artisan" });
+  res.render("artisan/artisandashboard",{role : astrole })
 });
 
 router.get("/workshops", (req, res) => {
-  res.json({ message: "workshop page coming soon" });
+  res.render("artisan/artisanworkshop",{role : astrole})
 });
 
 router.get("/listings", (req, res) => {
