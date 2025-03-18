@@ -23,6 +23,8 @@
   </main>
   <%- include("../partials/footer") %>
   <script>
+    document.addEventListener("DOMContentLoaded", loadCart);
+
     async function updateCart(userId, productId, action) {
       try {
         const response = await fetch(`/customer/orders?userId=${userId}&productId=${productId}&action=${action}`, {
@@ -54,18 +56,37 @@
 
 
     async function loadCart() {
-      try {
-        const response = await fetch("/customer/orders", {
-          headers: {
-            "X-Requested-With": "XMLHttpRequest"
-          },
-        });
-        const html = await response.text();
-        document.getElementById("contentBox").innerHTML = html;
-      } catch (error) {
-        console.error("Error refreshing cart:", error);
+  try {
+    const response = await fetch("/customer/orders", {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      },
+    });
+    const html = await response.text();
+    document.getElementById("contentBox").innerHTML = html;
+
+    // Give the DOM a moment to update before checking for cart items
+    setTimeout(() => {
+      // Check if the cart has items 
+      const cartItems = document.querySelectorAll(".cart-item");
+      if (cartItems.length > 0) {
+        // Check if checkout button already exists
+        if (!document.getElementById("checkoutBtn")) {
+          const checkoutButton = document.createElement("button");
+          checkoutButton.textContent = "Proceed to Checkout";
+          checkoutButton.id = "checkoutBtn";
+          checkoutButton.className = "checkout-button"; // Add styling class
+          checkoutButton.addEventListener("click", () => {
+            window.location.href = "/customer/checkout";
+          });
+          document.getElementById("contentBox").appendChild(checkoutButton);
+        }
       }
-    }
+    }, 100); // Short delay to ensure DOM is updated
+  } catch (error) {
+    console.error("Error loading cart:", error);
+  }
+}
 
     function loadHistory() {
       document.getElementById("contentBox").innerHTML = `

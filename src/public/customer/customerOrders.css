@@ -157,3 +157,34 @@ main {
     justify-content: center;
   }
 }
+
+
+.checkout-button {
+  margin: 30px auto;
+  display: block;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  
+  background-color:#f8ead8 ;
+  color: black;
+  
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.checkout-button:hover {
+  background-color: #5c4033;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: white;
+  
+}
+
+.checkout-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
