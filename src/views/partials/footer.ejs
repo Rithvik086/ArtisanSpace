@@ -11,13 +11,12 @@
       <p class="help">Help</p>
       <a href="/aboutus" style="text-decoration: none; color: black"><p>AboutUs</p></a>
       
-      <%if(role == "customer" || role == "artisan"){%>
+      <%if(role === "customer" || role === "artisan"){%>
       <a href="/contactus" style="text-decoration: none; color: black;"><p>Contact</p></a>
+      <a href="/supportTicket" style="text-decoration: none; color: black;"><p>Support Ticket</p></a>
       <%}%>
       
-      <%if(role == "customer"){%>
-      <a href="/customer/orders" style="text-decoration: none; color: black;"><p>Order History</p></a>
-    <%}%>
+      
     </div>
 
     <div class="ourinfo">
