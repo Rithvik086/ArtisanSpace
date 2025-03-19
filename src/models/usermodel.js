@@ -89,12 +89,17 @@ export async function addUser(username, email, hashpass, role) {
   users.push(newUser);
   await writeData(users, userPath);
   console.log("User added");
-  return { success: true, user: newUser };
+  return { success: true };
 }
 
 export async function findUserByName(username) {
   const users = await readData(userPath);
   return users.find((user) => user.username === username) || null;
+}
+
+export async function getUserById(userid) {
+  const users = await readData(userPath);
+  return users.find((user) => user.id === userid) || null;
 }
 
 export async function getUsers() {

@@ -199,7 +199,7 @@ if (addUserForm) {
         
               <td class="actions">
                   <button class="edit-btn" data-id="${userId}">Edit</button>
-                  <button class="delete-btn" data-id="${userID}">Delete</button>
+                  <button class="delete-btn" data-id="${userId}">Delete</button>
               </td>
           `
   
