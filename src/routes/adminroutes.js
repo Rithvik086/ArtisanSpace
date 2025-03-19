@@ -5,8 +5,14 @@ import { loadcustData, updateResponse } from "../models/customerresponse.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { getProducts } from "../models/productmodel.js";
-import { addUser, findUserByName ,getUsers , removeUser } from "../models/usermodel.js";
+import {
+  addUser,
+  findUserByName,
+  getUsers,
+  removeUser,
+} from "../models/usermodel.js";
 import authorizerole from "../middleware/roleMiddleware.js";
+import { getTickets, removeTicket } from "../models/supportticketmodel.js";
 // Middleware to parse JSON
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,17 +24,18 @@ const admrole = "admin";
 router.use(authorizerole("admin"));
 
 router.get("/", async (req, res) => {
-
   await updateResponse(custrespath);
   const responses = await loadcustData(custrespath);
-  const userlist = await  getUsers();
+  const userlist = await getUsers();
   const products = await getProducts();
-  res.render("admin/admindashboard", { role: admrole, responses ,userlist,products });
+  res.render("admin/admindashboard", {
+    role: admrole,
+    responses,
+    userlist,
+    products,
+  });
 });
 
-router.get("/support-ticket", (req, res) => {
-  res.render("admin/adminsupportticket", { role: admrole });
-});
 router.post("/add-user", async (req, res) => {
   console.log("Received data:", req.body);
   const { name, email, role, pass } = req.body;
@@ -56,33 +63,44 @@ router.post("/add-user", async (req, res) => {
     });
   }
 });
-router.delete("/delete-user/:userID", async(req,res)=>{
+router.delete("/delete-user/:userID", async (req, res) => {
   const userId = req.params.userID;
 
-  try{
-
+  try {
     const result = await removeUser(userId);
-     if(result.success){
+    if (result.success) {
       res.status(200).json({
         success: true,
-        message : "User deleted"
+        message: "User deleted",
       });
-     }else{
+    } else {
       res.status(400).json({
         success: false,
-        message: result.message || "Failed to delete user"
+        message: result.message || "Failed to delete user",
       });
-     }
-
-  }catch(error){
+    }
+  } catch (error) {
     console.error("Error deleting user:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
-      error: error.message
+      error: error.message,
     });
+  }
+  // return res.redirect("/admin/")
+});
+router.get("/support-ticket", async (req, res) => {
+  let tickets = await getTickets();
+  res.render("admin/adminsupportticket", { role: admrole, tickets });
+});
 
+router.post("/support-ticket", async (req, res) => {
+  if (req.body._method === "DELETE") {
+    const { ticketId } = req.body;
+    await removeTicket(ticketId);
+    return res.redirect("/admin/support-ticket"); // Redirect after deletion
   }
 });
+
 
 export default router;
