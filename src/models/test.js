@@ -1,10 +1,11 @@
-import { updateResponse, loadcustData } from "./customerresponse.js";
+// import module and test your functions inside the test function 
+
+
 
 
 async function test(){
-    await updateResponse();
 
-    const data = await loadcustData("./customerresponse.json")
-    console.log(data)
+   
+   
 }
 test();

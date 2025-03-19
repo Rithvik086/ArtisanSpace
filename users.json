@@ -19,5 +19,12 @@
     "email": "artisan@artisan",
     "password": "$2a$09$gGVdBIoQFkKE6/vBcFxsHO0UpFir0hwR8w5/ZhTSO/y8wkgBn8rfy",
     "role": "artisan"
+  },
+  {
+    "id": 1742408156684,
+    "username": "gotem",
+    "email": "gotem@gotem",
+    "password": "$2a$09$ZHBr8Fo1P.Ur4M73BFHkQuW3fu1lIWW5sTD69Jqm75R3i/1IpjJBW",
+    "role": "admin"
   }
 ]

@@ -139,3 +139,20 @@ textarea:focus {
     padding: 2rem;
   }
 }
+.support-ticket{
+  width: 20%;
+  padding: 0;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+
+
+.support-ticket:hover {
+  background: #333;
+}
