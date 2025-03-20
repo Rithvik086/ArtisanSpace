@@ -1,31 +1,5 @@
-// import fs from "fs/promises";
-// import { fileURLToPath } from "url";
-// import path from "path";
 import { main_db } from "../config/sqlite.js";
 import { removeProductFromAllCarts } from "./cartmodel.js";
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-//
-// const productPath = path.join(__dirname, "../../products.json");
-//
-// async function ensureFileExists(filePath) {
-//   try {
-//     await fs.access(filePath);
-//   } catch {
-//     await fs.writeFile(filePath, "[]");
-//   }
-// }
-//
-// async function readData(filePath) {
-//   await ensureFileExists(filePath);
-//   const data = await fs.readFile(filePath, "utf8");
-//   return JSON.parse(data);
-// }
-//
-// async function writeData(data, filePath) {
-//   await fs.writeFile(filePath, JSON.stringify(data, null, 2));
-// }
 
 main_db.run(`create table if not exists products(
 productId integer primary key autoincrement,
@@ -85,21 +59,19 @@ export async function delProduct(productId) {
     main_db.run(
       "DELETE FROM products WHERE productId = ?",
       [productId],
-      (err) => {
+      async (err) => {
         if (err) {
           console.error("Error deleting product from DB.", err.message);
           return reject(err);
         } else {
           console.log("Product deleted successfully from DB.");
-          removeProductFromAllCarts(productId)
-            .then(() => resolve({ success: true }))
-            .catch((error) => {
-              console.error(
-                "Error removing product from all carts:",
-                error.message,
-              );
-              reject(error);
-            });
+          try {
+            await removeProductFromAllCarts(productId);
+            resolve({ success: true });
+          } catch (error) {
+            console.error("Error removing products from all carts.");
+            reject(error);
+          }
         }
       },
     );
@@ -135,6 +107,32 @@ export async function productCount(productId) {
     );
   });
 }
+
+// import fs from "fs/promises";
+// import { fileURLToPath } from "url";
+// import path from "path";
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+//
+// const productPath = path.join(__dirname, "../../products.json");
+//
+// async function ensureFileExists(filePath) {
+//   try {
+//     await fs.access(filePath);
+//   } catch {
+//     await fs.writeFile(filePath, "[]");
+//   }
+// }
+//
+// async function readData(filePath) {
+//   await ensureFileExists(filePath);
+//   const data = await fs.readFile(filePath, "utf8");
+//   return JSON.parse(data);
+// }
+//
+// async function writeData(data, filePath) {
+//   await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+// }
 
 // export async function productCount(productId) {
 //   productId = parseInt(productId);

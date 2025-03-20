@@ -1,10 +1,10 @@
 <div class="product-card">
-  <a href="/products/<%= product.id%>">
+  <a href="/products/<%= product.productId%>">
     <img src="<%= product.image %>" alt="<%= product.name %>" />
   </a>
   <hr>
   <div class="details">
-    <a href="/products/<%= product.id%>">
+    <a href="/products/<%= product.productId%>">
       <h3>
         <%= product.name %>
       </h3>
@@ -16,6 +16,6 @@
         <%= "₹"+product.newPrice %> inc. GST
       </span>
     </p>
-    <button onclick="updateCart('<%= userId %>', '<%= product.id %>')">Add to Cart</button>
+    <button onclick="updateCart('<%= userId %>', '<%= product.productId %>')">Add to Cart</button>
   </div>
 </div>

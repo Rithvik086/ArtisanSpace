@@ -1,38 +1,5 @@
-// import fs from "fs/promises";
-// import { fileURLToPath } from "url";
-// import path, { resolve } from "path";
 import { removeCart } from "./cartmodel.js";
-import { removeUserProduct } from "./productmodel.js";
 import { main_db } from "../config/sqlite.js";
-
-// import mongoose, { mongo, MongooseError } from "mongoose";
-
-// const userSchema = new mongoose.Schema({
-//   username: {
-//     type: String,
-//     required: true,
-//     unique: true,
-//   },
-
-//   email: {
-//     type: String,
-//     required: true,
-//     unique: true,
-//   },
-
-//   password: {
-//     type: String,
-//     required: true,
-//   },
-
-//   role: {
-//     type: String,
-//     required: true,
-//     enum: ["admin", "artisan", "customer", "manager"],
-//   },
-// });
-
-// export default mongoose.model("User", userSchema);
 
 main_db.run(
   `create table if not exists users(
@@ -145,40 +112,57 @@ export async function getUsers() {
 }
 
 export async function removeUser(userId) {
-  userId = parseInt(userId);
-  try {
-    const users = await readData(userPath);
-    const userIndex = users.findIndex((user) => user.id === userId);
-
-    if (userIndex !== -1) {
-      users.splice(userIndex, 1); //const users will work because array is mutable, but we can't reassign it
-      await writeData(users, userPath);
-
-      await removeCart(userId);
-
-      await removeUserProduct(userId); //no use of this now
-
-      console.log("User deleted successfully.");
-      return {
-        success: true,
-        message: "User deleted successfully",
-      };
-    } else {
-      console.log("User doesn't exist");
-      return {
-        success: false,
-        message: "User doesn't exist",
-      };
-    }
-  } catch (error) {
-    console.error("Error removing user:", error);
-    return {
-      success: false,
-      message: error.message || "Failed to remove user",
-    };
-  }
+  return new Promise((resolve, reject) => {
+    userId = parseInt(userId);
+    main_db.run(`DELETE FROM users WHERE userId = ?`, [userId], async (err) => {
+      if (err) {
+        console.error("DB Error in removeUser.", err.message);
+        return reject(err);
+      } else {
+        console.log("Successfully removed the user from DB.");
+        try {
+          await removeCart(userId);
+          resolve({ success: true });
+        } catch (error) {
+          console.error("Error removing uesr cart.");
+          reject(error);
+        }
+      }
+    });
+  });
 }
 
+// import fs from "fs/promises";
+// import { fileURLToPath } from "url";
+// import path, { resolve } from "path";
+// import mongoose, { mongo, MongooseError } from "mongoose";
+
+// const userSchema = new mongoose.Schema({
+//   username: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//   },
+
+//   email: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//   },
+
+//   password: {
+//     type: String,
+//     required: true,
+//   },
+
+//   role: {
+//     type: String,
+//     required: true,
+//     enum: ["admin", "artisan", "customer", "manager"],
+//   },
+// });
+
+// export default mongoose.model("User", userSchema);
 // export async function getUsers() {
 //   return await readData(userPath);
 // }
@@ -245,5 +229,39 @@ export async function removeUser(userId) {
 //     return true;
 //   } else {
 //     return false;
+//   }
+// }
+// export async function removeUser(userId) {
+//   userId = parseInt(userId);
+//   try {
+//     const users = await readData(userPath);
+//     const userIndex = users.findIndex((user) => user.id === userId);
+//
+//     if (userIndex !== -1) {
+//       users.splice(userIndex, 1); //const users will work because array is mutable, but we can't reassign it
+//       await writeData(users, userPath);
+//
+//       await removeCart(userId);
+//
+//       // await removeUserProduct(userId); //no use of this now
+//
+//       console.log("User deleted successfully.");
+//       return {
+//         success: true,
+//         message: "User deleted successfully",
+//       };
+//     } else {
+//       console.log("User doesn't exist");
+//       return {
+//         success: false,
+//         message: "User doesn't exist",
+//       };
+//     }
+//   } catch (error) {
+//     console.error("Error removing user:", error);
+//     return {
+//       success: false,
+//       message: error.message || "Failed to remove user",
+//     };
 //   }
 // }

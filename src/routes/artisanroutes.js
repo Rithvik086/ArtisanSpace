@@ -10,11 +10,11 @@ const astrole = "artisan";
 router.use(authorizerole("admin", "manager", "artisan"));
 
 router.get("/", (req, res) => {
-  res.render("artisan/artisandashboard",{role : astrole })
+  res.render("artisan/artisandashboard", { role: astrole });
 });
 
 router.get("/workshops", (req, res) => {
-  res.render("artisan/artisanworkshop",{role : astrole})
+  res.render("artisan/artisanworkshop", { role: astrole });
 });
 
 router.get("/listings", (req, res) => {
@@ -23,7 +23,7 @@ router.get("/listings", (req, res) => {
 
 router.post("/listings", upload.single("image"), async (req, res) => {
   try {
-    const { productName, price, description, quantity } = req.body;
+    const { productName, type, price, description, quantity } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ error: "No image uploaded" });
@@ -34,6 +34,7 @@ router.post("/listings", upload.single("image"), async (req, res) => {
     await addProduct(
       req.user.id,
       productName,
+      type,
       result.secure_url,
       price,
       quantity,

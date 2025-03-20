@@ -32,7 +32,9 @@ router.get("/orders", async (req, res) => {
 
   let amount = 0;
   for (const item of cart) {
-    const product = products.find((product) => product.id === item.productId);
+    const product = products.find(
+      (product) => product.productId === item.productId,
+    );
     amount += item.quantity * product.newPrice;
   }
 
