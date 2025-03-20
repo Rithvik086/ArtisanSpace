@@ -144,3 +144,7 @@ hr {
   color: white;
   background: #5c4033;
 }
+.notification {
+  display: block !important;
+  opacity: 1 !important;
+}
