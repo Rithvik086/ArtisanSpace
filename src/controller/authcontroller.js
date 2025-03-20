@@ -19,7 +19,7 @@ const signup = async (req, res) => {
     await sendMail(
       email,
       "Successfully Registered",
-      "You have successfully registered to ArtisanSpace. <3",
+      "You have successfully registered to ArtisanSpace. <3"
     );
     res.redirect("/login");
   } catch (error) {
@@ -48,7 +48,7 @@ const login = async (req, res) => {
       role: user.role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "24h" },
+    { expiresIn: "24h" }
   );
 
   res.cookie("token", token, {

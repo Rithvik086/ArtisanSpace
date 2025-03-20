@@ -7,20 +7,20 @@ import {
   getCart,
   removeCompleteItem,
 } from "../models/cartmodel.js";
+import { getUserById } from "../models/usermodel.js";
+import { bookWorkshop } from "../models/workshopmodel.js";
 
 const router = express.Router();
 const custrole = "customer";
 
-router.use(authorizerole("admin", "manager", "artisan", "customer"));
+// router.use(authorizerole("admin", "manager", "artisan", "customer"));
 
 router.get("/", async (req, res) => {
   const products = await getProducts();
   const pro = products.slice(0, 10);
   res.render("customer/customerhome", { role: custrole, products: pro });
 });
-router.get("/workshop", (req, res) => {
-  res.render("customer/workshop", { role: custrole });
-});
+
 router.get("/settings", (req, res) => {
   res.json({ message: "settings" });
 });
@@ -100,6 +100,42 @@ router.post("/store", async (req, res) => {
   } catch (error) {
     console.error("Error processing request:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/workshop", (req, res) => {
+  res.render("customer/workshop", { role: custrole });
+});
+
+router.post("/requestWorkshop", async(req, res) => {
+  const {workshopTitle,workshopDesc, date, time } = req.body;
+  console.log(workshopTitle,workshopDesc)
+  
+  if (!workshopTitle || !workshopDesc || !date || !time) {
+    return res.status(400).json({ success: false, error: "All fields are required!" });
+  }
+
+  try {
+    const user = await getUserById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    
+    const newWorkshop = await bookWorkshop(
+      user.username, 
+      user.email,
+      user.pno || "9090909090", // Use user's phone if available, otherwise use default
+      workshopTitle,
+      workshopDesc,
+      date,
+      time
+    );
+    
+    res.json({ success: true, message: 'Workshop booked!', workshop: newWorkshop });
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to book workshop' });
   }
 });
 

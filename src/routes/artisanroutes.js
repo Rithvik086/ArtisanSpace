@@ -3,6 +3,11 @@ import upload from "../middleware/multer.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
 import { addProduct } from "../models/productmodel.js";
+import {
+  getAvailableWorkshops,
+  getAcceptedWorkshops,
+  acceptWorkshop,
+} from "../models/workshopmodel.js";
 
 const router = express.Router();
 const astrole = "artisan";
@@ -11,10 +16,6 @@ router.use(authorizerole("admin", "manager", "artisan"));
 
 router.get("/", (req, res) => {
   res.render("artisan/artisandashboard", { role: astrole });
-});
-
-router.get("/workshops", (req, res) => {
-  res.render("artisan/artisanworkshop", { role: astrole });
 });
 
 router.get("/listings", (req, res) => {
@@ -38,7 +39,7 @@ router.post("/listings", upload.single("image"), async (req, res) => {
       result.secure_url,
       price,
       quantity,
-      description,
+      description
     );
 
     res.status(201).json({ message: "Product added successfully" });
@@ -46,6 +47,16 @@ router.post("/listings", upload.single("image"), async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
+});
+
+router.get("/workshops", async (req, res) => {
+  let availableWorkshops = await getAvailableWorkshops();
+  let acceptedWorkshops = await getAcceptedWorkshops();
+  res.render("artisan/artisanworkshop", {
+    role: astrole,
+    availableWorkshops,
+    acceptedWorkshops,
+  });
 });
 
 export default router;

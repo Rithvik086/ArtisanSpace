@@ -64,7 +64,7 @@ export async function addItem(userId, productId) {
           },
         );
       });
-      return "quantity updated successfully";
+      return {success:true};
     } else {
       await new Promise((resolve, reject) => {
         cart_db.run(
@@ -81,9 +81,9 @@ export async function addItem(userId, productId) {
         );
       });
     }
-    return "Product added to the cart.";
+    return {success:true};
   } else {
-    return "Stock limit reached. Cannot add more";
+    return {success:false, message:"Stock limit reached"};
   }
 }
 

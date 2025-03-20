@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { userExist } from "../models/usermodel.js";
 
-const verifytoken = async (req, res, next) => {
+export const verifytoken = async (req, res, next) => {
   if (req.path === "/login" || req.path === "/signup") {
     return next();
   }
@@ -25,4 +25,52 @@ const verifytoken = async (req, res, next) => {
   }
 };
 
-export default verifytoken;
+
+
+export const redirectBasedOnRole = async (req, res, next) => {
+  // If no token exists, just show the homepage
+  let token = req.cookies.token;
+  if (!token) {
+    return next();
+  }
+  
+  try {
+    // Decode the token
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Check if user exists in the database
+    if (await userExist(user.id)) {
+      // Extract role from the token
+      const role = user.role;
+      
+      // Redirect based on role
+      switch (role) {
+        case "admin":
+          res.redirect("/admin/");
+          break;
+        case "manager":
+          res.redirect("/manager/");
+          break;
+        case "customer":
+          res.redirect("/customer/");
+          break;
+        case "artisan":
+          res.redirect("/artisan/");
+          break;
+        default:
+          // If no recognized role, just proceed
+          next();
+          break;
+      }
+    } else {
+      // User doesn't exist anymore, clear cookie and continue
+      res.clearCookie("token");
+      next();
+    }
+  } catch (err) {
+    // Invalid token, clear cookie and continue
+    res.clearCookie("token");
+    next();
+  }
+};
+

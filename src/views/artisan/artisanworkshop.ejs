@@ -6,10 +6,66 @@
     <title>WorkShops</title>
     <link rel="stylesheet" href="/navbar2.css" />
     <link rel="stylesheet" href="/footer.css" />
+    <link rel="stylesheet" href="/artisan/workshop.css">
 </head>
 <body>
     <%- include('../partials/navbar2', { role }) %>
-    <main></main>
+    <main>
+        <section class="workshops-section">
+            <h2>Available Workshops</h2>
+            <div class="workshops-container" id="available-workshops">
+              <% if (availableWorkshops && availableWorkshops.length > 0) { %>
+                <% availableWorkshops.forEach(workshop => { %>
+                  <div class="workshop-card" data-id="<%= workshop.wid %>">
+                    <h3><%= workshop.workshopTitle %></h3>
+                    <p class="description"><%= workshop.workshopDesc %></p>
+                    <div class="workshop-details">
+                      <p><strong>Client:</strong> <%= workshop.username %></p>
+                      <p><strong>Scheduled Date:</strong> <%= workshop.date %></p>
+                      <p><strong>Schedule Time:</strong> <%= workshop.scheduletime %></p>
+                    </div>
+                    <div class="workshop-actions">
+                      <button class="accept-btn" data-id="<%= workshop.wid %>">Accept Workshop</button>
+                    </div>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <div class="empty-state">
+                  <p>No available workshops at the moment.</p>
+                </div>
+              <% } %>
+            </div>
+          </section>
+    
+          <section class="workshops-section">
+            <h2>Accepted Workshops</h2>
+            <div class="workshops-container" id="accepted-workshops">
+              <% if (acceptedWorkshops && acceptedWorkshops.length > 0) { %>
+                <% acceptedWorkshops.forEach(workshop => { %>
+                  <div class="workshop-card accepted" data-id="<%= workshop.wid %>">
+                    <div class="accepted-badge">Accepted</div>
+                    <h3><%= workshop.workshopTitle %></h3>
+                    <p class="description"><%= workshop.workshopDesc %></p>
+                    <div class="workshop-details">
+                      <p><strong>Client:</strong> <%= workshop.username %></p>
+                      <p><strong>Contact:</strong> <%= workshop.email %> | <%= workshop.pno %></p>
+                      <p><strong>Date:</strong> <%= workshop.date %></p>
+                      <p><strong>Time:</strong> <%= workshop.scheduletime %></p>
+                      <p><strong>Accepted on:</strong> <%= new Date(workshop.acceptedAt).toLocaleDateString() %></p>
+                    </div>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <div class="empty-state">
+                  <p>You haven't accepted any workshops yet.</p>
+                </div>
+              <% } %>
+            </div>
+          </section>
+
+
+    </main>
         <%- include("../partials/footer") %>
+        <script src="/artisan/workshop.js"></script>
 </body>
 </html>
