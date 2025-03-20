@@ -7,6 +7,8 @@ import {
   getCart,
   removeCompleteItem,
 } from "../models/cartmodel.js";
+import { getUserById } from "../models/usermodel.js";
+import { bookWorkshop } from "../models/workshopmodel.js";
 
 const router = express.Router();
 const custrole = "customer";
@@ -18,9 +20,7 @@ router.get("/", async (req, res) => {
   const pro = products.slice(0, 10);
   res.render("customer/customerhome", { role: custrole, products: pro });
 });
-router.get("/workshop", (req, res) => {
-  res.render("customer/workshop", { role: custrole });
-});
+
 router.get("/settings", (req, res) => {
   res.json({ message: "settings" });
 });
@@ -100,5 +100,32 @@ router.post("/store", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+router.get("/workshop", (req, res) => {
+  res.render("customer/workshop", { role: custrole });
+});
+
+router.post("/requestWorkshop", async(req,res)=>{
+
+  const { "workshop-title": title, "workshop-description": description, date, time } = req.body;
+  if (!title || !description || !date || !time) {
+    return res.status(400).json({ success: false, error: "All fields are required!" });
+  }
+
+  try{
+    const user = getUserById(req.user.id);
+    const newWorkshop = await bookWorkshop(user.username, user.email,"9090909090",title,description,date,time)
+    res.json({ success: true, message: 'workshop booked!', workshop: newWorkshop });
+  
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to book ticket' });
+}
+  
+
+
+
+
+})
 
 export default router;
