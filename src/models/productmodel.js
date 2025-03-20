@@ -1,9 +1,10 @@
 import { main_db } from "../config/sqlite.js";
 import { removeProductFromAllCarts } from "./cartmodel.js";
+import crypto from "crypto";
 
 main_db.run(`create table if not exists products(
-productId integer primary key autoincrement,
-artisanId integer not null,
+productId text primary key,
+artisanId text not null,
 name text not null,
 type text not null,
 image text not null,
@@ -11,6 +12,7 @@ oldPrice real not null,
 newPrice real not null,
 quantity integer default 1,
 description text not null,
+approved boolean default 0,
 foreign key(artisanId) references users(userId) ON DELETE CASCADE
 )`);
 
@@ -24,14 +26,15 @@ export async function addProduct(
   description,
 ) {
   return new Promise((resolve, reject) => {
-    artisanId = parseInt(artisanId);
     oldPrice = parseFloat(oldPrice).toFixed(2);
     quantity = parseInt(quantity);
     const newPrice = (oldPrice - oldPrice * 0.1).toFixed(2);
     main_db.run(
       `insert into products (
-artisanId, name, type, image, oldPrice, newPrice, quantity, description) values (?, ?, ?, ?, ?, ?, ?, ?)`,
+productId, artisanId, name, type, image, oldPrice, newPrice, quantity, description) 
+values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
+        crypto.randomUUID(),
         artisanId,
         name,
         type,
@@ -55,7 +58,6 @@ artisanId, name, type, image, oldPrice, newPrice, quantity, description) values 
 
 export async function delProduct(productId) {
   return new Promise((resolve, reject) => {
-    productId = parseInt(productId);
     main_db.run(
       "DELETE FROM products WHERE productId = ?",
       [productId],
@@ -80,21 +82,25 @@ export async function delProduct(productId) {
 
 export async function getProducts() {
   return new Promise((resolve, reject) => {
-    main_db.all("SELECT * FROM products", (err, rows) => {
-      if (err) {
-        console.error("DB error in getProducts:", err);
-        return reject(err);
-      }
-      resolve(rows || []);
-    });
+    main_db.all(
+      "SELECT * FROM products WHERE approved = ?",
+      [1],
+      (err, rows) => {
+        if (err) {
+          console.error("DB error in getProducts:", err);
+          return reject(err);
+        }
+        resolve(rows || []);
+      },
+    );
   });
 }
 
 export async function productCount(productId) {
   return new Promise((resolve, reject) => {
     main_db.get(
-      `SELECT COUNT(productId) as count FROM products WHERE productId = ?`,
-      [productId],
+      `SELECT COUNT(productId) as count FROM products WHERE productId = ? AND approved = ?`,
+      [productId, 1],
       (err, row) => {
         if (err) {
           console.error("DB error in productCount: ", err.message);

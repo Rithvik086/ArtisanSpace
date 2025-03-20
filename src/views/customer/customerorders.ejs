@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>orders</title>
   <link rel="stylesheet" href="/navbar2.css" />
-  <link rel="stylesheet" href="/customer/customerOrders.css">
+  <link rel="stylesheet" href="/customer/customerOrders.css" />
   <link rel="stylesheet" href="/footer.css" />
 </head>
 
@@ -23,11 +23,14 @@
   </main>
   <%- include("../partials/footer") %>
   <script>
+    document.addEventListener("DOMContentLoaded", loadCart);
     async function updateCart(userId, productId, action) {
       try {
-        const response = await fetch(`/customer/orders?userId=${userId}&productId=${productId}&action=${action}`, {
-          method: "POST",
-        });
+        const response = await fetch(
+          `/customer/orders?userId=${userId}&productId=${productId}&action=${action}`, {
+            method: "POST",
+          }
+        );
 
         const data = await response.json();
         console.log(data.message);
@@ -42,13 +45,44 @@
       try {
         const response = await fetch("/customer/orders", {
           headers: {
-            "X-Requested-With": "XMLHttpRequest"
+            "X-Requested-With": "XMLHttpRequest",
           },
         });
         const html = await response.text();
         document.getElementById("contentBox").innerHTML = html;
       } catch (error) {
         console.error("Error refreshing cart:", error);
+      }
+    }
+
+    async function loadCart() {
+      try {
+        const response = await fetch("/customer/orders", {
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+          },
+        });
+        const html = await response.text();
+        document.getElementById("contentBox").innerHTML = html;
+        setTimeout(() => {
+          const cartItems = document.querySelectorAll(".cart-item");
+          if (cartItems.length > 0) {
+            if (!document.getElementById("checkoutBtn")) {
+              const checkoutButton = document.createElement("button");
+              checkoutButton.textContent = "Proceed to Checkout";
+              checkoutButton.id = "checkoutBtn";
+              checkoutButton.className = "checkout-button"; // Add styling class
+              checkoutButton.addEventListener("click", () => {
+                window.location.href = "/customer/checkout";
+              });
+              document
+                .getElementById("contentBox")
+                .appendChild(checkoutButton);
+            }
+          }
+        }, 100); // Short delay to ensure DOM is updated
+      } catch (error) {
+        console.error("Error loading cart:", error);
       }
     }
 
@@ -94,7 +128,9 @@
   `;
     }
     document.getElementById("cartBtn").addEventListener("click", loadCart);
-    document.getElementById("historyBtn").addEventListener("click", loadHistory);
+    document
+      .getElementById("historyBtn")
+      .addEventListener("click", loadHistory);
   </script>
 </body>
 

@@ -2,7 +2,7 @@ import { cart_db } from "../config/sqlite.js";
 import { productCount } from "./productmodel.js";
 
 cart_db.run(
-  `create table if not exists cart(userId integer not null, productId integer not null, quantity integer not null, primary key(userId, productId))`,
+  `create table if not exists cart(userId text not null, productId text not null, quantity integer not null, primary key(userId, productId))`,
   (err) => {
     if (err) {
       console.log("Cart table error", err.message);
@@ -12,8 +12,6 @@ cart_db.run(
 
 export function getCart(userId) {
   return new Promise((resolve, reject) => {
-    userId = parseInt(userId);
-
     cart_db.all(
       "select productId, quantity from cart where userId = ?",
       [userId],
@@ -31,9 +29,6 @@ export function getCart(userId) {
 
 export function getCartProductQuantity(userId, productId) {
   return new Promise((resolve, reject) => {
-    userId = parseInt(userId);
-    productId = parseInt(productId);
-
     cart_db.get(
       "select quantity from cart where userId=? and productId=?",
       [userId, productId],
@@ -50,9 +45,6 @@ export function getCartProductQuantity(userId, productId) {
 }
 
 export async function addItem(userId, productId) {
-  userId = parseInt(userId);
-  productId = parseInt(productId);
-
   const productQuantity = await productCount(productId);
   const cartQuantity = await getCartProductQuantity(userId, productId);
 
@@ -96,9 +88,6 @@ export async function addItem(userId, productId) {
 }
 
 export async function deleteItem(userId, productId) {
-  userId = parseInt(userId);
-  productId = parseInt(productId);
-
   const userProductCount = await getCartProductQuantity(userId, productId);
 
   if (userProductCount > 1) {
@@ -137,9 +126,6 @@ export async function deleteItem(userId, productId) {
 }
 
 export async function removeCompleteItem(userId, productId) {
-  userId = parseInt(userId);
-  productId = parseInt(productId);
-
   await new Promise((resolve, reject) => {
     cart_db.run(
       "delete from cart where userId=? and productId =?",
@@ -158,8 +144,6 @@ export async function removeCompleteItem(userId, productId) {
 }
 
 export async function removeCart(userId) {
-  userId = parseInt(userId);
-
   await new Promise((resolve, reject) => {
     cart_db.run("delete from cart where userId = ?", [userId], (err) => {
       if (err) {
@@ -174,8 +158,6 @@ export async function removeCart(userId) {
 }
 
 export async function removeProductFromAllCarts(productId) {
-  productId = parseInt(productId);
-
   await new Promise((resolve, reject) => {
     cart_db.run("delete from cart where productId = ?", [productId], (err) => {
       if (err) {

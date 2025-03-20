@@ -11,7 +11,8 @@ const verifytoken = async (req, res, next) => {
     return res.status(401).render("accessdenied");
   }
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     if (await userExist(req.user.id)) {
       next();
     } else {

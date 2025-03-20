@@ -1,9 +1,10 @@
+import crypto from "crypto";
 import { removeCart } from "./cartmodel.js";
 import { main_db } from "../config/sqlite.js";
 
 main_db.run(
   `create table if not exists users(
-userId integer primary key autoincrement,
+userId text primary key,
 username text not null unique,
 password text not null,
 email text not null unique,
@@ -19,7 +20,6 @@ role text not null)`,
 
 export async function userExist(userId) {
   return new Promise((resolve, reject) => {
-    userId = parseInt(userId);
     main_db.get(
       "select * from users where userId = ?",
       [userId],
@@ -51,8 +51,8 @@ export async function addUser(username, email, hashpass, mobile_no, role) {
       },
     );
     main_db.run(
-      "INSERT INTO users (username, password, email, mobile_no, role) values (?, ?, ?, ?, ?)",
-      [username, hashpass, email, mobile_no, role],
+      "INSERT INTO users (userId, username, password, email, mobile_no, role) values (?, ?, ?, ?, ?, ?)",
+      [crypto.randomUUID(), username, hashpass, email, mobile_no, role],
       (err) => {
         if (err) {
           console.error("DB error in addUser INSERT: ", err);
@@ -113,7 +113,6 @@ export async function getUsers() {
 
 export async function removeUser(userId) {
   return new Promise((resolve, reject) => {
-    userId = parseInt(userId);
     main_db.run(`DELETE FROM users WHERE userId = ?`, [userId], async (err) => {
       if (err) {
         console.error("DB Error in removeUser.", err.message);
