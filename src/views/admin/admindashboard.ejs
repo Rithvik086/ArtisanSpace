@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
   <link rel="stylesheet" href="/admin/admindashboard.css">
@@ -16,27 +17,26 @@
     <!-- Stats Cards Section -->
     <section class="stats-section">
       <h2>Dashboard Overview</h2>
-      <div class="stats-cards">
-        <div class="stat-card">
+      <div class="statcards">
+        <div class="scard">
           <h3>Total Sales</h3>
-          <div class="chart-placeholder">Chart will be here</div>
-
+          <canvas id="totalSalesChart"></canvas>
           <p class="stat-value">₹</p>
         </div>
         <div class="stat-card">
           <h3>Monthly Orders</h3>
-          <div class="chart-placeholder">Chart will be here</div>
+          <canvas id="monthlyOrdersChart"></canvas>
           <p class="stat-value"></p>
         </div>
         <div class="stat-card">
           <h3>Products</h3>
-          <div class="chart-placeholder">Chart will be here</div>
+          <canvas id="productsChart"></canvas>
           <p class="stat-value"></p>
         </div>
         <div class="stat-card">
           <h3>Customers</h3>
-          <div class="chart-placeholder">Chart will be here</div>
-          <p class="stat-value"></p>
+          <canvas id="customersChart"></canvas>
+         <p class="stat-value"></p>
         </div>
       </div>
     </section>
