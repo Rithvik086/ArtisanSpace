@@ -1,40 +1,39 @@
 document
   .getElementById("booking-form")
-  .addEventListener("submit", function (event) {
+  .addEventListener("submit", async function (e) {
+    e.preventDefault();
+
     var statusMessage = document.getElementById("status-message");
-    const inputs = this.querySelectorAll("input");
-    const phoneError = document.getElementById("phoneError");
-    const mobileNo = document.getElementById("phone");
-
-    let isValid = true;
-
-    inputs.forEach((input) => {
-      if (input.name === "email") {
-        input.value = input.value.trim().toLowerCase();
-      } else {
-        input.value = input.value.trim();
-      }
+    const formData = new FormData(this);
+    const formValues = Object.fromEntries(formData.entries());
+  try{
+    const workshopreq = await fetch('/customer/requestWorkshop',{
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(formValues)
     });
 
-    if (mobileNo.value.length !== 10) {
-      phoneError.style.display = "block";
-      isValid = false;
-    } else {
-      phoneError.style.display = "none";
-    }
-
-    if (!isValid) {
-      event.preventDefault();
-      return;
-    }
-
+    const result = await workshopreq.json();
+    const statusMessage = document.getElementById("status-message");
     statusMessage.innerText =
-      "Workshop successfully booked! A confirmation email will be sent shortly.";
-    statusMessage.classList.add("success");
-    statusMessage.style.display = "block";
+    "Workshop successfully booked! ";
+  statusMessage.classList.add("success");
+  statusMessage.style.display = "block";
 
+  if(result.success){
     setTimeout(function () {
       document.getElementById("booking-form").reset();
       statusMessage.style.display = "none";
     }, 3000);
+
+  }
+  }catch(error){
+    console.error('Error registering workshop', error)
+  }
+
+  
+
+   
+
+   
   });
