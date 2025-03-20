@@ -4,22 +4,22 @@ import jwt from "jsonwebtoken";
 import { sendMail } from "../utils/emailService.js";
 
 const signup = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { username, email, password, mobile_no, role } = req.body;
 
-  username = username.toLowerCase();
-  email = email.toLowerCase();
-  role = role.toLowerCase();
+  // username = username.toLowerCase();
+  // email = email.toLowerCase();
+  // role = role.toLowerCase();
 
   const hashpass = await bcrypt.hash(password, 9);
 
   // const newUser = new User({ username, email, password: hashpass, role });
   // await newUser.save();
   try {
-    await addUser(username, email, hashpass, role);
+    await addUser(username, email, hashpass, mobile_no, role);
     await sendMail(
       email,
       "Successfully Registered",
-      "You have successfully registered to ArtisanSpace. <3"
+      "You have successfully registered to ArtisanSpace. <3",
     );
     res.redirect("/login");
   } catch (error) {
@@ -44,11 +44,11 @@ const login = async (req, res) => {
 
   const token = jwt.sign(
     {
-      id: user.id,
+      id: user.userId,
       role: user.role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "24h" }
+    { expiresIn: "24h" },
   );
 
   res.cookie("token", token, {

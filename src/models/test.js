@@ -1,11 +1,7 @@
-// import module and test your functions inside the test function 
+import { updateResponse, loadcustData } from "./customerresponse.js";
+import { addUser } from "./usermodel.js";
 
-
-
-
-async function test(){
-
-   
-   
+async function test() {
+  await addUser("daksh", "test@test", "pass", 9090909090, "admin");
 }
 test();

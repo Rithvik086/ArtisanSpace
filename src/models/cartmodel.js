@@ -1,7 +1,7 @@
-import db from "../config/sqlite.js";
+import { cart_db } from "../config/sqlite.js";
 import { productCount } from "./productmodel.js";
 
-db.run(
+cart_db.run(
   `create table if not exists cart(userId integer not null, productId integer not null, quantity integer not null, primary key(userId, productId))`,
   (err) => {
     if (err) {
@@ -14,7 +14,7 @@ export function getCart(userId) {
   return new Promise((resolve, reject) => {
     userId = parseInt(userId);
 
-    db.all(
+    cart_db.all(
       "select productId, quantity from cart where userId = ?",
       [userId],
       (err, rows) => {
@@ -34,7 +34,7 @@ export function getCartProductQuantity(userId, productId) {
     userId = parseInt(userId);
     productId = parseInt(productId);
 
-    db.get(
+    cart_db.get(
       "select quantity from cart where userId=? and productId=?",
       [userId, productId],
       (err, rows) => {
@@ -59,7 +59,7 @@ export async function addItem(userId, productId) {
   if (productQuantity > cartQuantity) {
     if (cartQuantity) {
       await new Promise((resolve, reject) => {
-        db.run(
+        cart_db.run(
           "update cart set quantity = quantity +1 where userId = ? and productId = ?",
           [userId, productId],
           (err) => {
@@ -75,7 +75,7 @@ export async function addItem(userId, productId) {
       return "quantity updated successfully";
     } else {
       await new Promise((resolve, reject) => {
-        db.run(
+        cart_db.run(
           "INSERT INTO cart (userId, productId, quantity) values (?, ?, ?)",
           [userId, productId, 1],
           (err) => {
@@ -103,7 +103,7 @@ export async function deleteItem(userId, productId) {
 
   if (userProductCount > 1) {
     await new Promise((resolve, reject) => {
-      db.run(
+      cart_db.run(
         "update cart set quantity = quantity - 1 where userId =? and productId = ?",
         [userId, productId],
         (err) => {
@@ -119,7 +119,7 @@ export async function deleteItem(userId, productId) {
     return "Product quantity updated successfully.";
   } else {
     await new Promise((resolve, reject) => {
-      db.run(
+      cart_db.run(
         "delete from cart where userId =? and productId =?",
         [userId, productId],
         (err) => {
@@ -141,7 +141,7 @@ export async function removeCompleteItem(userId, productId) {
   productId = parseInt(productId);
 
   await new Promise((resolve, reject) => {
-    db.run(
+    cart_db.run(
       "delete from cart where userId=? and productId =?",
       [userId, productId],
       (err) => {
@@ -161,7 +161,7 @@ export async function removeCart(userId) {
   userId = parseInt(userId);
 
   await new Promise((resolve, reject) => {
-    db.run("delete from cart where userId = ?", [userId], (err) => {
+    cart_db.run("delete from cart where userId = ?", [userId], (err) => {
       if (err) {
         console.error("Error deleting cart.", err.message);
         return reject(err);
@@ -177,7 +177,7 @@ export async function removeProductFromAllCarts(productId) {
   productId = parseInt(productId);
 
   await new Promise((resolve, reject) => {
-    db.run("delete from cart where productId = ?", [productId], (err) => {
+    cart_db.run("delete from cart where productId = ?", [productId], (err) => {
       if (err) {
         console.error("Error deleting Product.", err.message);
         return reject(err);
