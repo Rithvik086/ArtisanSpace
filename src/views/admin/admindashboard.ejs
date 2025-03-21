@@ -36,7 +36,7 @@
         <div class="stat-card">
           <h3>Customers</h3>
           <canvas id="customersChart"></canvas>
-         <p class="stat-value"></p>
+          <p class="stat-value"></p>
         </div>
       </div>
     </section>
@@ -70,14 +70,14 @@
               <% userlist.forEach(user=> {%>
 
               <tr>
-                <td><%=user.id %></td>
+                <td><%=user.userId %></td>
                 <td><%=user.username %></td>
                 <td><%=user.email %></td>
                 <td><%=user.role %></td>
 
                 <td class="actions">
                   <button class="edit-btn" data-id="">Edit</button>
-                  <button class="delete-btn" data-id="<%=user.id %>">Delete</button>
+                  <button class="delete-btn" data-id="<%=user.userId %>">Delete</button>
                 </td>
               </tr>
               <% }); %>
