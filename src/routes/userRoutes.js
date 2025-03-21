@@ -1,6 +1,6 @@
 import express from "express";
 
-import verifytoken from "../middleware/authMiddleware.js";
+import {verifytoken} from "../middleware/authMiddleware.js";
 import adminroutes from "../routes/adminroutes.js";
 import managerroutes from "../routes/managerroutes.js";
 import customerroutes from "../routes/customerroutes.js";
