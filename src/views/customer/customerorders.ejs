@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>orders</title>
   <link rel="stylesheet" href="/navbar2.css" />
-  <link rel="stylesheet" href="/customer/customerOrders.css">
+  <link rel="stylesheet" href="/customer/customerOrders.css" />
   <link rel="stylesheet" href="/footer.css" />
 </head>
 
@@ -49,7 +49,7 @@
       try {
         const response = await fetch("/customer/orders", {
           headers: {
-            "X-Requested-With": "XMLHttpRequest"
+            "X-Requested-With": "XMLHttpRequest",
           },
         });
         const html = await response.text();

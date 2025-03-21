@@ -1,34 +1,25 @@
-import fs from "fs/promises";
-import { fileURLToPath } from "url";
-import path from "path";
+import { main_db } from "../config/sqlite.js";
 import { removeProductFromAllCarts } from "./cartmodel.js";
+import crypto from "crypto";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const productPath = path.join(__dirname, "../../products.json");
-
-async function ensureFileExists(filePath) {
-  try {
-    await fs.access(filePath);
-  } catch {
-    await fs.writeFile(filePath, "[]");
-  }
-}
-
-async function readData(filePath) {
-  await ensureFileExists(filePath);
-  const data = await fs.readFile(filePath, "utf8");
-  return JSON.parse(data);
-}
-
-async function writeData(data, filePath) {
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2));
-}
+main_db.run(`create table if not exists products(
+productId text primary key,
+artisanId text not null,
+name text not null,
+type text not null,
+image text not null,
+oldPrice real not null,
+newPrice real not null,
+quantity integer default 1,
+description text not null,
+approved boolean default 0,
+foreign key(artisanId) references users(userId) ON DELETE CASCADE
+)`);
 
 export async function addProduct(
   artisanId,
   name,
+  type,
   image,
   oldPrice,
   quantity,
