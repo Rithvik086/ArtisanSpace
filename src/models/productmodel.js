@@ -12,7 +12,7 @@ oldPrice real not null,
 newPrice real not null,
 quantity integer default 1,
 description text not null,
-approved boolean default 0,
+status text not null,
 foreign key(artisanId) references users(userId) ON DELETE CASCADE
 )`);
 
@@ -31,8 +31,8 @@ export async function addProduct(
     const newPrice = (oldPrice - oldPrice * 0.1).toFixed(2);
     main_db.run(
       `insert into products (
-productId, artisanId, name, type, image, oldPrice, newPrice, quantity, description) 
-values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+productId, artisanId, name, type, image, oldPrice, newPrice, quantity, description, status) 
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         crypto.randomUUID(),
         artisanId,
@@ -43,6 +43,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         parseFloat(newPrice),
         quantity,
         description,
+        "pending",
       ],
       (err) => {
         if (err) {
@@ -83,8 +84,8 @@ export async function delProduct(productId) {
 export async function getProducts() {
   return new Promise((resolve, reject) => {
     main_db.all(
-      "SELECT * FROM products WHERE approved = ?",
-      [1],
+      "SELECT * FROM products WHERE status = ?",
+      ["approved"],
       (err, rows) => {
         if (err) {
           console.error("DB error in getProducts:", err);
@@ -99,8 +100,8 @@ export async function getProducts() {
 export async function productCount(productId) {
   return new Promise((resolve, reject) => {
     main_db.get(
-      `SELECT quantity as count FROM products WHERE productId = ? AND approved = ?`,
-      [productId, 1],
+      `SELECT quantity as count FROM products WHERE productId = ? AND status = ?`,
+      [productId, "approved"],
       (err, row) => {
         if (err) {
           console.error("DB error in productCount: ", err.message);
@@ -108,6 +109,96 @@ export async function productCount(productId) {
         } else {
           console.log("successfully got the product count");
           resolve(row ? row.count : 0);
+        }
+      }
+    );
+  });
+}
+
+export async function approveProduct(productId) {
+  return new Promise((resolve, reject) => {
+    main_db.run(
+      `UPDATE products SET status = ? WHERE productId = ?`,
+      ["approved", productId],
+      (err) => {
+        if (err) {
+          console.error("DB error in approveProduct: ", err.message);
+          return reject(err);
+        } else {
+          console.log("successfully approved the product");
+          resolve({ success: true });
+        }
+      }
+    );
+  });
+}
+
+export async function disapproveProduct(productId) {
+  return new Promise((resolve, reject) => {
+    main_db.run(
+      `UPDATE products SET status = ? WHERE productId = ?`,
+      ["disapproved", productId],
+      (err) => {
+        if (err) {
+          console.error("DB error in disapproveProduct: ", err.message);
+          return reject(err);
+        } else {
+          console.log("successfully approved the product");
+          resolve({ success: true });
+        }
+      }
+    );
+  });
+}
+
+export async function getApprovedProducts() {
+  return new Promise((resolve, reject) => {
+    main_db.all(
+      `SELECT * FROM products WHERE status = ?`,
+      ["approved"],
+      (err, rows) => {
+        if (err) {
+          console.error("DB error in getApprovedProducts: ", err.message);
+          return reject(err);
+        } else {
+          console.log("successfully got the approved products");
+          resolve(rows || []);
+        }
+      }
+    );
+  });
+}
+
+export async function getDisapprovedProducts() {
+  return new Promise((resolve, reject) => {
+    main_db.all(
+      `SELECT * FROM products WHERE status = ?`,
+      ["disapproved"],
+      (err, rows) => {
+        if (err) {
+          console.error("DB error in getDisapprovedProducts: ", err.message);
+          return reject(err);
+        } else {
+          console.log("successfully got the disapproved products");
+          resolve(rows || []);
+        }
+      }
+    );
+  });
+}
+
+export async function getPendingProducts() {
+  return new Promise((resolve, reject) => {
+    main_db.all(
+      `SELECT * FROM products WHERE status = ?`,
+      ["pending"],
+      (err, rows) => {
+        if (err) {
+          console.error("DB error in getPendingProducts: ", err.message);
+          return reject(err);
+        } else {
+          console.log("successfully got the pending products");
+          resolve(rows || []);
         }
       }
     );

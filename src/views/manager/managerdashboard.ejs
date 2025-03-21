@@ -1,186 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/navbar2.css" />
-    <link rel="stylesheet" href="/footer.css" />
-    <link rel="stylesheet" href="/manager/managerdashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/navbar2.css" />
+  <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="/manager/managerdashboard.css">
 
 </head>
-<body>
-    <%- include('../partials/navbar2', { role }) %>
-    <div class="container">
-        <h1 class="dashboard-title">Dashboard Overview</h1>
-        <section class="stats-section">
-          <h2>Dashboard Overview</h2>
-          <div class="statcards">
-            <div class="scard">
-              <h3>Total Sales</h3>
-              <canvas id="totalSalesChart"></canvas>
-              <p class="stat-value">₹</p>
-            </div>
-            <div class="stat-card">
-              <h3>Monthly Orders</h3>
-              <canvas id="monthlyOrdersChart"></canvas>
-              <p class="stat-value"></p>
-            </div>
-            <div class="stat-card">
-              <h3>Products</h3>
-              <canvas id="productsChart"></canvas>
-              <p class="stat-value"></p>
-            </div>
-            <div class="stat-card">
-              <h3>Customers</h3>
-              <canvas id="customersChart"></canvas>
-             <p class="stat-value"></p>
-            </div>
-          </div>
-        </section>
 
-      
-    
-        <div class="user-section">
-          <h2>Users</h2>
-          <button class="add-user-btn">Add New User</button>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td  data-label="ID" >1741721436225</td>
-                <td data-label="Name"  >admin</td>
-                <td  data-label="Email" >admin@admin</td>
-                <td  data-label="Role" >admin</td>
-                <td   data-label="Actions">
-                  <button class="edit-btn">Edit</button>
-                  <button class="delete-btn">Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td  data-label="ID" >1741811543435</td>
-                <td  data-label="Name" >customer</td>
-                <td  data-label="Email" >customer@customer</td>
-                <td  data-label="Role" >customer</td>
-                <td  data-label="Actions" >
-                  <button class="edit-btn">Edit</button>
-                  <button class="delete-btn">Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td data-label="ID" >1742069876547</td>
-                <td data-label="Name" >artisan</td>
-                <td  data-label="Email">artisan@artisan</td>
-                <td  data-label="Role">artisan</td>
-                <td  data-label="Actions">
-                  <button class="edit-btn">Edit</button>
-                  <button class="delete-btn">Delete</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+<body>
+  <%- include('../partials/navbar2', { role }) %>
+  <div class="container">
+    <h1 class="dashboard-title">Dashboard Overview</h1>
+    <section class="stats-section">
+      <h2>Dashboard Overview</h2>
+      <div class="statcards">
+        <div class="scard">
+          <h3>Total Sales</h3>
+          <canvas id="totalSalesChart"></canvas>
+          <p class="stat-value">₹</p>
+        </div>
+        <div class="stat-card">
+          <h3>Monthly Orders</h3>
+          <canvas id="monthlyOrdersChart"></canvas>
+          <p class="stat-value"></p>
+        </div>
+        <div class="stat-card">
+          <h3>Products</h3>
+          <canvas id="productsChart"></canvas>
+          <p class="stat-value"></p>
+        </div>
+        <div class="stat-card">
+          <h3>Customers</h3>
+          <canvas id="customersChart"></canvas>
+          <p class="stat-value"></p>
         </div>
       </div>
-   
-       
-        <%- include("../partials/footer") %>
-        <script>
-          const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-      
-          const salesData = {
-            labels: labels,
-            datasets: [{
-              label: 'Total Sales (₹)',
-              data: [12000, 15000, 14000, 17000, 16000, 18000],
-              borderColor: 'blue',
-              backgroundColor: 'rgba(0, 0, 255, 0.1)',
-              fill: true,
-              tension: 0.3
-            }]
-          };
-      
-          const ordersData = {
-            labels: labels,
-            datasets: [{
-              label: 'Monthly Orders',
-              data: [300, 400, 350, 500, 450, 600],
-              borderColor: 'green',
-              backgroundColor: 'rgba(0, 128, 0, 0.1)',
-              fill: true,
-              tension: 0.3
-            }]
-          };
-      
-          const productsData = {
-            labels: labels,
-            datasets: [{
-              label: 'Products',
-              data: [50, 60, 70, 80, 90, 100],
-              borderColor: 'orange',
-              backgroundColor: 'rgba(255, 165, 0, 0.1)',
-              fill: true,
-              tension: 0.3
-            }]
-          };
-      
-          const customersData = {
-            labels: labels,
-            datasets: [{
-              label: 'Customers',
-              data: [200, 220, 210, 250, 240, 270],
-              borderColor: 'purple',
-              backgroundColor: 'rgba(128, 0, 128, 0.1)',
-              fill: true,
-              tension: 0.3
-            }]
-          };
-      
-          const commonOptions = {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'top',
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          };
-      
-          new Chart(document.getElementById('totalSalesChart'), {
-            type: 'line',
-            data: salesData,
-            options: commonOptions
-          });
-      
-          new Chart(document.getElementById('monthlyOrdersChart'), {
-            type: 'line',
-            data: ordersData,
-            options: commonOptions
-          });
-      
-          new Chart(document.getElementById('productsChart'), {
-            type: 'line',
-            data: productsData,
-            options: commonOptions
-          });
-      
-          new Chart(document.getElementById('customersChart'), {
-            type: 'line',
-            data: customersData,
-            options: commonOptions
-          });
-        </script>
+    </section>
+
+
+
+    <div class="user-section">
+      <div class="top-table">
+        <h2>Users</h2>
+        <button class="add-user-btn">Add New User</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="ID">1741721436225</td>
+            <td data-label="Name">admin</td>
+            <td data-label="Email">admin@admin</td>
+            <td data-label="Role">admin</td>
+            <td data-label="Actions">
+              <button class="edit-btn">Edit</button>
+              <button class="delete-btn">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="ID">1741811543435</td>
+            <td data-label="Name">customer</td>
+            <td data-label="Email">customer@customer</td>
+            <td data-label="Role">customer</td>
+            <td data-label="Actions">
+              <button class="edit-btn">Edit</button>
+              <button class="delete-btn">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="ID">1742069876547</td>
+            <td data-label="Name">artisan</td>
+            <td data-label="Email">artisan@artisan</td>
+            <td data-label="Role">artisan</td>
+            <td data-label="Actions">
+              <button class="edit-btn">Edit</button>
+              <button class="delete-btn">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <%- include("../partials/footer") %>
+  <script>
+    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+    const salesData = {
+      labels: labels,
+      datasets: [{
+        label: 'Total Sales (₹)',
+        data: [12000, 15000, 14000, 17000, 16000, 18000],
+        borderColor: 'blue',
+        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    };
+
+    const ordersData = {
+      labels: labels,
+      datasets: [{
+        label: 'Monthly Orders',
+        data: [300, 400, 350, 500, 450, 600],
+        borderColor: 'green',
+        backgroundColor: 'rgba(0, 128, 0, 0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    };
+
+    const productsData = {
+      labels: labels,
+      datasets: [{
+        label: 'Products',
+        data: [50, 60, 70, 80, 90, 100],
+        borderColor: 'orange',
+        backgroundColor: 'rgba(255, 165, 0, 0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    };
+
+    const customersData = {
+      labels: labels,
+      datasets: [{
+        label: 'Customers',
+        data: [200, 220, 210, 250, 240, 270],
+        borderColor: 'purple',
+        backgroundColor: 'rgba(128, 0, 128, 0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    };
+
+    const commonOptions = {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    };
+
+    new Chart(document.getElementById('totalSalesChart'), {
+      type: 'line',
+      data: salesData,
+      options: commonOptions
+    });
+
+    new Chart(document.getElementById('monthlyOrdersChart'), {
+      type: 'line',
+      data: ordersData,
+      options: commonOptions
+    });
+
+    new Chart(document.getElementById('productsChart'), {
+      type: 'line',
+      data: productsData,
+      options: commonOptions
+    });
+
+    new Chart(document.getElementById('customersChart'), {
+      type: 'line',
+      data: customersData,
+      options: commonOptions
+    });
+  </script>
 </body>
+
 </html>

@@ -1,92 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content-Moderation</title>
-    <link rel="stylesheet" href="/navbar2.css" />
-    <link rel="stylesheet" href="/footer.css" />
-    <link rel="stylesheet" href="/manager/managermanageproducts.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content-Moderation</title>
+  <link rel="stylesheet" href="/navbar2.css" />
+  <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="/manager/managermanageproducts.css">
 
 </head>
+
 <body>
-    <%- include('../partials/navbar2', { role }) %>
-    <div class="container">
-      <h2>Manage Products</h2>
-    
-      <div class="tabs">
-        <div class="tab" id="tab-approved">Approved Products <span id="count-approved">0</span></div>
-        <div class="tab active" id="tab-pending">Pending Products <span id="count-pending">2</span></div>
-        <div class="tab" id="tab-disapproved">Disapproved Products <span id="count-disapproved">0</span></div>
-      </div>
-    
-      <!-- Approved Products -->
-      <div id="approved-section" class="hidden">
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th><th>ID</th><th>Price</th><th>Type</th>
-            </tr>
-          </thead>
-          <tbody id="approved-products"></tbody>
-        </table>
-      </div>
-    
-      <!-- Pending Products -->
-      <div id="pending-section">
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th><th>ID</th><th>Price</th><th>Type</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="pending-products">
-            <tr>
-              <td class="product-name">
-                <img src="https://via.placeholder.com/80" class="product-img" alt="Product">
-                Smart Watch
-              </td>
-              <td>PRD002</td>
-              <td><s>$149.99</s> <br><span class="price">$99.99</span></td>
-              <td>Wearables</td>
-              <td>
-                <button class="btn approve-btn" onclick="approveProduct(this)">Approve</button>
-                <button class="btn disapprove-btn" onclick="disapproveProduct(this)">Disapprove</button>
-              </td>
-            </tr>
-            <tr>
-              <td class="product-name">
-                <img src="https://via.placeholder.com/80" class="product-img" alt="Product">
-                Bluetooth Speaker
-              </td>
-              <td>PRD003</td>
-              <td><s>$89.99</s> <br><span class="price">$59.99</span></td>
-              <td>Audio</td>
-              <td>
-                <button class="btn approve-btn" onclick="approveProduct(this)">Approve</button>
-                <button class="btn disapprove-btn" onclick="disapproveProduct(this)">Disapprove</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    
-      <!-- Disapproved Products -->
-      <div id="disapproved-section" class="hidden">
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th><th>ID</th><th>Price</th><th>Type</th>
-            </tr>
-          </thead>
-          <tbody id="disapproved-products"></tbody>
-        </table>
-      </div>
+  <%- include('../partials/navbar2', { role }) %>
+  <div class="container">
+    <h2>Manage Products</h2>
+
+    <div class="tabs">
+      <div class="tab" id="tab-approved">Approved Products </div>
+      <div class="tab active" id="tab-pending">Pending Products </div>
+      <div class="tab" id="tab-disapproved">Disapproved Products </div>
     </div>
-    
-  
-    <%- include("../partials/footer") %>
-    <script type="module" src="/manager/managermanageproducts.js"></script>
+    <!-- Approved Products -->
+    <div id="approved-section" class="hidden">
+    </div>
+    <!-- Pending Products -->
+    <div id="pending-section">
+    </div>
+    <!-- Disapproved Products -->
+    <div id="disapproved-section" class="hidden">
+    </div>
+  </div>
+
+
+  <%- include("../partials/footer") %>
+  <script type="module" src="/manager/managermanageproducts.js"></script>
 
 </body>
+
 </html>

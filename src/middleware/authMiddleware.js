@@ -25,24 +25,23 @@ export const verifytoken = async (req, res, next) => {
   }
 };
 
-
-
 export const redirectBasedOnRole = async (req, res, next) => {
   // If no token exists, just show the homepage
   let token = req.cookies.token;
   if (!token) {
-    return next();
+    return res.render("HomePage", { role: null });
   }
-  
+
   try {
     // Decode the token
     const user = jwt.verify(token, process.env.JWT_SECRET);
-    
+    req.user = user;
+
     // Check if user exists in the database
     if (await userExist(user.id)) {
       // Extract role from the token
       const role = user.role;
-      
+
       // Redirect based on role
       switch (role) {
         case "admin":
@@ -73,4 +72,3 @@ export const redirectBasedOnRole = async (req, res, next) => {
     next();
   }
 };
-
