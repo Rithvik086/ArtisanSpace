@@ -48,12 +48,12 @@
 
         const data = await response.json();
 
-    console.log("Response Data:", data); // Debugging line
-if(data.success){
-  showNotification("Product Added to cart!","success");
-}else{
-  showNotification(data.message || "Failed to Add. Try Again", "error")
-}
+        console.log("Response Data:", data); // Debugging line
+        if (data.success) {
+          showNotification("Product Added to cart!", "success");
+        } else {
+          showNotification(data.message || "Failed to Add. Try Again", "error")
+        }
 
         console.log(data.message);
       } catch (error) {
@@ -62,43 +62,43 @@ if(data.success){
     }
 
     function showNotification(message, type) {
-      console.log("Showing notification:", message, type); 
-  let notificationContainer = document.querySelector(".notification-container")
+      console.log("Showing notification:", message, type);
+      let notificationContainer = document.querySelector(".notification-container")
 
-  if (!notificationContainer) {
-    notificationContainer = document.createElement("div")
-    notificationContainer.className = "notification-container"
-    document.body.appendChild(notificationContainer)
-  }
+      if (!notificationContainer) {
+        notificationContainer = document.createElement("div")
+        notificationContainer.className = "notification-container"
+        document.body.appendChild(notificationContainer)
+      }
 
-  // Avoid duplicate notifications of the same message
-  if ([...notificationContainer.children].some(n => n.textContent === message)) {
-    return;
-  }
+      // Avoid duplicate notifications of the same message
+      if ([...notificationContainer.children].some(n => n.textContent === message)) {
+        return;
+      }
 
-  const notification = document.createElement("div")
-  notification.className = `notification ${type}`
-  notification.textContent = message
+      const notification = document.createElement("div")
+      notification.className = `notification ${type}`
+      notification.textContent = message
 
-  notificationContainer.appendChild(notification)
+      notificationContainer.appendChild(notification)
 
-  setTimeout(() => {
-    notification.classList.add("fade-out")
-    setTimeout(() => {
-      notification.remove()
-    }, 500)
-  }, 3000)
-}
+      setTimeout(() => {
+        notification.classList.add("fade-out")
+        setTimeout(() => {
+          notification.remove()
+        }, 500)
+      }, 3000)
+    }
 
-// Add styles for notifications only if not already added
-if (!document.querySelector("#notification-style")) {
-  const style = document.createElement("style")
-  style.id = "notification-style"
-  style.textContent = `
+    // Add styles for notifications only if not already added
+    if (!document.querySelector("#notification-style")) {
+      const style = document.createElement("style")
+      style.id = "notification-style"
+      style.textContent = `
     .notification-container {
       position: fixed;
       top: 20px;
-      right: 20px;
+      right: 40px;
       z-index: 1000;
     }
     
@@ -133,9 +133,8 @@ if (!document.querySelector("#notification-style")) {
       to { opacity: 0; }
     }
   `
-  document.head.appendChild(style)
-}
-
+      document.head.appendChild(style)
+    }
   </script>
 </body>
 
