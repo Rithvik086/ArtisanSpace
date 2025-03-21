@@ -45,9 +45,9 @@ export async function bookWorkshop(
     scheduletime,
     isAccepted: false, // Default value is false (not accepted yet)
     artisanId: null, // Will store the ID of the artisan who accepts the workshop
-    acceptedAt: null // Will store the timestamp when the workshop is accepted
+    acceptedAt: null, // Will store the timestamp when the workshop is accepted
   };
-  
+
   workshops.push(newWorkshop);
   await writeData(workshops, workshopspath);
   return { success: true, workshop: newWorkshop };
@@ -55,41 +55,39 @@ export async function bookWorkshop(
 
 export async function getWorkshops(filter = {}) {
   const workshops = await readData(workshopspath);
-  
+
   // If filter is provided, filter the workshops accordingly
   if (Object.keys(filter).length > 0) {
-    return workshops.filter(workshop => {
+    return workshops.filter((workshop) => {
       for (const [key, value] of Object.entries(filter)) {
         if (workshop[key] !== value) return false;
       }
       return true;
     });
   }
-  
+
   return workshops;
 }
-
-
 
 export async function acceptWorkshop(workshopId, artisanId) {
   return updateWorkshop(workshopId, {
     isAccepted: true,
     artisanId,
-    acceptedAt: new Date().toISOString()
+    acceptedAt: new Date().toISOString(),
   });
 }
 
 export async function removeWorkshop(workshopId) {
   const workshops = await readData(workshopspath);
-  const index = workshops.findIndex(workshop => workshop.id === workshopId);
-  
+  const index = workshops.findIndex((workshop) => workshop.id === workshopId);
+
   if (index === -1) {
     return { success: false, message: "Workshop not found" };
   }
-  
+
   // Remove the workshop from the array
   const removedWorkshop = workshops.splice(index, 1)[0];
-  
+
   await writeData(workshops, workshopspath);
   return { success: true, workshop: removedWorkshop };
 }

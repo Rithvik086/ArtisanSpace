@@ -57,20 +57,23 @@ ticketId, userId, subject, category, description, createdAt) values (?, ?, ?, ?,
         }
         console.log("Ticket added in DB");
         resolve({ success: true });
-      },
+      }
     );
   });
 }
 
 export async function getTickets() {
   return new Promise((resolve, reject) => {
-    main_db.all(`SELECT * FROM tickets`, (err, rows) => {
-      if (err) {
-        console.error("DB error in getTickets:", err.message);
-        return reject(err);
+    main_db.all(
+      `SELECT * FROM tickets LEFT JOIN users ON tickets.userId = users.userId`,
+      (err, rows) => {
+        if (err) {
+          console.error("DB error in getTickets:", err.message);
+          return reject(err);
+        }
+        resolve(rows || []);
       }
-      resolve(rows || []);
-    });
+    );
   });
 }
 
