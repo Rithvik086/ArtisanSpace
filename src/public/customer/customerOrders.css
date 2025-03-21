@@ -104,6 +104,7 @@ main {
 }
 
 .quantity-btn {
+  width: 35px;
   background: #007bff;
   color: white;
   border: none;
@@ -118,7 +119,7 @@ main {
   background: #0056b3;
 }
 
-.quantity-number {
+.quantity-input {
   font-size: 18px;
   width: 30px;
   text-align: center;
@@ -158,6 +159,15 @@ main {
   }
 }
 
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantity-input {
+  -moz-appearance: textfield;
+}
 
 .checkout-button {
   margin: 30px auto;
@@ -165,10 +175,10 @@ main {
   border: none;
   padding: 12px 24px;
   border-radius: 5px;
-  
-  background-color:#f8ead8 ;
+
+  background-color: #f8ead8;
   color: black;
-  
+
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -181,7 +191,6 @@ main {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   color: white;
-  
 }
 
 .checkout-button:active {

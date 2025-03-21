@@ -65,10 +65,10 @@
                 
                 <div class="d-flex justify-content-between align-items-center mt-3">
                   <p class="timestamp mb-0">
-                    Created: <%= new Date(ticket.createdAt).toLocaleString() %>
+                    recived at: <%= new Date(ticket.createdAt).toLocaleString() %>
                   </p>
                   <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal<%= ticket.ticketId %>">
-                    Resolved
+                    Resolve
                   </button>
                 </div>
               </div>
