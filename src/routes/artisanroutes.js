@@ -3,11 +3,13 @@ import upload from "../middleware/multer.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
 import { addProduct } from "../models/productmodel.js";
+
 import {
   getAvailableWorkshops,
   getAcceptedWorkshops,
   acceptWorkshop,
 } from "../models/workshopmodel.js";
+import { getRequests } from "../models/customordermodel.js";
 
 const router = express.Router();
 const astrole = "artisan";
@@ -57,6 +59,36 @@ router.get("/workshops", async (req, res) => {
     availableWorkshops,
     acceptedWorkshops,
   });
+});
+
+router.get("/customrequests", async(req,res)=>{
+  try {
+    // Get the current artisan's ID from the session
+    const currentArtisanId = req.user.id // Adjust based on your auth system
+    
+    if (!currentArtisanId) {
+        return res.redirect('/login'); // Redirect if not logged in
+    }
+    
+    
+    const availableRequests = await getRequests(false)
+    
+    
+    const acceptedRequests = await getRequests(true, currentArtisanId);
+    
+    // Render the dashboard with both sets of requests
+    res.render('artisan/artisancustomorder', {
+      role :astrole,
+        availableRequests,
+        acceptedRequests,
+        currentArtisanId
+    });
+} catch (error) {
+    console.error('Error fetching requests:', error);
+    res.status(500).render('error', { 
+        message: 'Failed to load dashboard. Please try again later.' 
+    });
+}
 });
 
 export default router;
