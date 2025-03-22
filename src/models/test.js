@@ -1,30 +1,13 @@
 // import module and test your functions inside the test function
 
-import { initializeDatabases } from "../config/sqlite.js";
-import {
-  acceptWorkshop,
-  bookWorkshop,
-  getAcceptedWorkshops,
-  getAvailableWorkshops,
-  getWorkshops,
-  removeWorkshop,
-} from "./workshopmodel.js";
+import { addRequest, approveRequest } from "./customordermodel.js";
 
-await initializeDatabases();
 
 async function test() {
-  // console.log(
-  //   await bookWorkshop(
-  //     "777b1dbc-58f3-41a4-9b7f-ccb4064d60e5",
-  //     "test title",
-  //     "test desc",
-  //     "today",
-  //     "idk"
-  //   )
-  // );
-  console.log(await getAvailableWorkshops());
-  // console.log(await getAcceptedWorkshops());
-  // console.log(await acceptWorkshop("05e3aa7c-be5e-4848-b096-b7cc3a88c999"));
-  // console.log(await removeWorkshop("938812c9-35aa-4b0c-98c8-acec3586bbad"));
+//  addRequest("b8e1160f-1245-4f19-8c11-1ea3b1a7b3d8","phela request","kuch toh hai","img","phela order hai ji","1200","12:35:30");
+//  addRequest("b8e1160f-1245-4f19-8c11-1ea3b1a7b3d8","dusra request","kuch toh hai","img","phela order hai ji","1200","12:35:30");
+// approveRequest("10d02a96-6068-4cd3-bae7-b423a526fd61","b8e1160f-1245-4f19-8c11-1ea3b1a7b3d8");
+
+
 }
 await test();

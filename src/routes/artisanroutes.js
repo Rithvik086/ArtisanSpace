@@ -10,7 +10,7 @@ import {
   acceptWorkshop,
   removeWorkshop,
 } from "../models/workshopmodel.js";
-import { getRequests } from "../models/customordermodel.js";
+import { approveRequest, deleteRequest, getRequests } from "../models/customordermodel.js";
 
 const router = express.Router();
 const astrole = "artisan";
@@ -108,5 +108,29 @@ router.get("/customrequests", async (req, res) => {
     });
   }
 });
+
+router.post("/customrequests", async (req, res) => {
+  try {
+    const approvingartisanid = req.user.id;
+    await approveRequest(req.body.requestId, approvingartisanid);
+    
+    // Send a proper response
+    res.status(200).json({ success: true, message: "Request approved successfully" });
+  } catch (error) {
+    console.error("Error approving request:", error);
+    res.status(500).json({ error: "Failed to approve request" });
+  }
+});
+router.get("/customrequests/:requestId",async(req,res)=>{
+  try {
+    // console.log(req.params.requestId)
+  await deleteRequest(req.params.requestId);
+  res.status(200).json({ success: true, message: "Request approved successfully" });
+} catch (error) {
+  console.error("Error approving request:", error);
+  res.status(500).json({ error: "Failed to approve request" });
+}
+
+})
 
 export default router;
