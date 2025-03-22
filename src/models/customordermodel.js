@@ -52,6 +52,8 @@ END;`,
   });
 }
 
+await initializeDatabase();
+
 export async function addRequest(
   userId,
   title,
