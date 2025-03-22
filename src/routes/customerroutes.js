@@ -129,9 +129,7 @@ router.post("/requestWorkshop", async (req, res) => {
     }
 
     const newWorkshop = await bookWorkshop(
-      user.username,
-      user.email,
-      user.pno || "9090909090", // Use user's phone if available, otherwise use default
+      req.user.id,
       workshopTitle,
       workshopDesc,
       date,
@@ -139,7 +137,7 @@ router.post("/requestWorkshop", async (req, res) => {
     );
 
     res.json({
-      success: true,
+      success: newWorkshop.success,
       message: "Workshop booked!",
       workshop: newWorkshop,
     });
