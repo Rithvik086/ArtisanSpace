@@ -214,3 +214,90 @@ if (addUserForm) {
       })
     }
   })
+  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+      
+  const salesData = {
+    labels: labels,
+    datasets: [{
+      label: 'Total Sales (₹)',
+      data: [12000, 15000, 14000, 17000, 16000, 18000],
+      borderColor: 'blue',
+      backgroundColor: 'rgba(0, 0, 255, 0.1)',
+      fill: true,
+      tension: 0.3
+    }]
+  };
+
+  const ordersData = {
+    labels: labels,
+    datasets: [{
+      label: 'Monthly Orders',
+      data: [300, 400, 350, 500, 450, 600],
+      borderColor: 'green',
+      backgroundColor: 'rgba(0, 128, 0, 0.1)',
+      fill: true,
+      tension: 0.3
+    }]
+  };
+
+  const productsData = {
+    labels: labels,
+    datasets: [{
+      label: 'Products',
+      data: [50, 60, 70, 80, 90, 100],
+      borderColor: 'orange',
+      backgroundColor: 'rgba(255, 165, 0, 0.1)',
+      fill: true,
+      tension: 0.3
+    }]
+  };
+
+  const customersData = {
+    labels: labels,
+    datasets: [{
+      label: 'Customers',
+      data: [200, 220, 210, 250, 240, 270],
+      borderColor: 'purple',
+      backgroundColor: 'rgba(128, 0, 128, 0.1)',
+      fill: true,
+      tension: 0.3
+    }]
+  };
+
+  const commonOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
+
+  new Chart(document.getElementById('totalSalesChart'), {
+    type: 'line',
+    data: salesData,
+    options: commonOptions
+  });
+
+  new Chart(document.getElementById('monthlyOrdersChart'), {
+    type: 'line',
+    data: ordersData,
+    options: commonOptions
+  });
+
+  new Chart(document.getElementById('productsChart'), {
+    type: 'line',
+    data: productsData,
+    options: commonOptions
+  });
+
+  new Chart(document.getElementById('customersChart'), {
+    type: 'line',
+    data: customersData,
+    options: commonOptions
+  });

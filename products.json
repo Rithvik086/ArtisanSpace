@@ -208,5 +208,15 @@
     "newPrice": 3600,
     "quantity": 5,
     "description": "he Artform used for constructing Iconic Konark Sun Temple, one of India’s Cultural and Architectural Wonders exemplifies the rich and vivid practice of stone carving in the region."
+  },
+  {
+    "id": 1742302016321,
+    "aid": 1742069876547,
+    "name": "Staue",
+    "image": "https://res.cloudinary.com/drm3vixiy/image/upload/v1742302015/c6zujhql5gpo9en2ig46.png",
+    "oldPrice": 12000,
+    "newPrice": 10800,
+    "quantity": 20,
+    "description": "something"
   }
 ]

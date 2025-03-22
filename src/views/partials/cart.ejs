@@ -2,7 +2,7 @@
   <h3>Shopping Cart</h3>
   <div class="products">
     <% cart.forEach( item => { %>
-    <% let product = products.find(product => product.id === item.productId) %>
+    <% let product = products.find(product => product.productId === item.productId) %>
     <div class="cart-item">
       <img src="<%= product.image %>" alt="<%= product.name %>" class="product-img">
       <div class="product-details">
@@ -11,7 +11,7 @@
       </div>
       <div class="quantity-controls">
         <button class="quantity-btn" onclick="updateCart('<%= userId %>', '<%= item.productId %>', 'del')">-</button>
-        <span class="quantity-number" id="quantity-<%= item.productId %>"><%= item.quantity %></span>
+        <input type="number" class="quantity-input" name="quantity" id="<%= item.productId %>" value="<%=item.quantity%>">
         <button class="quantity-btn" onclick="updateCart('<%= userId %>', '<%= item.productId %>', 'add')">+</button>
       </div>
       <p class="remove" onclick="updateCart('<%= userId %>', '<%= item.productId %>', 'rem')">✖ REMOVE</p>

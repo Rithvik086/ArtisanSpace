@@ -3,7 +3,11 @@ import upload from "../middleware/multer.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
 import { addProduct } from "../models/productmodel.js";
-import { getAvailableWorkshops, getAcceptedWorkshops, acceptWorkshop } from "../models/workshopmodel.js"
+import {
+  getAvailableWorkshops,
+  getAcceptedWorkshops,
+  acceptWorkshop,
+} from "../models/workshopmodel.js";
 
 const router = express.Router();
 const astrole = "artisan";
@@ -11,10 +15,8 @@ const astrole = "artisan";
 router.use(authorizerole("admin", "manager", "artisan"));
 
 router.get("/", (req, res) => {
-  res.render("artisan/artisandashboard",{role : astrole })
+  res.render("artisan/artisandashboard", { role: astrole });
 });
-
-
 
 router.get("/listings", (req, res) => {
   res.render("artisan/artisanlisting", { role: astrole });
@@ -22,7 +24,7 @@ router.get("/listings", (req, res) => {
 
 router.post("/listings", upload.single("image"), async (req, res) => {
   try {
-    const { productName, price, description, quantity } = req.body;
+    const { productName, type, price, description, quantity } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ error: "No image uploaded" });
@@ -33,10 +35,11 @@ router.post("/listings", upload.single("image"), async (req, res) => {
     await addProduct(
       req.user.id,
       productName,
+      type,
       result.secure_url,
       price,
       quantity,
-      description,
+      description
     );
 
     res.status(201).json({ message: "Product added successfully" });
@@ -46,10 +49,14 @@ router.post("/listings", upload.single("image"), async (req, res) => {
   }
 });
 
-router.get("/workshops", async(req, res) => {
-  let availableWorkshops = await getAvailableWorkshops()
+router.get("/workshops", async (req, res) => {
+  let availableWorkshops = await getAvailableWorkshops();
   let acceptedWorkshops = await getAcceptedWorkshops();
-  res.render("artisan/artisanworkshop",{role : astrole,availableWorkshops,acceptedWorkshops,})
+  res.render("artisan/artisanworkshop", {
+    role: astrole,
+    availableWorkshops,
+    acceptedWorkshops,
+  });
 });
 
 export default router;
