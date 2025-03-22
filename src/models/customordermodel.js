@@ -1,8 +1,13 @@
 import { error } from "console";
-import { main_db } from "../config/sqlite.js";
+import { getDb } from "../config/sqlite.js";
 import crypto from "crypto";
 
-main_db.run(`create table if not exists requests(
+const { main_db } = await getDb();
+
+async function initializeDatabase() {
+  await new Promise((resolve, reject) => {
+    main_db.run(
+      `create table if not exists requests(
     requestId text primary key,
     userId text not null,
     title text not null,
@@ -13,12 +18,17 @@ main_db.run(`create table if not exists requests(
     requiredBy text not null,
     artisanId  text default null,
     isAccepted integer default 0,
-    foreign key(userId) references users(userId) on delete cascade
+    foreign key(userId) references users(userId) on delete cascade)`,
+      (err) => {
+        if (err) {
+          console.log("Error in requaets table creation.", err.message);
+          return reject();
+        }
+      }
+    );
 
-)`);
-
-main_db.run(
-  `CREATE TRIGGER IF NOT EXISTS set_null_on_request_artisan_delete
+    main_db.run(
+      `CREATE TRIGGER IF NOT EXISTS set_null_on_request_artisan_delete
 AFTER DELETE on users
 FOR EACH ROW
 BEGIN
@@ -26,17 +36,21 @@ UPDATE requests
 SET artisanId = NULL, isAccepted = 0
 WHERE artisanId = OLD.userId;
 END;`,
-  (err) => {
-    if (err) {
-      console.error(
-        "Error creating trigger set_null_on_request_artisan_delete :",
-        err.message
-      );
-    } else {
-      console.log("Trigger created successfully.");
-    }
-  }
-);
+      (err) => {
+        if (err) {
+          console.error(
+            "Error creating trigger set_null_on_request_artisan_delete:",
+            err.message
+          );
+          return reject();
+        } else {
+          console.log("Trigger created successfully.");
+          resolve();
+        }
+      }
+    );
+  });
+}
 
 export async function addRequest(
   userId,
@@ -94,10 +108,10 @@ export async function getRequests(isAccepted = null, artisanId = null) {
       query += ` where isAccepted = ?`;
       params.push(0);
     }
-  }else{
-    if(isAccepted === true){
-      query+= ` where isAccepted = ? AND artisanId = ?`
-      params.push(1)
+  } else {
+    if (isAccepted === true) {
+      query += ` where isAccepted = ? AND artisanId = ?`;
+      params.push(1);
       params.push(artisanId);
     }
   }

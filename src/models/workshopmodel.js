@@ -36,7 +36,10 @@ async function initializeDatabase() {
   END;`,
       (err) => {
         if (err) {
-          console.error("Error creating trigger:", err.message);
+          console.error(
+            "Error creating trigger set_null_on_workshop_artisan_delete:",
+            err.message
+          );
           return reject();
         } else {
           console.log("Trigger created successfully.");
