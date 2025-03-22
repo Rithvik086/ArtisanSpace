@@ -143,7 +143,7 @@ export async function getAvailableWorkshops() {
 }
 
 export async function getAcceptedWorkshops(userId = null) {
-  if (artisanId) {
+  if (userId) {
     return await new Promise((resolve, reject) => {
       main_db.all(
         `SELECT * FROM workshops LEFT JOIN users ON workshops.userId = users.userId WHERE workshops.userId = ?`,
