@@ -53,7 +53,7 @@ router.post("/listings", upload.single("image"), async (req, res) => {
 
 router.get("/workshops", async (req, res) => {
   let availableWorkshops = await getAvailableWorkshops();
-  let acceptedWorkshops = await getAcceptedWorkshops();
+  let acceptedWorkshops = await getAcceptedWorkshops(req.user.id);
   res.render("artisan/artisanworkshop", {
     role: astrole,
     availableWorkshops,
