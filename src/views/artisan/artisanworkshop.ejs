@@ -55,6 +55,9 @@
             <p><strong>Time:</strong> <%= workshop.time %></p>
             <p><strong>Accepted on:</strong> <%= new Date(workshop.acceptedAt).toLocaleDateString() %></p>
           </div>
+          <div class="workshop-actions">
+            <button class="remove-btn" data-id="<%= workshop.workshopId %>">Remove Workshop</button>
+          </div>
         </div>
         <% }); %>
         <% } else { %>
