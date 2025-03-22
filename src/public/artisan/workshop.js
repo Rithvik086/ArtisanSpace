@@ -1,79 +1,114 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Get all accept buttons
-  const acceptButtons = document.querySelectorAll(".accept-btn")
-  
+  const acceptButtons = document.querySelectorAll(".accept-btn");
+  const removeButtons = document.querySelectorAll(".remove-btn");
+
   // Add click event listener to each accept button
   acceptButtons.forEach((button) => {
     button.addEventListener("click", function () {
-      const workshopId = this.getAttribute("data-id")
-      acceptWorkshop(workshopId)
-    })
-  })
+      const workshopId = this.getAttribute("data-id");
+      acceptWorkshop(workshopId);
+    });
+  });
 
-  
-    // Function to accept a workshop
-    async function acceptWorkshop(workshopId) {
-      try {
-        const response = await fetch("/workshops/accept", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            workshopId
-            // No need to send artisanId, server will get it from the request
-          }),
-        })
-        
-        const data = await response.json()
-        
-        if (data.success) {
-          showNotification("Workshop accepted successfully!", "success")
-          
-          // Refresh the page to update the lists
-          setTimeout(() => {
-            window.location.reload()
-          }, 1500)
-        } else {
-          showNotification(data.message || "Failed to accept workshop", "error")
-        }
-      } catch (error) {
-        console.error("Error accepting workshop:", error)
-        showNotification("An error occurred. Please try again.", "error")
-      }
-    }
-  
-    // Function to show notification
-    function showNotification(message, type) {
-      // Check if notification container exists, if not create it
-      let notificationContainer = document.querySelector(".notification-container")
-  
-      if (!notificationContainer) {
-        notificationContainer = document.createElement("div")
-        notificationContainer.className = "notification-container"
-        document.body.appendChild(notificationContainer)
-      }
-  
-      // Create notification element
-      const notification = document.createElement("div")
-      notification.className = `notification ${type}`
-      notification.textContent = message
-  
-      // Add notification to container
-      notificationContainer.appendChild(notification)
-  
-      // Remove notification after 3 seconds
-      setTimeout(() => {
-        notification.classList.add("fade-out")
+  // Add click event listener to each remove button
+  removeButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const workshopId = this.getAttribute("data-id");
+      removeWorkshop(workshopId);
+    });
+  });
+
+  // Function to accept a workshop
+  async function acceptWorkshop(workshopId) {
+    try {
+      const response = await fetch(`/artisan/workshops/accept/${workshopId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(response);
+      const data = await response.json();
+
+      if (data.success) {
+        showNotification("Workshop accepted successfully!", "success");
+
+        // Refresh the page to update the lists
         setTimeout(() => {
-          notification.remove()
-        }, 500)
-      }, 3000)
+          window.location.reload();
+        }, 500);
+      } else {
+        showNotification(data.message || "Failed to accept workshop", "error");
+      }
+    } catch (error) {
+      console.error("Error accepting workshop:", error);
+      showNotification("An error occurred. Please try again.", "error");
     }
-  
-    // Add styles for notifications
-    const style = document.createElement("style")
-    style.textContent = `
+  }
+
+  async function removeWorkshop(workshopId) {
+    try {
+      const response = await fetch(`/artisan/workshops/remove/${workshopId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(response);
+      const data = await response.json();
+
+      if (data.success) {
+        showNotification("Workshop removed successfully!", "success");
+
+        // Refresh the page to update the lists
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      } else {
+        showNotification(data.message || "Failed to remove workshop", "error");
+      }
+    } catch (error) {
+      console.error("Error accepting workshop:", error);
+      showNotification("An error occurred. Please try again.", "error");
+    }
+  }
+
+  // Function to show notification
+  function showNotification(message, type) {
+    // Check if notification container exists, if not create it
+    let notificationContainer = document.querySelector(
+      ".notification-container"
+    );
+
+    if (!notificationContainer) {
+      notificationContainer = document.createElement("div");
+      notificationContainer.className = "notification-container";
+      document.body.appendChild(notificationContainer);
+    }
+
+    // Create notification element
+    const notification = document.createElement("div");
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+
+    // Add notification to container
+    notificationContainer.appendChild(notification);
+
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+      notification.classList.add("fade-out");
+      setTimeout(() => {
+        notification.remove();
+      }, 500);
+    }, 3000);
+  }
+
+  // Add styles for notifications
+  const style = document.createElement("style");
+  style.textContent = `
       .notification-container {
         position: fixed;
         top: 20px;
@@ -111,9 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
         from { opacity: 1; }
         to { opacity: 0; }
       }
-    `
-  
-    document.head.appendChild(style)
-  })
-  
-  
+    `;
+
+  document.head.appendChild(style);
+});

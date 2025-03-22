@@ -8,6 +8,7 @@ import {
   getAvailableWorkshops,
   getAcceptedWorkshops,
   acceptWorkshop,
+  removeWorkshop,
 } from "../models/workshopmodel.js";
 import { getRequests } from "../models/customordermodel.js";
 
@@ -61,34 +62,51 @@ router.get("/workshops", async (req, res) => {
   });
 });
 
-router.get("/customrequests", async(req,res)=>{
+router.get("/workshops/:action/:workshopId", async (req, res) => {
+  try {
+    if (req.params.action === "accept") {
+      const result = await acceptWorkshop(req.params.workshopId, req.user.id);
+      if (result.success) {
+        res.status(200).json({ success: true });
+      }
+    } else if (req.params.action === "remove") {
+      const result = await removeWorkshop(req.params.workshopId);
+      if (result.success) {
+        res.status(200).json({ success: true });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false });
+  }
+});
+
+router.get("/customrequests", async (req, res) => {
   try {
     // Get the current artisan's ID from the session
-    const currentArtisanId = req.user.id // Adjust based on your auth system
-    
+    const currentArtisanId = req.user.id; // Adjust based on your auth system
+
     if (!currentArtisanId) {
-        return res.redirect('/login'); // Redirect if not logged in
+      return res.redirect("/login"); // Redirect if not logged in
     }
-    
-    
-    const availableRequests = await getRequests(false)
-    
-    
+
+    const availableRequests = await getRequests(false);
+
     const acceptedRequests = await getRequests(true, currentArtisanId);
-    
+
     // Render the dashboard with both sets of requests
-    res.render('artisan/artisancustomorder', {
-      role :astrole,
-        availableRequests,
-        acceptedRequests,
-        currentArtisanId
+    res.render("artisan/artisancustomorder", {
+      role: astrole,
+      availableRequests,
+      acceptedRequests,
+      currentArtisanId,
     });
-} catch (error) {
-    console.error('Error fetching requests:', error);
-    res.status(500).render('error', { 
-        message: 'Failed to load dashboard. Please try again later.' 
+  } catch (error) {
+    console.error("Error fetching requests:", error);
+    res.status(500).render("error", {
+      message: "Failed to load dashboard. Please try again later.",
     });
-}
+  }
 });
 
 export default router;

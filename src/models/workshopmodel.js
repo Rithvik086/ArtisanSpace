@@ -145,12 +145,12 @@ export async function getAvailableWorkshops() {
   return await getWorkshops(false);
 }
 
-export async function getAcceptedWorkshops(userId = null) {
-  if (userId) {
+export async function getAcceptedWorkshops(artisanId = null) {
+  if (artisanId) {
     return await new Promise((resolve, reject) => {
       main_db.all(
-        `SELECT * FROM workshops LEFT JOIN users ON workshops.userId = users.userId WHERE workshops.userId = ?`,
-        [userId],
+        `SELECT * FROM workshops LEFT JOIN users ON workshops.userId = users.userId WHERE workshops.status = 1 and workshops.artisanId = ?`,
+        [artisanId],
         (err, rows) => {
           if (err) {
             console.error("DB error in getAcceptedWorkshop: ", err.message);
