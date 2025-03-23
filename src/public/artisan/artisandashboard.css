@@ -29,16 +29,18 @@ body {
   margin-bottom: 30px;
 }
 
-.stat-card, .scard {
+.stat-card,
+.scard {
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
   flex: 1;
   min-width: 250px;
 }
 
-.stat-card h3, .scard h3 {
+.stat-card h3,
+.scard h3 {
   margin-top: 0;
   color: #555;
   font-size: 18px;
@@ -55,7 +57,7 @@ body {
 .products-section {
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
   margin-bottom: 30px;
 }
@@ -78,7 +80,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   padding: 12px 8px;
   text-align: center;
   border-bottom: 1px solid #ddd;
@@ -162,6 +165,7 @@ tbody tr:hover {
   width: 90%;
   max-width: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 .modal-title {
@@ -190,32 +194,33 @@ tbody tr:hover {
 /* Responsive styles */
 @media (max-width: 768px) {
   .statcards {
-      flex-direction: column;
+    flex-direction: column;
   }
-  
-  .stat-card, .scard {
-      width: 100%;
+
+  .stat-card,
+  .scard {
+    width: 100%;
   }
-  
+
   table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
-  
-  th, td {
-      padding: 8px 6px;
-      font-size: 14px;
+
+  th,
+  td {
+    padding: 8px 6px;
+    font-size: 14px;
   }
-  
+
   .product-image {
-      width: 30px;
-      height: 30px;
+    width: 30px;
+    height: 30px;
   }
-  
+
   .status-badge {
-      padding: 4px 8px;
-      font-size: 11px;
+    padding: 4px 8px;
+    font-size: 11px;
   }
 }
-

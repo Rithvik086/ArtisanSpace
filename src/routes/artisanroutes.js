@@ -2,7 +2,7 @@ import express from "express";
 import upload from "../middleware/multer.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
-import { addProduct } from "../models/productmodel.js";
+import { addProduct, delProduct, getProducts } from "../models/productmodel.js";
 import {
   getAvailableWorkshops,
   getAcceptedWorkshops,
@@ -23,8 +23,30 @@ const astrole = "artisan";
 
 router.use(authorizerole("admin", "manager", "artisan"));
 
-router.get("/", (req, res) => {
-  res.render("artisan/artisandashboard", { role: astrole });
+router.get("/", async (req, res) => {
+  try {
+    const products = await getProducts(req.user.id);
+
+    res.render("artisan/artisandashboard", { role: astrole, products });
+  } catch (err) {
+    console.error("Error fetching requests:", err);
+    res.status(500).send("error");
+  }
+});
+
+router.post("/delete-product/:id", async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const result = await delProduct(productId);
+    if (result.success) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(500).json({ success: false });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
 });
 
 router.get("/listings", (req, res) => {
