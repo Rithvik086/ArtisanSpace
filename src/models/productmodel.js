@@ -222,6 +222,29 @@ export async function getPendingProducts() {
   });
 }
 
+export async function getProductsCount() {
+  return await new Promise((resolve, reject) => {
+    main_db.all(
+      `SELECT status, count(*) AS count FROM products GROUP BY status`,
+      (err, rows) => {
+        if (err) {
+          console.error("DB error in getProductsCount: ", err.message);
+          return reject(err);
+        } else {
+          console.log("successfully got the products count");
+
+          let counts = { approved: 0, pending: 0, disapproved: 0 };
+
+          rows.forEach(({ status, count }) => {
+            counts[status] = count;
+          });
+          resolve(counts);
+        }
+      }
+    );
+  });
+}
+
 // import fs from "fs/promises";
 // import { fileURLToPath } from "url";
 // import path from "path";

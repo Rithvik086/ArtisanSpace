@@ -3,14 +3,20 @@ import upload from "../middleware/multer.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
 import { addProduct } from "../models/productmodel.js";
-
 import {
   getAvailableWorkshops,
   getAcceptedWorkshops,
   acceptWorkshop,
   removeWorkshop,
+  getWorkshopById,
 } from "../models/workshopmodel.js";
-import { approveRequest, deleteRequest, getRequests } from "../models/customordermodel.js";
+import {
+  approveRequest,
+  deleteRequest,
+  getRequests,
+} from "../models/customordermodel.js";
+import { sendMail } from "../utils/emailService.js";
+import { getUserById } from "../models/usermodel.js";
 
 const router = express.Router();
 const astrole = "artisan";
@@ -67,6 +73,31 @@ router.get("/workshops/:action/:workshopId", async (req, res) => {
     if (req.params.action === "accept") {
       const result = await acceptWorkshop(req.params.workshopId, req.user.id);
       if (result.success) {
+        const artisanUser = await getUserById(req.user.id);
+        const customerUser = await getWorkshopById(req.params.workshopId);
+        sendMail(
+          customerUser.email,
+          "Workshop Accepted - ArtisanSpace",
+          `Dear ${customerUser.username},
+        
+        We are excited to inform you that your workshop request, **"${
+          customerUser.workshopTitle
+        }"**, has been accepted by **${artisanUser.username}** on **${new Date(
+            customerUser.acceptedAt
+          ).toLocaleString()}**.
+        
+        You can now connect with the artisan to finalize the details.
+        
+        **Artisan Contact Information:**
+        📧 Email: ${artisanUser.email}  
+        📞 Mobile: ${artisanUser.mobile_no}  
+        
+        If you have any questions, feel free to reach out. We hope this workshop is a great success!
+        
+        Best regards,  
+        **The ArtisanSpace Team**`
+        );
+
         res.status(200).json({ success: true });
       }
     } else if (req.params.action === "remove") {
@@ -113,24 +144,27 @@ router.post("/customrequests", async (req, res) => {
   try {
     const approvingartisanid = req.user.id;
     await approveRequest(req.body.requestId, approvingartisanid);
-    
+
     // Send a proper response
-    res.status(200).json({ success: true, message: "Request approved successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Request approved successfully" });
   } catch (error) {
     console.error("Error approving request:", error);
     res.status(500).json({ error: "Failed to approve request" });
   }
 });
-router.get("/customrequests/:requestId",async(req,res)=>{
+router.get("/customrequests/:requestId", async (req, res) => {
   try {
     // console.log(req.params.requestId)
-  await deleteRequest(req.params.requestId);
-  res.status(200).json({ success: true, message: "Request approved successfully" });
-} catch (error) {
-  console.error("Error approving request:", error);
-  res.status(500).json({ error: "Failed to approve request" });
-}
-
-})
+    await deleteRequest(req.params.requestId);
+    res
+      .status(200)
+      .json({ success: true, message: "Request approved successfully" });
+  } catch (error) {
+    console.error("Error approving request:", error);
+    res.status(500).json({ error: "Failed to approve request" });
+  }
+});
 
 export default router;

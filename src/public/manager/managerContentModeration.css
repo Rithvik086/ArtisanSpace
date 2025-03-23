@@ -105,6 +105,14 @@ td {
   background-color: #c82333;
 }
 
+.remove-btn {
+  background-color: #dc3545;
+}
+
+.remove-btn:hover {
+  background-color: #c82333;
+}
+
 .hidden {
   display: none;
 }
