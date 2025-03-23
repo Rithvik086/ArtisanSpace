@@ -189,4 +189,11 @@ router.get("/customrequests/:requestId", async (req, res) => {
   }
 });
 
+router.get("/settings", async (req, res) => {
+  const user = await getUserById(req.user.id);
+  delete user.password;
+  delete user.userId;
+  delete user.role;
+  res.render("settings", { role: admrole, user });
+});
 export default router;
