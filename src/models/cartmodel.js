@@ -1,20 +1,28 @@
-import db from "../config/sqlite.js";
+import { getDb } from "../config/sqlite.js";
 import { productCount } from "./productmodel.js";
 
-db.run(
-  `create table if not exists cart(userId integer not null, productId integer not null, quantity integer not null, primary key(userId, productId))`,
-  (err) => {
-    if (err) {
-      console.log("Cart table error", err.message);
-    }
-  },
-);
+const { cart_db } = await getDb();
 
-export function getCart(userId) {
-  return new Promise((resolve, reject) => {
-    userId = parseInt(userId);
+async function initializeDatabase() {
+  await new Promise((resolve, reject) => {
+    cart_db.run(
+      `create table if not exists cart(userId text not null, productId text not null, quantity integer not null, primary key(userId, productId))`,
+      (err) => {
+        if (err) {
+          console.log("Cart table creation error", err.message);
+          return reject(err);
+        }
+        resolve();
+      }
+    );
+  });
+}
 
-    db.all(
+await initializeDatabase();
+
+export async function getCart(userId) {
+  return await new Promise((resolve, reject) => {
+    cart_db.all(
       "select productId, quantity from cart where userId = ?",
       [userId],
       (err, rows) => {
@@ -24,17 +32,14 @@ export function getCart(userId) {
         } else {
           resolve(rows);
         }
-      },
+      }
     );
   });
 }
 
-export function getCartProductQuantity(userId, productId) {
-  return new Promise((resolve, reject) => {
-    userId = parseInt(userId);
-    productId = parseInt(productId);
-
-    db.get(
+export async function getCartProductQuantity(userId, productId) {
+  return await new Promise((resolve, reject) => {
+    cart_db.get(
       "select quantity from cart where userId=? and productId=?",
       [userId, productId],
       (err, rows) => {
@@ -44,22 +49,19 @@ export function getCartProductQuantity(userId, productId) {
         } else {
           resolve(rows ? rows.quantity : 0);
         }
-      },
+      }
     );
   });
 }
 
 export async function addItem(userId, productId) {
-  userId = parseInt(userId);
-  productId = parseInt(productId);
-
   const productQuantity = await productCount(productId);
   const cartQuantity = await getCartProductQuantity(userId, productId);
 
   if (productQuantity > cartQuantity) {
     if (cartQuantity) {
-      await new Promise((resolve, reject) => {
-        db.run(
+      return await new Promise((resolve, reject) => {
+        cart_db.run(
           "update cart set quantity = quantity +1 where userId = ? and productId = ?",
           [userId, productId],
           (err) => {
@@ -67,15 +69,14 @@ export async function addItem(userId, productId) {
               console.error("Error updating the quantity: ", err.message);
               return reject(err);
             } else {
-              resolve();
+              resolve({ success: true, message: "Cart updated!" });
             }
-          },
+          }
         );
       });
-      return {success:true};
     } else {
-      await new Promise((resolve, reject) => {
-        db.run(
+      return await new Promise((resolve, reject) => {
+        cart_db.run(
           "INSERT INTO cart (userId, productId, quantity) values (?, ?, ?)",
           [userId, productId, 1],
           (err) => {
@@ -83,27 +84,23 @@ export async function addItem(userId, productId) {
               console.error("Error inserting product:", err.message);
               return reject(err);
             } else {
-              resolve();
+              resolve({ success: true, message: "Cart updated!" });
             }
-          },
+          }
         );
       });
     }
-    return {success:true};
   } else {
-    return {success:false, message:"Stock limit reached"};
+    return { success: false, message: "Stock limit reached" };
   }
 }
 
 export async function deleteItem(userId, productId) {
-  userId = parseInt(userId);
-  productId = parseInt(productId);
-
   const userProductCount = await getCartProductQuantity(userId, productId);
 
   if (userProductCount > 1) {
-    await new Promise((resolve, reject) => {
-      db.run(
+    return await new Promise((resolve, reject) => {
+      cart_db.run(
         "update cart set quantity = quantity - 1 where userId =? and productId = ?",
         [userId, productId],
         (err) => {
@@ -111,15 +108,14 @@ export async function deleteItem(userId, productId) {
             console.error("Error updating the cart", err.message);
             return reject(err);
           } else {
-            resolve();
+            resolve({ success: true, message: "Cart updated!" });
           }
-        },
+        }
       );
     });
-    return "Product quantity updated successfully.";
   } else {
-    await new Promise((resolve, reject) => {
-      db.run(
+    return await new Promise((resolve, reject) => {
+      cart_db.run(
         "delete from cart where userId =? and productId =?",
         [userId, productId],
         (err) => {
@@ -127,21 +123,57 @@ export async function deleteItem(userId, productId) {
             console.error("Error deleting cart.", err.message);
             return reject(err);
           } else {
-            resolve();
+            resolve({ success: true, message: "Cart updated!" });
           }
-        },
+        }
       );
     });
-    return "Cart deleted successfully.";
+  }
+}
+
+export async function changeProductAmount(userId, productId, amount) {
+  const productQuantity = await productCount(productId);
+  if (amount > productQuantity) {
+    return await new Promise((resolve, reject) => {
+      cart_db.run(
+        "update cart set quantity = ? where userId =? and productId = ?",
+        [productQuantity, userId, productId],
+        (err) => {
+          if (err) {
+            console.error(
+              "Error updating the maximum amount in cart",
+              err.message
+            );
+            return reject(err);
+          } else {
+            console.log("changed product amount");
+            resolve({ success: false, message: "Inventory limit reached!" });
+          }
+        }
+      );
+    });
+  } else {
+    return await new Promise((resolve, reject) => {
+      cart_db.run(
+        "update cart set quantity = ? where userId =? and productId = ?",
+        [amount, userId, productId],
+        (err) => {
+          if (err) {
+            console.error("Error updating the amount in cart", err.message);
+            return reject(err);
+          } else {
+            console.log("changed product amount");
+            resolve({ success: true, message: "Cart updated!" });
+          }
+        }
+      );
+    });
   }
 }
 
 export async function removeCompleteItem(userId, productId) {
-  userId = parseInt(userId);
-  productId = parseInt(productId);
-
-  await new Promise((resolve, reject) => {
-    db.run(
+  return await new Promise((resolve, reject) => {
+    cart_db.run(
       "delete from cart where userId=? and productId =?",
       [userId, productId],
       (err) => {
@@ -149,19 +181,16 @@ export async function removeCompleteItem(userId, productId) {
           console.error("Error deleting Product.", err.message);
           return reject(err);
         } else {
-          resolve();
+          resolve({ success: true, message: "Cart updated!" });
         }
-      },
+      }
     );
   });
-  return "Item deleted completely.";
 }
 
 export async function removeCart(userId) {
-  userId = parseInt(userId);
-
   await new Promise((resolve, reject) => {
-    db.run("delete from cart where userId = ?", [userId], (err) => {
+    cart_db.run("delete from cart where userId = ?", [userId], (err) => {
       if (err) {
         console.error("Error deleting cart.", err.message);
         return reject(err);
@@ -174,10 +203,8 @@ export async function removeCart(userId) {
 }
 
 export async function removeProductFromAllCarts(productId) {
-  productId = parseInt(productId);
-
   await new Promise((resolve, reject) => {
-    db.run("delete from cart where productId = ?", [productId], (err) => {
+    cart_db.run("delete from cart where productId = ?", [productId], (err) => {
       if (err) {
         console.error("Error deleting Product.", err.message);
         return reject(err);

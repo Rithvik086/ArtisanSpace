@@ -5,14 +5,17 @@ import { fileURLToPath } from "url";
 import authroutes from "./routes/authroutes.js";
 import useroutes from "./routes/userRoutes.js";
 import cookieParser from "cookie-parser";
+import { initializeDatabases } from "./config/sqlite.js";
+import dbConnect from "./config/dbconnect.js";
+import {
+  verifytoken,
+  redirectBasedOnRole,
+} from "./middleware/authMiddleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-
-import dbConnect from "./config/dbconnect.js";
-import {verifytoken , redirectBasedOnRole} from "./middleware/authMiddleware.js";
 
 dbConnect();
 
@@ -25,11 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", redirectBasedOnRole, (req, res) => {
-  const role = req.user ? req.user.role : null;
-  console.log(req.user)
-  res.render("HomePage", {role});
-});
+app.get("/", redirectBasedOnRole);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));

@@ -3,6 +3,7 @@ import { getProducts } from "../models/productmodel.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 import {
   addItem,
+  changeProductAmount,
   deleteItem,
   getCart,
   removeCompleteItem,
@@ -32,7 +33,9 @@ router.get("/orders", async (req, res) => {
 
   let amount = 0;
   for (const item of cart) {
-    const product = products.find((product) => product.id === item.productId);
+    const product = products.find(
+      (product) => product.productId === item.productId
+    );
     amount += item.quantity * product.newPrice;
   }
 
@@ -51,18 +54,21 @@ router.get("/orders", async (req, res) => {
 
 router.post("/orders", async (req, res) => {
   try {
-    const { userId, productId, action } = req.query;
+    const { userId, productId, action, amount } = req.query;
+    let msg;
     if (action === "add") {
-      await addItem(userId, productId);
+      msg = await addItem(userId, productId);
     } else if (action === "del") {
-      await deleteItem(userId, productId);
+      msg = await deleteItem(userId, productId);
     } else if (action === "rem") {
-      await removeCompleteItem(userId, productId);
+      msg = await removeCompleteItem(userId, productId);
+    } else if (action === "none") {
+      msg = await changeProductAmount(userId, productId, amount);
     }
-    res.json({ message: "Cart updated successfully" });
+    res.json(msg);
   } catch (error) {
     console.error("Error processing request:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
 
@@ -94,7 +100,7 @@ router.get("/store", async (req, res) => {
 router.post("/store", async (req, res) => {
   const { userId, productId } = req.query;
   try {
-    await addItem(userId, productId);
+    res.json(await addItem(userId, productId));
   } catch (error) {
     console.error("Error processing request:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -105,35 +111,41 @@ router.get("/workshop", (req, res) => {
   res.render("customer/workshop", { role: custrole });
 });
 
-router.post("/requestWorkshop", async(req, res) => {
-  const {workshopTitle,workshopDesc, date, time } = req.body;
-  console.log(workshopTitle,workshopDesc)
-  
+router.post("/requestWorkshop", async (req, res) => {
+  const { workshopTitle, workshopDesc, date, time } = req.body;
+  console.log(workshopTitle, workshopDesc);
+
   if (!workshopTitle || !workshopDesc || !date || !time) {
-    return res.status(400).json({ success: false, error: "All fields are required!" });
+    return res
+      .status(400)
+      .json({ success: false, error: "All fields are required!" });
   }
 
   try {
     const user = await getUserById(req.user.id);
-    
+
     if (!user) {
       return res.status(404).json({ success: false, error: "User not found" });
     }
-    
+
     const newWorkshop = await bookWorkshop(
-      user.username, 
-      user.email,
-      user.pno || "9090909090", // Use user's phone if available, otherwise use default
+      req.user.id,
       workshopTitle,
       workshopDesc,
       date,
       time
     );
-    
-    res.json({ success: true, message: 'Workshop booked!', workshop: newWorkshop });
-  } catch(error) {
+
+    res.json({
+      success: newWorkshop.success,
+      message: "Workshop booked!",
+      workshop: newWorkshop,
+    });
+  } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Failed to book workshop' });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to book workshop" });
   }
 });
 
