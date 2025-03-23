@@ -50,6 +50,6 @@ app.all("*", (req, res) => {
 });
 
 // Starts an Express server locally on port 3000
-app.listen(port, hostname, () => {
-  console.log(`Listening on http://${hostname}:${port}/`);
+app.listen(port,() => {
+  console.log(`Listening on http://localhost:${port}/`);
 });
