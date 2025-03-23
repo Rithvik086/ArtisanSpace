@@ -1,6 +1,5 @@
 import express from "express";
 import { getProducts } from "../models/productmodel.js";
-import authorizerole from "../middleware/roleMiddleware.js";
 import {
   addItem,
   changeProductAmount,
@@ -10,6 +9,9 @@ import {
 } from "../models/cartmodel.js";
 import { getUserById } from "../models/usermodel.js";
 import { bookWorkshop } from "../models/workshopmodel.js";
+import upload from "../middleware/multer.js";
+import cloudinary from "../config/cloudinary.js";
+import { addRequest } from "../models/customordermodel.js";
 
 const router = express.Router();
 const custrole = "customer";
@@ -146,6 +148,47 @@ router.post("/requestWorkshop", async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Failed to book workshop" });
+  }
+});
+
+router.get("/customorder", (req, res) => {
+  res.render("customer/customorder", { role: req.user.role });
+});
+
+router.post("/customorder", upload.single("image"), async (req, res) => {
+  try {
+    const { title, type, description, budget, requiredBy } = req.body;
+    if (!title || !type || !description || !budget || !requiredBy) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be filled!",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No image uploaded" });
+    }
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const newrequest = await addRequest(
+      req.user.id,
+      title,
+      type,
+      result.secure_url,
+      description,
+      budget,
+      requiredBy
+    );
+    res.json({
+      success: true,
+      message: "Custom order submitted successfully!",
+      request: newrequest,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to submit request please try again later",
+    });
   }
 });
 
