@@ -98,19 +98,22 @@ export async function delProduct(productId) {
   });
 }
 
-export async function getProducts() {
+export async function getProducts(artisanId = null) {
+  let query = `SELECT * FROM products`;
+  let parms = [];
+
+  if (artisanId) {
+    query += ` WHERE artisanId = ?`;
+    parms.push(artisanId);
+  }
   return await new Promise((resolve, reject) => {
-    main_db.all(
-      "SELECT * FROM products WHERE status = ?",
-      ["approved"],
-      (err, rows) => {
-        if (err) {
-          console.error("DB error in getProducts:", err);
-          return reject(err);
-        }
-        resolve(rows || []);
+    main_db.all(query, parms, (err, rows) => {
+      if (err) {
+        console.error("DB error in getProducts:", err);
+        return reject(err);
       }
-    );
+      resolve(rows || []);
+    });
   });
 }
 
@@ -216,6 +219,29 @@ export async function getPendingProducts() {
         } else {
           console.log("successfully got the pending products");
           resolve(rows || []);
+        }
+      }
+    );
+  });
+}
+
+export async function getProductsCount() {
+  return await new Promise((resolve, reject) => {
+    main_db.all(
+      `SELECT status, count(*) AS count FROM products GROUP BY status`,
+      (err, rows) => {
+        if (err) {
+          console.error("DB error in getProductsCount: ", err.message);
+          return reject(err);
+        } else {
+          console.log("successfully got the products count");
+
+          let counts = { approved: 0, pending: 0, disapproved: 0 };
+
+          rows.forEach(({ status, count }) => {
+            counts[status] = count;
+          });
+          resolve(counts);
         }
       }
     );

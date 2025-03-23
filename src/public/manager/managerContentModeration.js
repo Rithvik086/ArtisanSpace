@@ -1,28 +1,52 @@
 async function loadPartial(section) {
   try {
     const response = await fetch(`/manager/load-partial/${section}`);
-    if (!response) throw new Error("Failed to load section");
+    if (!response.ok) throw new Error("Failed to load section");
+
+    const { success, html, counts } = await response.json();
+
+    if (!success) throw new Error("Failed to retrieve section data");
+
     const sections = {
       approved: document.getElementById("approved-section"),
       pending: document.getElementById("pending-section"),
       disapproved: document.getElementById("disapproved-section"),
     };
-    sections[section].innerHTML = await response.text();
 
+    if (sections[section]) {
+      sections[section].innerHTML = html;
+    }
+
+    updateCounts(counts);
     await buttonListener();
   } catch (error) {
     console.error("Error loading partial:", error);
   }
 }
 
+function updateCounts(counts) {
+  document.querySelector(".approved-count").textContent = counts.approved || 0;
+  document.querySelector(".pending-count").textContent = counts.pending || 0;
+  document.querySelector(".disapproved-count").textContent =
+    counts.disapproved || 0;
+}
+
 async function buttonListener() {
   const container = document.querySelector(".container");
   container.querySelectorAll(".btn").forEach((btn) => {
     btn.addEventListener("click", async function () {
-      const action = this.classList.contains("approve-btn")
+      let action = this.classList.contains("approve-btn")
         ? "approve"
-        : "disapprove";
+        : this.classList.contains("disapprove-btn")
+        ? "disapprove"
+        : this.classList.contains("remove-btn")
+        ? "remove"
+        : null;
+
+      if (!action) return;
+
       const productId = this.getAttribute("data-id");
+
       try {
         const response = await fetch(
           `/manager/content-moderation?action=${action}&productId=${productId}`,
@@ -32,9 +56,28 @@ async function buttonListener() {
             },
           }
         );
-        if (!response) throw new Error(`Failed to ${action} the product`);
 
-        await loadPartial("pending");
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(`Failed to ${action} the product`);
+        }
+
+        let sectionToReload;
+        if (action === "approve") {
+          sectionToReload = "pending";
+        } else if (action === "disapprove") {
+          sectionToReload = "pending";
+        } else if (
+          action === "remove" &&
+          this.classList.contains("approve-side")
+        ) {
+          sectionToReload = "approved";
+        } else {
+          sectionToReload = "disapproved";
+        }
+
+        await loadPartial(sectionToReload);
       } catch (error) {
         console.error(error);
       }

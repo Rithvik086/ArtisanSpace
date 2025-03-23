@@ -107,6 +107,22 @@ export async function getWorkshops(isAccepted = null) {
   });
 }
 
+export async function getWorkshopById(workshopId) {
+  return await new Promise((resolve, reject) => {
+    main_db.get(
+      `SELECT * FROM workshops LEFT JOIN users ON workshops.userId = users.userId WHERE workshops.workshopId = ?`,
+      [workshopId],
+      (err, row) => {
+        if (err) {
+          console.error("DB error in getWorkshopById: ", err.message);
+          return reject(err);
+        }
+        resolve(row || null);
+      }
+    );
+  });
+}
+
 export async function acceptWorkshop(workshopId, artisanId) {
   return await new Promise((resolve, reject) => {
     main_db.run(
