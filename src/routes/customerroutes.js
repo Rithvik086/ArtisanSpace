@@ -149,4 +149,47 @@ router.post("/requestWorkshop", async (req, res) => {
   }
 });
 
+
+router.get('/checkout',  async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const cart = await getCart(userId);
+    
+    if (!cart || cart.length === 0) {
+      return res.redirect('/customer/orders');
+    }
+    
+    const products = await getProducts();
+    
+    // Calculate total amount
+    let amount = 0;
+    cart.forEach(item => {
+      const product = products.find(p => p.productId === item.productId);
+      if (product) {
+        amount += product.newPrice * item.quantity;
+      }
+    });
+    
+    // Calculate shipping and tax
+    const shipping = 50; // Fixed shipping fee
+    const tax = Math.round(amount * 0.05 * 100) / 100; // 5% tax
+    let user  = getUserById(userId);
+    let defaddress = user.address;
+    
+    res.render('customer/checkout', {
+      role : custrole,
+      // userId,
+      defaddress,
+      cart,
+      products,
+      amount: amount.toFixed(2),
+      shipping,
+      tax
+    });
+  } catch (error) {
+    console.error('Error loading checkout page:', error);
+    res.status(500).send({ success: false, message: 'Failed to load checkout page' });
+  }
+});
+
 export default router;
