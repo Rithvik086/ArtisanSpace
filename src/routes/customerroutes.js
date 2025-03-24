@@ -1,5 +1,5 @@
 import express from "express";
-import { getProducts } from "../models/productmodel.js";
+import { getApprovedProducts, getProducts } from "../models/productmodel.js";
 import {
   addItem,
   changeProductAmount,
@@ -73,7 +73,8 @@ router.post("/orders", async (req, res) => {
 router.get("/store", async (req, res) => {
   try {
     const userId = req.user.id;
-    const products = await getProducts();
+    const { category } = req.query;
+    const products = await getApprovedProducts(category);
 
     const page = parseInt(req.query.page) || 1;
     const limit = 12;

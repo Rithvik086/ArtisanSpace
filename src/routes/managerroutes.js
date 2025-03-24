@@ -39,7 +39,7 @@ router.get("/content-moderation", async (req, res) => {
       res.status(500).json({ success: false });
     }
   } else {
-    res.render("manager/managercontentmoderation", { role: mngrole });
+    res.render("manager/managerContentModeration", { role: mngrole });
   }
 });
 
