@@ -9,6 +9,7 @@ import {
   getPendingProducts,
   getProductsCount,
 } from "../models/productmodel.js";
+import { getUserById } from "../models/usermodel.js";
 const router = express.Router();
 const mngrole = "manager";
 
@@ -85,6 +86,14 @@ router.get("/load-partial/:section", async (req, res) => {
 
 router.get("/listing", (req, res) => {
   res.render("manager/managerlisting", { role: mngrole });
+});
+
+router.get("/settings", async (req, res) => {
+  const user = await getUserById(req.user.id);
+  delete user.password;
+  delete user.userId;
+  delete user.role;
+  res.render("settings", { role: mngrole, user });
 });
 
 export default router;

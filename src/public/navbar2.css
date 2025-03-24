@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
 
 header {
   background-color: #5c4033;
@@ -41,6 +42,9 @@ header {
 .nav2ul li {
   list-style: none;
 }
+.nav2ul .dropdown {
+  margin-left: 10px;
+}
 
 .nav2ul a {
   color: #f8ead8;
@@ -51,6 +55,48 @@ header {
   transition: background-color 0.3s;
 }
 
-.nav2ul a:hover {
-  background-color: rgba(248, 234, 216, 0.2);
+.dropdown {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 40px; /* Adjusted position */
+  left: -50px;
+  background: #f8f9fa;
+  color: black; /* Default black text */
+  border-radius: 12px;
+  padding: 10px; /* Reduced padding */
+  width: 120px; /* Increased width for better appearance */
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+/* Dropdown items (Settings & Logout) */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px; /* Reduced padding */
+  width: 100%;
+  font-size: 16px;
+  text-align: left;
+  text-decoration: none; /* No underline */
+  color: black; /* Black text */
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+/* Icons inside dropdown items */
+.dropdown-item i {
+  margin-right: 8px; /* Space between icon and text */
+  color: #5c4033;
+}
+
+.dropdown-item p {
+  color: #5c4033;
+  margin: 0;
 }

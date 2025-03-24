@@ -8,200 +8,248 @@
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&display=swap");
+
+
+    body {
+      margin: 0;
+      font-family: "Baloo Bhai 2";
+    }
+
+    main {
+      width: 100%;
+    }
+
     .container {
-            max-width: 800px;
-            margin: 40px auto;
-            background:#e4d9d4;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
+      max-width: 1000px;
+      margin: 40px auto;
+      background: #e4d9d4;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
 
-        .header {
-            background: #5c4033;
-            color: white;
-            padding: 20px 30px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
+    .header {
+      background: #5c4033;
+      color: white;
+      padding: 20px 30px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
 
-        .header h1 {
-            font-size: 24px;
-            font-weight: 500;
-        }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 500;
+    }
 
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid #eee;
-            position: relative;
-        }
+    .tabs {
+      font-size: 17px;
+      display: flex;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
 
-        .tab {
-            padding: 15px 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            color: #bd8267;
-            position: relative;
-        }
+    .tab {
+      padding: 15px 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      color: #5c4033;
+      position: relative;
+    }
 
-        .tab:hover {
-            color: #5c4033;
-            background-color: #f9f9f9;
-        }
+    .tab:hover {
+      color: #5c4033;
+      background-color: #f9f9f9;
+    }
 
-        .tab.active {
-            color: #bd8267;
-            border-bottom: 2px solid#bd8267;
-        }
+    .tab.active {
+      color: #5c4033;
+      border-bottom: 2px solid#bd8267;
+    }
 
-        .tab-content {
-            padding: 30px;
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
+    .tab-content {
+      padding: 30px;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
 
-        .tab-content.active {
-            display: block;
-        }
+    .tab-content.active {
+      display: block;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
 
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #555;
-        }
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
 
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: border 0.3s ease;
-            background-color: #f9f9f9;
-        }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+      font-size: 16px;
+    }
 
-        .form-control:disabled {
-            background-color: #f5f5f5;
-            cursor: not-allowed;
-        }
+    .form-control {
+      width: 88%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border 0.3s ease;
+      background-color: #f9f9f9;
+    }
 
-        .form-control:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
+    .form-control:disabled {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+    }
 
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
+    .form-control:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
 
-        .btn-primary {
-            background-color: #5c4033;
-            color: white;
-        }
+    .btn {
+      font-size: 14px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
 
-        .btn-primary:hover {
-            background-color:#bd8267;
-        }
+    .btn-primary {
+      background-color: #5c4033;
+      color: white;
+    }
 
-        .btn-edit {
-            position: absolute;
-            right: 0;
-            top: 35px;
-        }
+    .btn-primary:hover {
+      background-color: #bd8267;
+    }
 
-        .address-form {
-            position: relative;
-        }
+    .btn-edit {
+      position: absolute;
+      right: 0;
+      top: 35px;
+    }
 
-        .address-save-btn {
-            display: block;
-            margin-top: 20px;
-            background-color:#5c4033;
-            color: white;
-        }
+    .btn-address {
+      top: -15px;
+    }
 
-        .address-save-btn:hover {
-            background-color: #bd8267;
-        }
+    .address-form {
+      position: relative;
+    }
 
-        .address-edit-btn {
-            position: absolute;
-            right: 0;
-            top: 0;
-        }
+    .address-save-btn {
+      display: block;
+      margin-top: 20px;
+      background-color: #5c4033;
+      color: white;
+    }
 
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #333;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: none;
-            z-index: 1000;
-            animation: slideIn 0.3s ease forwards;
-        }
+    .address-save-btn:hover {
+      background-color: #bd8267;
+    }
 
-        .toast.success {
-            background: #2ecc71;
-        }
+    .address-edit-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
 
-        .toast.error {
-            background: #e74c3c;
-        }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.3s ease forwards;
+    }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+    .toast.success {
+      background: #2ecc71;
+    }
 
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
+    .toast.error {
+      background: #e74c3c;
+    }
 
-        .logout-content {
-            text-align: center;
-            padding: 40px 0;
-        }
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
 
-        .logout-icon {
-            font-size: 64px;
-            color: #e74c3c;
-            margin-bottom: 20px;
-        }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
 
-        .logout-btn {
-            background-color: #e74c3c;
-            color: white;
-            padding: 12px 30px;
-            font-size: 16px;
-            margin-top: 20px;
-        }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
 
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    .account-delete {
+      display: flex;
+      justify-content: center;
+    }
+
+    .delete-btn {
+      margin: 10px auto 40px auto;
+      background-color: #ff4d4d;
+      /* Red color */
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .delete-btn:hover {
+      background-color: #cc0000;
+      /* Darker red */
+      transform: scale(1.05);
+    }
+
+    .delete-btn:active {
+      transform: scale(0.98);
+      background-color: #b30000;
+    }
   </style>
 </head>
 
@@ -209,257 +257,262 @@
 
 
 
-<body>
-  <%- include ('/partials/navbar2'), {role} %>
-  <div class="container">
-    <div class="header">
-        <h1>Settings</h1>
-    </div>
-    
-    <div class="tabs">
-        <div class="tab active" data-tab="profile">Profile</div>
-        <div class="tab" data-tab="address">Address</div>
-        <div class="tab" data-tab="logout">Logout</div>
-    </div>
-    
-    <div class="tab-content active" id="profile">
-        <div class="form-group">
+  <body>
+    <%- include ('partials/navbar2'), {role} %>
+    <main>
+      <div class="container">
+        <div class="header">
+          <h1>Settings</h1>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" data-tab="profile">Profile</div>
+          <div class="tab" data-tab="address">Address</div>
+        </div>
+
+        <div class="tab-content active" id="profile">
+          <div class="form-group">
+            <label for="username">Username (Non editable)</label>
+            <input type="text" id="username" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address (Non editable)</label>
+            <input type="email" id="email" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
             <label for="name">Full Name</label>
-            <input type="text" id="name" class="form-control" disabled>
+            <input type="text" id="name" class="form-control" disabled required>
             <button class="btn btn-primary btn-edit" data-field="name">Edit</button>
-        </div>
-        
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" class="form-control" disabled>
-            <button class="btn btn-primary btn-edit" data-field="email">Edit</button>
-        </div>
-        
-        <div class="form-group">
+          </div>
+
+          <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" class="form-control" disabled>
+            <input type="tel" id="phone" class="form-control" disabled required>
             <button class="btn btn-primary btn-edit" data-field="phone">Edit</button>
+          </div>
         </div>
-        
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" class="form-control" disabled>
-            <button class="btn btn-primary btn-edit" data-field="username">Edit</button>
-        </div>
-    </div>
-    
-    <div class="tab-content" id="address">
-        <div class="address-form">
-            <button  class="btn" id="editAddressBtn">Edit</button>
+
+        <div class="tab-content" id="address">
+          <div class="address-form">
+            <button class="btn btn-edit btn-primary btn-address" id="editAddressBtn">Edit</button>
             <div class="form-group">
-                <label for="addressLine1">Address Line 1</label>
-                <input type="text" id="addressLine1" class="form-control" disabled>
+              <label for="addressLine1">Address Line 1</label>
+              <input type="text" id="addressLine1" class="form-control" disabled required>
             </div>
-            
+
             <div class="form-group">
-                <label for="addressLine2">Address Line 2</label>
-                <input type="text" id="addressLine2" class="form-control" disabled>
+              <label for="addressLine2">Address Line 2</label>
+              <input type="text" id="addressLine2" class="form-control" disabled required>
             </div>
-            
+
             <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" id="city" class="form-control" disabled>
+              <label for="city">City</label>
+              <input type="text" id="city" class="form-control" disabled required>
             </div>
-            
+
             <div class="form-group">
-                <label for="state">State / Province</label>
-                <input type="text" id="state" class="form-control" disabled>
+              <label for="state">State / Province</label>
+              <input type="text" id="state" class="form-control" disabled required>
             </div>
-            
+
             <div class="form-group">
-                <label for="zipCode">Zip / Postal Code</label>
-                <input type="text" id="zipCode" class="form-control" disabled>
+              <label for="zipCode">Zip / Postal Code</label>
+              <input type="text" id="zipCode" class="form-control" disabled required>
             </div>
-            
+
             <div class="form-group">
-                <label for="country">Country</label>
-                <input type="text" id="country" class="form-control" disabled>
+              <label for="country">Country</label>
+              <input type="text" id="country" class="form-control" disabled required>
             </div>
-            
+
             <button class="btn address-save-btn" id="saveAddressBtn" style="display: none;">Save Address</button>
+            <input type="hidden" id="userData" value='<%= JSON.stringify(user) %>'>
+          </div>
         </div>
-    </div>
-    
-    <div class="tab-content" id="logout">
-        <div class="logout-content">
-            <div class="logout-icon">🔒ghjkl</div>
-            <h2>Ready to log out?</h2>
-            <p>You will be redirected to the login page.</p>
-            <button class="btn logout-btn">Log out now</button>
-        </div>
-    </div>
-</div>
 
-<div class="toast" id="toast"></div>
+      </div>
+      <div class="account-delete">
+        <button id="deleteAccountBtn" class="delete-btn">Delete Account</button>
+      </div>
 
-  <%- include ('../partials/footer') %>
+      <div class="toast" id="toast"></div>
+    </main>
 
-  <script>const userData = {
-    profile: {
-        name: "John Doe",
-        email: "john.doe@example.com",
-        phone: "+1 (555) 123-4567",
-        username: "johndoe123"
-    },
-    address: {
-        addressLine1: "123 Main Street",
-        addressLine2: "Apt 4B",
-        city: "New York",
-        state: "NY",
-        zipCode: "10001",
-        country: "United States"
-    }
-};
+    <%- include ('partials/footer') %>
 
-// DOM elements
-const tabs = document.querySelectorAll('.tab');
-const tabContents = document.querySelectorAll('.tab-content');
-const editButtons = document.querySelectorAll('.btn-edit');
-const editAddressBtn = document.getElementById('editAddressBtn');
-const saveAddressBtn = document.getElementById('saveAddressBtn');
-const logoutButton = document.querySelector('.logout-btn');
-const toast = document.getElementById('toast');
-const addressFieldsData = ['addressLine1', 'addressLine2', 'city', 'state', 'zipCode', 'country'];
-const addressFields =document.querySelectorAll(".form-control")
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        let userData = JSON.parse(document.getElementById('userData').value);
 
-// Load user data
-document.addEventListener('DOMContentLoaded', function() {
-    // Load profile data
-    document.getElementById('name').value = userData.profile.name;
-    document.getElementById('email').value = userData.profile.email;
-    document.getElementById('phone').value = userData.profile.phone;
-    document.getElementById('username').value = userData.profile.username;
-    
-    // Load address data
-    addressFieldsData.forEach(field => {
-        document.getElementById(field).value = userData.address[field];
-    });
-});
+        // DOM Elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const editButtons = document.querySelectorAll('.btn-edit');
+        const toast = document.getElementById('toast');
+        const addressFieldsData = ['addressLine1', 'addressLine2', 'city', 'state', 'zipCode', 'country'];
+        const addressFields = document.querySelectorAll("#address input");
+        const editAddressBtn = document.getElementById("editAddressBtn");
+        const saveAddressBtn = document.getElementById("saveAddressBtn");
 
-// Tab switching
-tabs.forEach(tab => {
-    tab.addEventListener('click', function() {
-        const tabId = tab.getAttribute('data-tab');
+        // Load user data into input fields
+        function loadUserData() {
+          document.getElementById('name').value = userData.name || '';
+          document.getElementById('email').value = userData.email || '';
+          document.getElementById('phone').value = userData.mobile_no || '';
+          document.getElementById('username').value = userData.username || '';
 
-        if (tabId === 'logout') {
-            handleLogout();
-            return;
+          if (typeof userData.address === "string") {
+            const addressParts = userData.address.split("|");
+            addressFieldsData.forEach((field, index) => {
+              document.getElementById(field).value = addressParts[index] || '';
+            });
+          }
         }
 
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(content => content.classList.remove('active'));
+        // Tab Switching
+        tabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            const tabId = tab.getAttribute('data-tab');
 
-        tab.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-    });
-});
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
 
-// Profile edit/save functionality
-editButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const fieldId = button.getAttribute('data-field');
-        const field = document.getElementById(fieldId);
+            tab.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+          });
+        });
 
-        if (field.disabled) {
-            field.disabled = false;
-            field.focus();
-            button.textContent = 'Save';
-            field.style.backgroundColor = 'white';
-        } else {
-            field.disabled = true;
-            button.textContent = 'Edit';
-            field.style.backgroundColor = '#f5f5f5';
-            saveProfileData(fieldId, field.value);
+        // Edit Profile Fields
+        editButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const fieldId = button.getAttribute('data-field');
+            const field = document.getElementById(fieldId);
+
+            if (field.disabled) {
+              field.disabled = false;
+              field.focus();
+              button.textContent = 'Save';
+              field.style.backgroundColor = 'white';
+            } else {
+              field.disabled = true;
+              button.textContent = 'Edit';
+              field.style.backgroundColor = '#f5f5f5';
+              saveUserData({
+                [fieldId]: field.value
+              });
+            }
+          });
+        });
+
+        // Address Edit Button
+        editAddressBtn.addEventListener("click", function() {
+          toggleAddressFields(false);
+          editAddressBtn.style.display = "none";
+          saveAddressBtn.style.display = "block";
+        });
+
+        // Save Address Button
+        saveAddressBtn.addEventListener("click", function() {
+          const newAddressArray = addressFieldsData.map(field => document.getElementById(field).value);
+          const newAddressString = newAddressArray.join("|");
+
+          toggleAddressFields(true);
+          saveAddressBtn.style.display = "none";
+          editAddressBtn.style.display = "block";
+
+          saveUserData({
+            address: newAddressString
+          });
+        });
+
+        // Enable/Disable Address Fields
+        function toggleAddressFields(disable) {
+          addressFields.forEach((field) => {
+            field.disabled = disable;
+            field.style.backgroundColor = disable ? "#f5f5f5" : "white";
+          });
         }
-    });
-});
 
-// Address edit functionality
-editAddressBtn.addEventListener('click', function() {
-  console.log(addressFields.disabled)
-    addressFields.forEach(field => {
-        field.disabled = false;
-        field.style.backgroundColor = 'white';
-    });
+        // Save All Edited Data to Server
+        function saveUserData(updatedFields) {
+          showToast('Saving...', 'info');
 
-    editAddressBtn.style.display = 'none';
-    saveAddressBtn.style.display = 'block';
-});
+          // Merge existing userData with new updates
+          const updatedUserData = {
+            ...userData,
+            ...updatedFields
+          };
 
-// Save address functionality
-saveAddressBtn.addEventListener('click', function() {
-    const newAddress = {};
-
-    addressFields.forEach(field => {
-        newAddress[field] = field.value;
-        field.disabled = true;
-        field.style.backgroundColor = '#f5f5f5';
-    });
-
-    saveAddressBtn.style.display = 'none';
-    editAddressBtn.style.display = 'block';
-
-    saveAddressData(newAddress);
-});
-
-// Logout functionality
-function handleLogout() {
-    showToast('Logging out...', 'success');
-
-    setTimeout(() => {
-        window.location.href = "#";
-        alert("You have been logged out.");
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(content => content.classList.remove('active'));
-        tabs[0].classList.add('active');
-        tabContents[0].classList.add('active');
-    }, 1500);
-}
-
-// Save profile data (simulation)
-function saveProfileData(field, value) {
-    showToast('Saving profile changes...', 'success');
-
-    setTimeout(() => {
-        userData.profile[field] = value;
-        showToast('Profile updated successfully!', 'success');
-    }, 1000);
-}
-
-// Save address data (simulation)
-function saveAddressData(addressData) {
-    showToast('Saving address changes...', 'success');
-
-    setTimeout(() => {
-        for (const field in addressData) {
-            userData.address[field] = addressData[field];
+          fetch('/update-profile', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(updatedUserData)
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                showToast('Saved successfully!', 'success');
+                setTimeout(() => {
+                  location.reload(); // Reload only on success
+                }, 1000);
+              } else {
+                showToast('Failed to save. Try again.', 'error');
+              }
+            })
+            .catch(() => {
+              showToast('Error saving data.', 'error');
+            });
         }
-        showToast('Address updated successfully!', 'success');
-    }, 1000);
-}
 
-// Toast notification function
-function showToast(message, type = 'success') {
-    toast.textContent = message;
-    toast.className = 'toast ' + type;
-    toast.style.display = 'block';
+        // Toast Notification
+        function showToast(message, type = 'success') {
+          toast.textContent = message;
+          toast.className = 'toast ' + type;
+          toast.style.display = 'block';
 
-    setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s ease forwards';
-        setTimeout(() => {
-            toast.style.display = 'none';
-            toast.style.animation = '';
-        }, 300);
-    }, 3000);
-}
+          setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => {
+              toast.style.display = 'none';
+              toast.style.animation = '';
+            }, 300);
+          }, 3000);
+        }
 
-   
-  </script>
-</body>
+
+        document.getElementById('deleteAccountBtn').addEventListener('click', async function() {
+          if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+            // Perform delete account action (send request to the server)
+            const response = await fetch(`/delete-account`);
+            if (!response.ok) {
+              showToast("Failed to delete account! Please try again.", "error");
+              throw new Error("Server returned an error response.");
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+              showToast("Account deleted successfully!", "success");
+              setTimeout(() => {
+                window.location.href = "/"; // Redirect after a short delay
+              }, 1000);
+
+            } else {
+              showToast("Failed to delete account! Please try again.", "error");
+            }
+          } else {
+            showToast("Account deletion canceled!", "error");
+            console.log("Account deletion canceled.");
+          }
+        });
+        // Initialize User Data
+        loadUserData();
+      });
+    </script>
+  </body>
 
 </html>

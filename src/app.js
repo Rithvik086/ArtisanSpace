@@ -46,10 +46,10 @@ app.use("/", useroutes);
 
 app.all("*", (req, res) => {
   // res.send("This route is accessible");
-  res.render("accessdenied");
+  res.status(404).render("accessdenied");
 });
 
 // Starts an Express server locally on port 3000
-app.listen(port,() => {
+app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}/`);
 });

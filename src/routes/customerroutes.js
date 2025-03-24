@@ -24,10 +24,6 @@ router.get("/", async (req, res) => {
   res.render("customer/customerhome", { role: custrole, products: pro });
 });
 
-router.get("/settings", (req, res) => {
-  res.json({ message: "settings" });
-});
-
 router.get("/orders", async (req, res) => {
   const userId = req.user.id;
   const products = await getProducts();
@@ -234,6 +230,14 @@ router.get("/checkout", async (req, res) => {
       .status(500)
       .send({ success: false, message: "Failed to load checkout page" });
   }
+});
+
+router.get("/settings", async (req, res) => {
+  const user = await getUserById(req.user.id);
+  delete user.password;
+  delete user.userId;
+  delete user.role;
+  res.render("settings", { role: custrole, user });
 });
 
 export default router;

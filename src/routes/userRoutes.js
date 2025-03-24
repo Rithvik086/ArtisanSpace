@@ -6,6 +6,7 @@ import managerroutes from "../routes/managerroutes.js";
 import customerroutes from "../routes/customerroutes.js";
 import artisanroutes from "../routes/artisanroutes.js";
 import { addTicket } from "../models/supportticketmodel.js";
+import { removeUser, updateUser } from "../models/usermodel.js";
 const router = express.Router();
 
 router.use(verifytoken);
@@ -53,6 +54,45 @@ router.post("/submit-ticket", async (req, res) => {
       success: false,
       message: "Failed to submit ticket. Please try again later.",
     });
+  }
+});
+
+router.post("/update-profile", async (req, res) => {
+  try {
+    const { name, mobile_no, address } = req.body;
+    if (address) {
+      address.toLowerCase();
+    }
+    const result = await updateUser(
+      req.user.id,
+      name.toLowerCase(),
+      mobile_no,
+      address
+    );
+
+    if (result.success) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(500).json({ success: false });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+router.get("/delete-account", async (req, res) => {
+  try {
+    const result = await removeUser(req.user.id);
+
+    if (result.success) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(500).json({ success: false });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
   }
 });
 
