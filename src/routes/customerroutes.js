@@ -106,6 +106,9 @@ router.post("/store", async (req, res) => {
   }
 });
 
+
+
+
 router.get("/workshop", (req, res) => {
   res.render("customer/workshop", { role: custrole });
 });
@@ -212,18 +215,20 @@ router.get("/checkout", async (req, res) => {
     // Calculate shipping and tax
     const shipping = 50; // Fixed shipping fee
     const tax = Math.round(amount * 0.05 * 100) / 100; // 5% tax
-    let user = getUserById(userId);
-    let defaddress = user.address;
+    let user = await getUserById(userId);
+   
+
 
     res.render("customer/checkout", {
       role: custrole,
       // userId,
-      defaddress,
+     
       cart,
       products,
       amount: amount.toFixed(2),
       shipping,
       tax,
+      user
     });
   } catch (error) {
     console.error("Error loading checkout page:", error);
