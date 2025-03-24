@@ -1,0 +1,223 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&display=swap");
+        
+body {
+    background-color: #f8f6f0;
+    font-family: "Baloo Bhai 2", sans-serif;
+    margin: 0;
+    color: #333;
+}
+
+.container {
+    margin: 40px auto !important;
+    max-width: 1200px;
+    width: 85%;
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    padding: 32px;
+}
+
+.product-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.product-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-image {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #efefef;
+    object-fit: contain;
+    max-height: 500px;
+    transition: transform 0.3s ease;
+}
+
+.product-image:hover {
+    transform: scale(1.02);
+}
+
+.product-details {
+    padding: 0;
+}
+
+.product-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.product-info {
+    margin-top: 16px;
+    background-color: #f9f9f9;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border-left: 4px solid #5c4033;
+}
+
+.product-price {
+    margin-top: 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.current-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2b7a4b;
+    margin: 0;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #888;
+    font-size: 16px;
+    margin: 0;
+}
+
+.availability {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+    background-color: #fcfcfc;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px dashed #e0e0e0;
+}
+
+.availability p {
+    margin: 6px 0;
+}
+
+.buttons {
+    margin-top: 28px;
+}
+
+.add-to-cart {
+    background-color: #5c4033;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 4px 8px rgba(92, 64, 51, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.add-to-cart:hover {
+    background-color: #4a3328;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(92, 64, 51, 0.4);
+}
+
+.add-to-cart:active {
+    transform: translateY(0);
+}
+
+.product-description {
+    margin-top: 32px;
+    color: #444;
+    line-height: 1.7;
+    border-top: 1px solid #eee;
+    padding-top: 24px;
+}
+
+.product-description h3 {
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.stock-info {
+    color: #2b7a4b;
+    font-weight: 600;
+    margin-top: 8px;
+    display: inline-block;
+    background-color: rgba(43, 122, 75, 0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* Review section styles */
+.review-section {
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+
+.rating-stars {
+    display: inline-flex;
+    margin-right: 12px;
+    color: #f7b731;
+    font-size: 22px;
+}
+
+.rating-number {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.rating-count {
+    color: #666;
+    font-size: 15px;
+}
+
+.review-item {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.reviewer-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.review-date {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.review-text {
+    line-height: 1.5;
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+    .product-flex {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
+    .product-image-container {
+        width: 48%;
+    }
+    
+    .product-details {
+        width: 48%;
+    }
+}
