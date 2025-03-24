@@ -12,33 +12,91 @@
 
 <body>
   <%- include("../partials/navbar2",{role}) %>
-  <div class="content">
-    <ul class="product-list">
-      <% products.forEach(product=> { %>
-      <li><%- include("../partials/product-card", {product, userId}) %></li>
-      <%})%>
-    </ul>
-    <ul class="pagination">
-      <% if (currentPage> 1) { %>
-      <a href="/customer/store?page=<%= currentPage - 1 %>">Previous</a>
-      <% } %>
+  <main>
+    <div class="left">
+      <form action="/customer/store" method="GET" id="filter-form">
+        <h3>Filter Products</h3>
 
-      <% for (let i=1; i <=totalPages; i++) { %>
-      <a href="/customer/store?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
-        <%= i %>
-      </a>
-      <% } %>
+        <div class="filter-category">
+          <h4>Category</h4>
+          <label>
+            <input type="checkbox" name="category" value="statue"> Statue
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="painting"> Painting
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="footware"> Footware
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="pottery"> Pottery
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="toys"> Toys
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="headware"> Headware
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="musical instrument">
+            Musical Instrument
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="other">
+            Others
+          </label>
+        </div>
 
-      <% if (currentPage < totalPages) { %>
-      <a href="/customer/store?page=<%= currentPage + 1 %>">Next</a>
-      <% } %>
-      <ul />
+        <button type="submit">Apply Filters</button>
+      </form>
+    </div>
 
-  </div>
+
+
+    <div class="right">
+      <div class="content">
+        <ul class="product-list">
+          <% products.forEach(product=> { %>
+          <li><%- include("../partials/product-card", {product, userId}) %></li>
+          <%})%>
+        </ul>
+        <ul class="pagination">
+          <% if (currentPage> 1) { %>
+          <a href="/customer/store?page=<%= currentPage - 1 %>">Previous</a>
+          <% } %>
+
+          <% for (let i=1; i <=totalPages; i++) { %>
+          <a href="/customer/store?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
+            <%= i %>
+          </a>
+          <% } %>
+
+          <% if (currentPage < totalPages) { %>
+          <a href="/customer/store?page=<%= currentPage + 1 %>">Next</a>
+          <% } %>
+          <ul />
+
+      </div>
+    </div>
+  </main>
   <div class="notification-container"></div>
+
 
   <%- include("../partials/footer") %>
   <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedCategories = urlParams.getAll("category");
+
+      if (selectedCategories.length > 0) {
+        document.querySelectorAll('input[name="category"]').forEach((checkbox) => {
+          if (selectedCategories.includes(checkbox.value)) {
+            checkbox.checked = true;
+          }
+        });
+      }
+    });
+
     async function updateCart(userId, productId) {
       try {
         console.log("Adding to cart:", userId, productId); // Debugging line

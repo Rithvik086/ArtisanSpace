@@ -1,6 +1,5 @@
 import express from "express";
-import { getProducts } from "../models/productmodel.js";
-import authorizerole from "../middleware/roleMiddleware.js";
+import { getApprovedProducts, getProducts } from "../models/productmodel.js";
 import {
   addItem,
   changeProductAmount,
@@ -10,6 +9,9 @@ import {
 } from "../models/cartmodel.js";
 import { getUserById } from "../models/usermodel.js";
 import { bookWorkshop } from "../models/workshopmodel.js";
+import upload from "../middleware/multer.js";
+import cloudinary from "../config/cloudinary.js";
+import { addRequest } from "../models/customordermodel.js";
 
 const router = express.Router();
 const custrole = "customer";
@@ -20,10 +22,6 @@ router.get("/", async (req, res) => {
   const products = await getProducts();
   const pro = products.slice(0, 10);
   res.render("customer/customerhome", { role: custrole, products: pro });
-});
-
-router.get("/settings", (req, res) => {
-  res.json({ message: "settings" });
 });
 
 router.get("/orders", async (req, res) => {
@@ -75,7 +73,8 @@ router.post("/orders", async (req, res) => {
 router.get("/store", async (req, res) => {
   try {
     const userId = req.user.id;
-    const products = await getProducts();
+    const { category } = req.query;
+    const products = await getApprovedProducts(category);
 
     const page = parseInt(req.query.page) || 1;
     const limit = 12;
@@ -147,6 +146,99 @@ router.post("/requestWorkshop", async (req, res) => {
       .status(500)
       .json({ success: false, message: "Failed to book workshop" });
   }
+});
+
+router.get("/customorder", (req, res) => {
+  res.render("customer/customorder", { role: req.user.role });
+});
+
+router.post("/customorder", upload.single("image"), async (req, res) => {
+  try {
+    const { title, type, description, budget, requiredBy } = req.body;
+    if (!title || !type || !description || !budget || !requiredBy) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be filled!",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No image uploaded" });
+    }
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const newrequest = await addRequest(
+      req.user.id,
+      title,
+      type,
+      result.secure_url,
+      description,
+      budget,
+      requiredBy
+    );
+    res.json({
+      success: true,
+      message: "Custom order submitted successfully!",
+      request: newrequest,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to submit request please try again later",
+    });
+  }
+});
+
+router.get("/checkout", async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const cart = await getCart(userId);
+
+    if (!cart || cart.length === 0) {
+      return res.redirect("/customer/orders");
+    }
+
+    const products = await getProducts();
+
+    // Calculate total amount
+    let amount = 0;
+    cart.forEach((item) => {
+      const product = products.find((p) => p.productId === item.productId);
+      if (product) {
+        amount += product.newPrice * item.quantity;
+      }
+    });
+
+    // Calculate shipping and tax
+    const shipping = 50; // Fixed shipping fee
+    const tax = Math.round(amount * 0.05 * 100) / 100; // 5% tax
+    let user = getUserById(userId);
+    let defaddress = user.address;
+
+    res.render("customer/checkout", {
+      role: custrole,
+      // userId,
+      defaddress,
+      cart,
+      products,
+      amount: amount.toFixed(2),
+      shipping,
+      tax,
+    });
+  } catch (error) {
+    console.error("Error loading checkout page:", error);
+    res
+      .status(500)
+      .send({ success: false, message: "Failed to load checkout page" });
+  }
+});
+
+router.get("/settings", async (req, res) => {
+  const user = await getUserById(req.user.id);
+  delete user.password;
+  delete user.userId;
+  delete user.role;
+  res.render("settings", { role: custrole, user });
 });
 
 export default router;

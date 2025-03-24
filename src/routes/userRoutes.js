@@ -6,7 +6,7 @@ import managerroutes from "../routes/managerroutes.js";
 import customerroutes from "../routes/customerroutes.js";
 import artisanroutes from "../routes/artisanroutes.js";
 import { addTicket } from "../models/supportticketmodel.js";
-import { addRequest } from "../models/customordermodel.js";
+import { removeUser, updateUser } from "../models/usermodel.js";
 const router = express.Router();
 
 router.use(verifytoken);
@@ -57,42 +57,43 @@ router.post("/submit-ticket", async (req, res) => {
   }
 });
 
-router.get("/customorder", (req, res) => {
-  res.render("customorder", { role: req.user.role });
+router.post("/update-profile", async (req, res) => {
+  try {
+    const { name, mobile_no, address } = req.body;
+    if (address) {
+      address.toLowerCase();
+    }
+    const result = await updateUser(
+      req.user.id,
+      name.toLowerCase(),
+      mobile_no,
+      address
+    );
+
+    if (result.success) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(500).json({ success: false });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
 });
 
-router.post("/customorder", async (req, res) => {
-  const { title, type, description, budget, requiredBy } = req.body;
-  if (!title || !type || !description || !budget || !requiredBy) {
-    return res
-      .status(400)
-      .json({ success: false, message: "All required fields must be filled!" });
-  }
-
+router.get("/delete-account", async (req, res) => {
   try {
-    const newrequest = await addRequest(
-      req.user.id,
-      title,
-      type,
-      "dummy image",
-      description,
-      budget,
-      requiredBy
-    );
-    res.json({
-      success: true,
-      message: "Custom order submitted successfully!",
-      request: newrequest,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to submit request please try again later",
-    });
-  }
+    const result = await removeUser(req.user.id);
 
-  // Simulating saving data to the database
+    if (result.success) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(500).json({ success: false });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
 });
 
 export default router;

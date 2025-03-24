@@ -2,11 +2,14 @@ import express from "express";
 import authorizerole from "../middleware/roleMiddleware.js";
 import {
   approveProduct,
+  delProduct,
   disapproveProduct,
   getApprovedProducts,
   getDisapprovedProducts,
   getPendingProducts,
+  getProductsCount,
 } from "../models/productmodel.js";
+import { getUserById } from "../models/usermodel.js";
 const router = express.Router();
 const mngrole = "manager";
 
@@ -15,38 +18,82 @@ router.use(authorizerole("admin", "manager"));
 router.get("/", (req, res) => {
   res.render("manager/managerdashboard", { role: mngrole });
 });
-router.get("/content-moderation", (req, res) => {
+
+router.get("/content-moderation", async (req, res) => {
   if (req.headers["x-requested-with"] === "XMLHttpRequest") {
-    console.log("it came");
     const { action, productId } = req.query;
-    let msg;
+    let msg = { success: false };
+
     if (action === "approve") {
-      msg = approveProduct(productId);
+      msg = await approveProduct(productId);
     } else if (action === "disapprove") {
-      msg = disapproveProduct(productId);
+      msg = await disapproveProduct(productId);
+    } else if (action === "remove") {
+      msg = await delProduct(productId);
+    } else {
+      return res.status(400).json({ success: false, error: "Invalid action" });
     }
-    res.json(msg);
+    if (msg.success) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(500).json({ success: false });
+    }
   } else {
-    res.render("manager/managercontentmoderation", { role: mngrole });
+    res.render("manager/managerContentModeration", { role: mngrole });
   }
 });
 
 router.get("/load-partial/:section", async (req, res) => {
   const { section } = req.params;
+  const counts = await getProductsCount();
+  let html = "";
+
   if (section === "approved") {
     const approvedProducts = await getApprovedProducts();
-    res.render("manager/partials/approved", { approvedProducts });
+    html = await res.render(
+      "manager/partials/approved",
+      { approvedProducts },
+      (err, rendered) => {
+        if (err)
+          return res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true, html: rendered, counts });
+      }
+    );
   } else if (section === "disapproved") {
     const disapprovedProducts = await getDisapprovedProducts();
-    res.render("manager/partials/disapproved", { disapprovedProducts });
+    html = await res.render(
+      "manager/partials/disapproved",
+      { disapprovedProducts },
+      (err, rendered) => {
+        if (err)
+          return res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true, html: rendered, counts });
+      }
+    );
   } else if (section === "pending") {
     const pendingProducts = await getPendingProducts();
-    res.render("manager/partials/pending", { pendingProducts });
+    html = await res.render(
+      "manager/partials/pending",
+      { pendingProducts },
+      (err, rendered) => {
+        if (err)
+          return res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true, html: rendered, counts });
+      }
+    );
   }
 });
 
 router.get("/listing", (req, res) => {
   res.render("manager/managerlisting", { role: mngrole });
+});
+
+router.get("/settings", async (req, res) => {
+  const user = await getUserById(req.user.id);
+  delete user.password;
+  delete user.userId;
+  delete user.role;
+  res.render("settings", { role: mngrole, user });
 });
 
 export default router;
