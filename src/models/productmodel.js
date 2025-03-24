@@ -171,22 +171,51 @@ export async function disapproveProduct(productId) {
   });
 }
 
-export async function getApprovedProducts() {
-  return await new Promise((resolve, reject) => {
-    main_db.all(
-      `SELECT * FROM products WHERE status = ?`,
-      ["approved"],
-      (err, rows) => {
+export async function getApprovedProducts(category = null) {
+  if (!category) {
+    return await new Promise((resolve, reject) => {
+      main_db.all(
+        `SELECT * FROM products WHERE status = ?`,
+        ["approved"],
+        (err, rows) => {
+          if (err) {
+            console.error("DB error in getApprovedProducts: ", err.message);
+            return reject(err);
+          } else {
+            console.log("successfully got the approved products");
+            resolve(rows || []);
+          }
+        }
+      );
+    });
+  } else {
+    let query = `SELECT * FROM products WHERE status = ? and type IN (?`;
+    let parms = ["approved"];
+
+    if (!Array.isArray(category)) {
+      parms.push(category);
+    } else {
+      category.forEach((type) => {
+        query += `, ?`;
+        parms.push(type);
+      });
+    }
+    query += `)`;
+    return await new Promise((resolve, reject) => {
+      main_db.all(query, parms, (err, rows) => {
         if (err) {
-          console.error("DB error in getApprovedProducts: ", err.message);
+          console.error(
+            "DB error in getApprovedProducts(filter): ",
+            err.message
+          );
           return reject(err);
         } else {
-          console.log("successfully got the approved products");
+          console.log("successfully got the approved products(filter)");
           resolve(rows || []);
         }
-      }
-    );
-  });
+      });
+    });
+  }
 }
 
 export async function getDisapprovedProducts() {

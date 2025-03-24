@@ -69,6 +69,14 @@ body {
   margin-bottom: 15px;
 }
 
+.products-header span {
+  background: #e0e0e0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 6px;
+  font-size: 14px;
+}
+
 .products-title {
   margin: 0;
   font-size: 20px;

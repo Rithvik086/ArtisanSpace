@@ -15,6 +15,87 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+main {
+  display: flex;
+}
+.left {
+  width: 16%;
+  padding: 20px;
+  margin: 20px 0 20px 30px;
+  background-color: #f8ead8;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Baloo Bhai 2";
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  flex-shrink: 0;
+}
+
+.left h3 {
+  text-align: center;
+  font-size: 22px;
+  color: #5c4033;
+  margin-bottom: 20px;
+}
+
+.left h4 {
+  font-size: 16px;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  color: #5c4033;
+  border-bottom: 2px solid #5c4033;
+  padding-bottom: 5px;
+}
+
+.left .filter-category {
+  margin-bottom: 20px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+}
+
+.left .filter-category label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 8px 0;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background 0.3s ease-in-out;
+}
+.left .filter-category label:hover {
+  background: rgba(92, 64, 51, 0.1);
+}
+
+.left .filter-category input {
+  margin-right: 10px;
+  accent-color: #5c4033;
+}
+
+.left button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background-color: #5c4033;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.left button[type="submit"]:hover {
+  background-color: #3e2a20;
+}
+
+.right {
+  width: 84%;
+}
+
 a {
   color: black;
   text-decoration: none;
@@ -40,7 +121,7 @@ a {
   padding: 6px 0 0 0;
   text-align: center;
   width: 320px;
-  height: 400px;
+  height: 420px;
   border: 4px solid rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
@@ -52,19 +133,19 @@ a {
   transform: translateY(-5px);
 }
 
-img {
+.product-card img {
   width: 300px;
   height: 240px;
   border-radius: 7px;
 }
 
-hr {
+.product-card hr {
   height: 4px;
   border: none;
   background-color: rgba(0, 0, 0, 0.08);
 }
 
-.details {
+.product-card .details {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -76,41 +157,50 @@ hr {
   padding: 8px;
 }
 
-.details .price {
-  margin-top: -2px;
+.product-card .details h3 {
+  height: 30px;
+  overflow-y: hidden;
 }
 
-.old-price {
+.product-card .details p {
+  font-weight: bold;
+}
+
+.product-card .details .price {
+  margin-top: -5px;
+}
+
+.product-card .old-price {
   text-decoration: line-through;
   font-size: 17px;
   color: gray;
   margin-right: 8px;
 }
 
-.new-price {
+.product-card .new-price {
   font-size: 17px;
   color: green;
   font-weight: bold;
 }
 
-.details button {
+.product-card .details button {
   background-color: #f8ead8;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   color: #5c4033;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
-  width: 100px;
-  height: 30px;
-  margin-bottom: -10px;
+  width: 120px;
+  margin-bottom: -30px;
+  padding: 4px 8px;
 }
 
-.details button:hover {
+.product-card .details button:hover {
   background-color: #f5d6ae;
   /* color: #fc5a6d; */
 }
 
-.details button:active {
+.product-card .details button:active {
   border: 2px solid #5c4033;
   /* background-color: #fc5a6d;
   color: #fc5a6d; */
