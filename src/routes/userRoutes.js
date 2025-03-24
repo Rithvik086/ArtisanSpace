@@ -7,6 +7,8 @@ import customerroutes from "../routes/customerroutes.js";
 import artisanroutes from "../routes/artisanroutes.js";
 import { addTicket } from "../models/supportticketmodel.js";
 import { removeUser, updateUser } from "../models/usermodel.js";
+import { getHashes } from "crypto";
+import { getProducts } from "../models/productmodel.js";
 const router = express.Router();
 
 router.use(verifytoken);
@@ -95,5 +97,17 @@ router.get("/delete-account", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+ router.get("/products/:productId", async(req, res)=>{
 
+  try{
+    const productId =  req.params.productId;
+    let products = await getProducts()
+    const product = await products.find(p => p.productId == productId);
+
+    res.render("productPage",{product,role:"customer",userId:req.user.id});
+
+  }catch(err){
+    console.error("failed to get project",err)
+  }
+ })
 export default router;
