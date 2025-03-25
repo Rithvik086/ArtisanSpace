@@ -46,8 +46,6 @@
             Others
           </label>
         </div>
-
-        <button type="submit">Apply Filters</button>
       </form>
     </div>
 
@@ -85,17 +83,37 @@
   <%- include("../partials/footer") %>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const selectedCategories = urlParams.getAll("category");
+      const checkboxes = document.querySelectorAll('input[name="category"]');
+      let timeout = 300;
 
-      if (selectedCategories.length > 0) {
-        document.querySelectorAll('input[name="category"]').forEach((checkbox) => {
-          if (selectedCategories.includes(checkbox.value)) {
-            checkbox.checked = true;
-          }
+      // Retain selected checkboxes after reload
+      const urlParams = new URLSearchParams(window.location.search);
+      checkboxes.forEach((checkbox) => {
+        if (urlParams.getAll("category").includes(checkbox.value)) {
+          checkbox.checked = true;
+        }
+
+        // Listen for changes and update the URL with a delay
+        checkbox.addEventListener("change", function() {
+          clearTimeout(timeout); // Clear previous timeout
+
+          timeout = setTimeout(() => {
+            const selected = Array.from(document.querySelectorAll('input[name="category"]:checked'))
+              .map((cb) => cb.value);
+
+            // Update URL and reload page
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete("category");
+            selected.forEach((category) => newUrl.searchParams.append("category", category));
+
+            window.location.href = newUrl.toString(); // Reload page after timeout
+          }, 500); // Adjust timeout as needed (500ms = 0.5s)
         });
-      }
+      });
     });
+
+
+
 
     async function updateCart(userId, productId) {
       try {

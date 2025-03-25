@@ -194,6 +194,6 @@ router.get("/settings", async (req, res) => {
   delete user.password;
   delete user.userId;
   delete user.role;
-  res.render("settings", { role: admrole, user });
+  res.render("settings", { role: astrole, user });
 });
 export default router;

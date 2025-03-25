@@ -51,18 +51,18 @@
           </div>
         </div>
       </div>
-      
-      <div class="checkout-right">
-          <div id="shippingBox" class="box">
-          <h3>Shipping Information</h3>
-        
-          <div id="addressContainer"></div>
-         
-          
-        </div> 
 
-        <button class="changeAddress-btn" onclick="window.location.href='/customer/settings'" >Change Address</button>
-        
+      <div class="checkout-right">
+        <div id="shippingBox" class="box">
+          <h3>Shipping Information</h3>
+
+          <div id="addressContainer"></div>
+
+
+        </div>
+
+        <button class="changeAddress-btn" onclick="window.location.href='/customer/settings'">Change Address</button>
+
         <div id="paymentBox" class="box">
           <h3>Payment Method</h3>
           <div class="payment-options">
@@ -79,7 +79,7 @@
               <label for="upi">UPI</label>
             </div>
           </div>
-          
+
           <div id="cardDetails" class="payment-details" style="display: none;">
             <div class="form-group">
               <label for="cardNumber">Card Number</label>
@@ -100,7 +100,7 @@
               <input type="text" id="nameOnCard">
             </div>
           </div>
-          
+
           <div id="upiDetails" class="payment-details" style="display: none;">
             <div class="form-group">
               <label for="upiId">UPI ID</label>
@@ -108,7 +108,7 @@
             </div>
           </div>
         </div>
-        
+
         <button id="placeOrderBtn" class="place-order-button">Place Order</button>
       </div>
     </div>
@@ -117,23 +117,26 @@
 
   <script>
     const addressString = "<%= user.address %>";
-const addressParts = addressString.split("|");
-
-const formattedAddress = `
+    const addressParts = addressString.split("|");
+    if (addressString = null) {
+      const formattedAddress = "";
+    } else {
+      const formattedAddress = `
     <div>${addressParts[0]}, ${addressParts[1]}, ${addressParts[2]}</div>
     <div>State : ${addressParts[3]}</div>
     <div>Pincode : ${addressParts[4]}</div>
     <div>${addressParts[5]}</div>
 `;
+    }
 
-document.getElementById("addressContainer").innerHTML = formattedAddress;
+    document.getElementById("addressContainer").innerHTML = formattedAddress;
 
     document.addEventListener('DOMContentLoaded', function() {
       // Payment method toggle
       const paymentMethods = document.getElementsByName('paymentMethod');
       const cardDetails = document.getElementById('cardDetails');
       const upiDetails = document.getElementById('upiDetails');
-      
+
       paymentMethods.forEach(method => {
         method.addEventListener('change', function() {
           if (this.value === 'card') {
@@ -152,7 +155,7 @@ document.getElementById("addressContainer").innerHTML = formattedAddress;
       // Place Order button
       document.getElementById('placeOrderBtn').addEventListener('click', async function() {
         // if (!validateForm()) return;
-        
+
         try {
           const shippingInfo = {
             fullName: document.getElementById('fullName').value,
@@ -162,9 +165,9 @@ document.getElementById("addressContainer").innerHTML = formattedAddress;
             pincode: document.getElementById('pincode').value,
             phone: document.getElementById('phone').value
           };
-          
+
           const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-          
+
           const response = await fetch('/customer/place-order', {
             method: 'POST',
             headers: {
@@ -175,9 +178,9 @@ document.getElementById("addressContainer").innerHTML = formattedAddress;
               paymentMethod
             })
           });
-          
+
           const result = await response.json();
-          
+
           if (result.success) {
             showNotification(result.message || 'Order placed successfully!', 'success');
             setTimeout(() => {
@@ -191,8 +194,8 @@ document.getElementById("addressContainer").innerHTML = formattedAddress;
           showNotification('An error occurred. Please try again.', 'error');
         }
       });
-      
-    //  
+
+      //  
       function showNotification(message, type) {
         let notificationContainer = document.querySelector(".notification-container");
 
@@ -228,7 +231,7 @@ document.getElementById("addressContainer").innerHTML = formattedAddress;
       right: 40px;
       z-index: 1000;
     }
-    
+
     .notification {
       padding: 12px 20px;
       margin-bottom: 10px;
@@ -237,27 +240,39 @@ document.getElementById("addressContainer").innerHTML = formattedAddress;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       animation: slide-in 0.3s ease-out forwards;
     }
-    
+
     .notification.success {
       background-color: #28a745;
     }
-    
+
     .notification.error {
       background-color: #dc3545;
     }
-    
+
     .notification.fade-out {
       animation: fade-out 0.5s ease-out forwards;
     }
-    
+
     @keyframes slide-in {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
-    
+
     @keyframes fade-out {
-      from { opacity: 1; }
-      to { opacity: 0; }
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+      }
     }
   </style>
 </body>

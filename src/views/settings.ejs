@@ -254,265 +254,261 @@
 </head>
 
 <body>
-
-
-
-  <body>
-    <%- include ('partials/navbar2'), {role} %>
-    <main>
-      <div class="container">
-        <div class="header">
-          <h1>Settings</h1>
-        </div>
-
-        <div class="tabs">
-          <div class="tab active" data-tab="profile">Profile</div>
-          <div class="tab" data-tab="address">Address</div>
-        </div>
-
-        <div class="tab-content active" id="profile">
-          <div class="form-group">
-            <label for="username">Username (Non editable)</label>
-            <input type="text" id="username" class="form-control" disabled required>
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email Address (Non editable)</label>
-            <input type="email" id="email" class="form-control" disabled required>
-          </div>
-
-          <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" class="form-control" disabled required>
-            <button class="btn btn-primary btn-edit" data-field="name">Edit</button>
-          </div>
-
-          <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" class="form-control" disabled required>
-            <button class="btn btn-primary btn-edit" data-field="phone">Edit</button>
-          </div>
-        </div>
-
-        <div class="tab-content" id="address">
-          <div class="address-form">
-            <button class="btn btn-edit btn-primary btn-address" id="editAddressBtn">Edit</button>
-            <div class="form-group">
-              <label for="addressLine1">Address Line 1</label>
-              <input type="text" id="addressLine1" class="form-control" disabled required>
-            </div>
-
-            <div class="form-group">
-              <label for="addressLine2">Address Line 2</label>
-              <input type="text" id="addressLine2" class="form-control" disabled required>
-            </div>
-
-            <div class="form-group">
-              <label for="city">City</label>
-              <input type="text" id="city" class="form-control" disabled required>
-            </div>
-
-            <div class="form-group">
-              <label for="state">State / Province</label>
-              <input type="text" id="state" class="form-control" disabled required>
-            </div>
-
-            <div class="form-group">
-              <label for="zipCode">Zip / Postal Code</label>
-              <input type="text" id="zipCode" class="form-control" disabled required>
-            </div>
-
-            <div class="form-group">
-              <label for="country">Country</label>
-              <input type="text" id="country" class="form-control" disabled required>
-            </div>
-
-            <button class="btn address-save-btn" id="saveAddressBtn" style="display: none;">Save Address</button>
-            <input type="hidden" id="userData" value='<%= JSON.stringify(user) %>'>
-          </div>
-        </div>
-
-      </div>
-      <div class="account-delete">
-        <button id="deleteAccountBtn" class="delete-btn">Delete Account</button>
+  <%- include ('partials/navbar2'), {role} %>
+  <main>
+    <div class="container">
+      <div class="header">
+        <h1>Settings</h1>
       </div>
 
-      <div class="toast" id="toast"></div>
-    </main>
+      <div class="tabs">
+        <div class="tab active" data-tab="profile">Profile</div>
+        <div class="tab" data-tab="address">Address</div>
+      </div>
 
-    <%- include ('partials/footer') %>
+      <div class="tab-content active" id="profile">
+        <div class="form-group">
+          <label for="username">Username (Non editable)</label>
+          <input type="text" id="username" class="form-control" disabled required>
+        </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        let userData = JSON.parse(document.getElementById('userData').value);
+        <div class="form-group">
+          <label for="email">Email Address (Non editable)</label>
+          <input type="email" id="email" class="form-control" disabled required>
+        </div>
 
-        // DOM Elements
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const editButtons = document.querySelectorAll('.btn-edit');
-        const toast = document.getElementById('toast');
-        const addressFieldsData = ['addressLine1', 'addressLine2', 'city', 'state', 'zipCode', 'country'];
-        const addressFields = document.querySelectorAll("#address input");
-        const editAddressBtn = document.getElementById("editAddressBtn");
-        const saveAddressBtn = document.getElementById("saveAddressBtn");
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" class="form-control" disabled required>
+          <button class="btn btn-primary btn-edit" data-field="name">Edit</button>
+        </div>
 
-        // Load user data into input fields
-        function loadUserData() {
-          document.getElementById('name').value = userData.name || '';
-          document.getElementById('email').value = userData.email || '';
-          document.getElementById('phone').value = userData.mobile_no || '';
-          document.getElementById('username').value = userData.username || '';
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" class="form-control" disabled required>
+          <button class="btn btn-primary btn-edit" data-field="phone">Edit</button>
+        </div>
+      </div>
 
-          if (typeof userData.address === "string") {
-            const addressParts = userData.address.split("|");
-            addressFieldsData.forEach((field, index) => {
-              document.getElementById(field).value = addressParts[index] || '';
-            });
-          }
-        }
+      <div class="tab-content" id="address">
+        <div class="address-form">
+          <button class="btn btn-edit btn-primary btn-address" id="editAddressBtn">Edit</button>
+          <div class="form-group">
+            <label for="addressLine1">Address Line 1</label>
+            <input type="text" id="addressLine1" class="form-control" disabled required>
+          </div>
 
-        // Tab Switching
-        tabs.forEach(tab => {
-          tab.addEventListener('click', function() {
-            const tabId = tab.getAttribute('data-tab');
+          <div class="form-group">
+            <label for="addressLine2">Address Line 2</label>
+            <input type="text" id="addressLine2" class="form-control" disabled required>
+          </div>
 
-            tabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" class="form-control" disabled required>
+          </div>
 
-            tab.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+          <div class="form-group">
+            <label for="state">State / Province</label>
+            <input type="text" id="state" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
+            <label for="zipCode">Zip / Postal Code</label>
+            <input type="text" id="zipCode" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" id="country" class="form-control" disabled required>
+          </div>
+
+          <button class="btn address-save-btn" id="saveAddressBtn" style="display: none;">Save Address</button>
+          <input type="hidden" id="userData" value='<%= JSON.stringify(user) %>'>
+        </div>
+      </div>
+
+    </div>
+    <div class="account-delete">
+      <button id="deleteAccountBtn" class="delete-btn">Delete Account</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </main>
+
+  <%- include ('partials/footer') %>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      let userData = JSON.parse(document.getElementById('userData').value);
+
+      // DOM Elements
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      const editButtons = document.querySelectorAll('.btn-edit');
+      const toast = document.getElementById('toast');
+      const addressFieldsData = ['addressLine1', 'addressLine2', 'city', 'state', 'zipCode', 'country'];
+      const addressFields = document.querySelectorAll("#address input");
+      const editAddressBtn = document.getElementById("editAddressBtn");
+      const saveAddressBtn = document.getElementById("saveAddressBtn");
+
+      // Load user data into input fields
+      function loadUserData() {
+        document.getElementById('name').value = userData.name || '';
+        document.getElementById('email').value = userData.email || '';
+        document.getElementById('phone').value = userData.mobile_no || '';
+        document.getElementById('username').value = userData.username || '';
+
+        if (typeof userData.address === "string") {
+          const addressParts = userData.address.split("|");
+          addressFieldsData.forEach((field, index) => {
+            document.getElementById(field).value = addressParts[index] || '';
           });
-        });
-
-        // Edit Profile Fields
-        editButtons.forEach(button => {
-          button.addEventListener('click', function() {
-            const fieldId = button.getAttribute('data-field');
-            const field = document.getElementById(fieldId);
-
-            if (field.disabled) {
-              field.disabled = false;
-              field.focus();
-              button.textContent = 'Save';
-              field.style.backgroundColor = 'white';
-            } else {
-              field.disabled = true;
-              button.textContent = 'Edit';
-              field.style.backgroundColor = '#f5f5f5';
-              saveUserData({
-                [fieldId]: field.value
-              });
-            }
-          });
-        });
-
-        // Address Edit Button
-        editAddressBtn.addEventListener("click", function() {
-          toggleAddressFields(false);
-          editAddressBtn.style.display = "none";
-          saveAddressBtn.style.display = "block";
-        });
-
-        // Save Address Button
-        saveAddressBtn.addEventListener("click", function() {
-          const newAddressArray = addressFieldsData.map(field => document.getElementById(field).value);
-          const newAddressString = newAddressArray.join("|");
-
-          toggleAddressFields(true);
-          saveAddressBtn.style.display = "none";
-          editAddressBtn.style.display = "block";
-
-          saveUserData({
-            address: newAddressString
-          });
-        });
-
-        // Enable/Disable Address Fields
-        function toggleAddressFields(disable) {
-          addressFields.forEach((field) => {
-            field.disabled = disable;
-            field.style.backgroundColor = disable ? "#f5f5f5" : "white";
-          });
         }
+      }
 
-        // Save All Edited Data to Server
-        function saveUserData(updatedFields) {
-          showToast('Saving...', 'info');
+      // Tab Switching
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = tab.getAttribute('data-tab');
 
-          // Merge existing userData with new updates
-          const updatedUserData = {
-            ...userData,
-            ...updatedFields
-          };
+          tabs.forEach(t => t.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
 
-          fetch('/update-profile', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(updatedUserData)
-            })
-            .then(response => response.json())
-            .then(data => {
-              if (data.success) {
-                showToast('Saved successfully!', 'success');
-                setTimeout(() => {
-                  location.reload(); // Reload only on success
-                }, 1000);
-              } else {
-                showToast('Failed to save. Try again.', 'error');
-              }
-            })
-            .catch(() => {
-              showToast('Error saving data.', 'error');
-            });
-        }
-
-        // Toast Notification
-        function showToast(message, type = 'success') {
-          toast.textContent = message;
-          toast.className = 'toast ' + type;
-          toast.style.display = 'block';
-
-          setTimeout(() => {
-            toast.style.animation = 'slideOut 0.3s ease forwards';
-            setTimeout(() => {
-              toast.style.display = 'none';
-              toast.style.animation = '';
-            }, 300);
-          }, 3000);
-        }
-
-
-        document.getElementById('deleteAccountBtn').addEventListener('click', async function() {
-          if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-            // Perform delete account action (send request to the server)
-            const response = await fetch(`/delete-account`);
-            if (!response.ok) {
-              showToast("Failed to delete account! Please try again.", "error");
-              throw new Error("Server returned an error response.");
-            }
-
-            const result = await response.json();
-
-            if (result.success) {
-              showToast("Account deleted successfully!", "success");
-              setTimeout(() => {
-                window.location.href = "/"; // Redirect after a short delay
-              }, 1000);
-
-            } else {
-              showToast("Failed to delete account! Please try again.", "error");
-            }
-          } else {
-            showToast("Account deletion canceled!", "error");
-            console.log("Account deletion canceled.");
-          }
+          tab.classList.add('active');
+          document.getElementById(tabId).classList.add('active');
         });
-        // Initialize User Data
-        loadUserData();
       });
-    </script>
-  </body>
+
+      // Edit Profile Fields
+      editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const fieldId = button.getAttribute('data-field');
+          const field = document.getElementById(fieldId);
+
+          if (field.disabled) {
+            field.disabled = false;
+            field.focus();
+            button.textContent = 'Save';
+            field.style.backgroundColor = 'white';
+          } else {
+            field.disabled = true;
+            button.textContent = 'Edit';
+            field.style.backgroundColor = '#f5f5f5';
+            saveUserData({
+              [fieldId]: field.value
+            });
+          }
+        });
+      });
+
+      // Address Edit Button
+      editAddressBtn.addEventListener("click", function() {
+        toggleAddressFields(false);
+        editAddressBtn.style.display = "none";
+        saveAddressBtn.style.display = "block";
+      });
+
+      // Save Address Button
+      saveAddressBtn.addEventListener("click", function() {
+        const newAddressArray = addressFieldsData.map(field => document.getElementById(field).value);
+        const newAddressString = newAddressArray.join("|");
+
+        toggleAddressFields(true);
+        saveAddressBtn.style.display = "none";
+        editAddressBtn.style.display = "block";
+
+        saveUserData({
+          address: newAddressString
+        });
+      });
+
+      // Enable/Disable Address Fields
+      function toggleAddressFields(disable) {
+        addressFields.forEach((field) => {
+          field.disabled = disable;
+          field.style.backgroundColor = disable ? "#f5f5f5" : "white";
+        });
+      }
+
+      // Save All Edited Data to Server
+      function saveUserData(updatedFields) {
+        showToast('Saving...', 'info');
+
+        // Merge existing userData with new updates
+        const updatedUserData = {
+          ...userData,
+          ...updatedFields
+        };
+
+        fetch('/update-profile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedUserData)
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              showToast('Saved successfully!', 'success');
+              setTimeout(() => {
+                location.reload(); // Reload only on success
+              }, 1000);
+            } else {
+              showToast('Failed to save. Try again.', 'error');
+            }
+          })
+          .catch(() => {
+            showToast('Error saving data.', 'error');
+          });
+      }
+
+      // Toast Notification
+      function showToast(message, type = 'success') {
+        toast.textContent = message;
+        toast.className = 'toast ' + type;
+        toast.style.display = 'block';
+
+        setTimeout(() => {
+          toast.style.animation = 'slideOut 0.3s ease forwards';
+          setTimeout(() => {
+            toast.style.display = 'none';
+            toast.style.animation = '';
+          }, 300);
+        }, 3000);
+      }
+
+
+      document.getElementById('deleteAccountBtn').addEventListener('click', async function() {
+        if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+          // Perform delete account action (send request to the server)
+          const response = await fetch(`/delete-account`);
+          if (!response.ok) {
+            showToast("Failed to delete account! Please try again.", "error");
+            throw new Error("Server returned an error response.");
+          }
+
+          const result = await response.json();
+
+          if (result.success) {
+            showToast("Account deleted successfully!", "success");
+            setTimeout(() => {
+              window.location.href = "/"; // Redirect after a short delay
+            }, 1000);
+
+          } else {
+            showToast("Failed to delete account! Please try again.", "error");
+          }
+        } else {
+          showToast("Account deletion canceled!", "error");
+          console.log("Account deletion canceled.");
+        }
+      });
+      // Initialize User Data
+      loadUserData();
+    });
+  </script>
+</body>
 
 </html>
