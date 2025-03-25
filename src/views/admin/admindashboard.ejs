@@ -76,7 +76,7 @@
                 <td><%=user.role %></td>
 
                 <td class="actions">
-                  <button class="edit-btn" data-id="">Edit</button>
+                  
                   <button class="delete-btn" data-id="<%=user.userId %>">Delete</button>
                 </td>
               </tr>
@@ -102,8 +102,6 @@
                 <th>Original Price</th>
                 <th>Website Price</th>
                 <th>Stock</th>
-                <th>Status</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="products-table-body">
@@ -117,22 +115,9 @@
                   </div>
                 </td>
                 <td><%= product.name %></td>
-
                 <td>₹<%= product.oldPrice %></td>
                 <td>₹<%= product.newPrice %></td>
                 <td><%= product.quantity %></td>
-                <td>
-                  <span class="status-badge <%= product.visible ? 'active' : 'inactive' %>">
-                    <%= product.visible ? 'Visible' : 'Hidden' %>
-                  </span>
-                </td>
-                <td class="actions">
-                  <button class="visibility-btn <%= product.visible ? 'hide-btn' : 'show-btn' %>" data-id="<%= product.productId %>" data-visible="<%= product.visible %>">
-                    <%= product.visible ? 'Hide' : 'Show' %>
-                  </button>
-                  <button class="edit-product-btn" data-id="<%= product.productId%>">Edit</button>
-                  <button class="delete-product-btn" data-id="<%= product.productId %>">Delete</button>
-                </td>
               </tr>
               <% }); %>
               <% } else { %>

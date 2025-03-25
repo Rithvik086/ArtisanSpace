@@ -75,11 +75,11 @@
             <img src="<%= request.image %>" class="card-img-top" alt="<%= request.title %>">
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-start mb-2">
-                <h5 class="card-title"><%= request.title %></h5>
-                <span class="badge badge-budget">$<%= request.budget %></span>
+                <h5 class="card-title">Title: <%= request.title %></h5>
+                <span class="badge badge-budget">Budget :₹<%= request.budget %></span>
               </div>
-              <p class="card-text text-muted mb-1"><small><i class="bi bi-tag"></i> <%= request.type %></small></p>
-              <p class="card-text"><%= request.description %></p>
+              <p class="card-text text-muted mb-1"><small><i class="bi bi-tag"><strong>Type:</strong> </i> <%= request.type %></small></p>
+              <p class="card-text">Description: <%= request.description %></p>
             </div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item d-flex justify-content-between">
@@ -125,7 +125,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <h5 class="card-title"><%= request.title %></h5>
-              <span class="badge badge-budget">$<%= request.budget %></span>
+              <span class="badge badge-budget">₹<%= request.budget %></span>
             </div>
             <p class="card-text text-muted mb-1"><small><i class="bi bi-tag"></i> <%= request.type %></small></p>
             <p class="card-text"><%= request.description %></p>

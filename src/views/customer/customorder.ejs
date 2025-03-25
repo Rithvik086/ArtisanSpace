@@ -166,6 +166,9 @@
           <label for="title" class="required">Request Title</label>
           <input type="text" id="title" name="title" placeholder="Give your request a name" required>
         </div>
+        <p id="titleError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          title is only alphanumeric
+        </p>
 
         <div class="form-group">
           <label for="type" class="required">Type of Product</label>
@@ -186,13 +189,16 @@
           <label for="description" class="required">Detailed Description</label>
           <textarea id="description" name="description" placeholder="Please describe your custom item in detail. Include size, color preferences, materials, design elements, intended use, etc." required></textarea>
         </div>
+        <p id="descError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          Description from 10 -300 words
+        </p>
 
         <div class="form-group">
-          <label for="image" class="required">Reference Image</label>
+          <label for="image">Reference Image</label>
           <div class="file-upload">
             <p>Drag & drop an image here or click to upload</p>
             <p>(Max 5MB)</p>
-            <input type="file" id="image" name="image" accept="image/*" required>
+            <input type="file" id="image" name="image" accept="image/*">
           </div>
         </div>
 
@@ -202,6 +208,9 @@
 
             <input type="text" id="budget" name="budget" required>
           </div>
+          <p id="budgetError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            invalid Budget(1-1,00,000)
+          </p>
 
           <div class="form-group">
             <label for="requiredBy" class="required">Required By</label>
@@ -220,6 +229,17 @@
   <script>
     document.getElementById('customOrderForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+
+      // Ensure all validations are called and respected
+      const isTitleValid = validatetitle();
+      const isBudgetValid = validateBudget();
+      const isDescriptionValid = validatedescription();
+
+      if (!isTitleValid || !isBudgetValid || !isDescriptionValid) {
+        console.warn('Form submission prevented due to validation errors.');
+        return; // Stop submission if any validation fails
+      }
+
       const formData = new FormData(this);
 
       try {
@@ -238,32 +258,93 @@
           setTimeout(() => {
             this.reset();
             statusMessage.style.display = 'none';
-          }, 2000)
+          }, 2000);
 
           setTimeout(() => {
             window.location.href = "/customer/";
-          }, 1500)
+          }, 1500);
         }
 
       } catch (error) {
-        console.error('Error submiting Custom order :', error);
+        console.error('Error submitting Custom order:', error);
       }
-    })
+    });
+
+    function validateBudget() {
+      const budgetInput = document.getElementById('budget');
+      const budgetError = document.getElementById('budgetError');
+
+
+      const budgetRegex = /^(?!0+$)([1-9]\d{0,5})$/;
+
+      if (!budgetRegex.test(budgetInput.value)) {
+        budgetError.textContent = 'Invalid budget (1-100,000)';
+        budgetError.style.display = 'block';
+        return false;
+      } else {
+        budgetError.style.display = 'none';
+        return true;
+      }
+    }
+
+    function validatetitle() {
+      const titleInput = document.getElementById('title');
+      const titleError = document.getElementById('titleError');
+      const titleRegex = /^[a-zA-Z0-9 ]+$/;
+
+      if (!titleRegex.test(titleInput.value)) {
+        titleError.textContent = 'title is only alphanumeric';
+        titleError.style.display = 'block';
+        return false;
+      } else {
+        titleError.style.display = 'none';
+        return true;
+      }
+    }
+
+    function validatedescription() {
+      const descriptionInput = document.getElementById('description');
+      const descriptionError = document.getElementById('descError');
+      const wordCount = descriptionInput.value.trim().split(/\s+/).length;
+
+      if (wordCount < 10 || wordCount > 300) {
+        descriptionError.textContent = 'Description must be between 10 and 300 words';
+        descriptionError.style.display = 'block';
+        return false;
+      } else {
+        descriptionError.style.display = 'none';
+        return true;
+      }
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
       const customOrderForm = document.getElementById('customOrderForm');
       const statusMessage = document.getElementById('status-message');
       const imageInput = document.getElementById('image');
-      const imagePreview = document.createElement('div'); // Create a container for image preview
+      const imagePreview = document.createElement('div');
+      const budgetInput = document.getElementById('budget'); // Add missing budgetInput declaration
+
+      // Create a container for image preview
       imagePreview.style.marginTop = '10px';
       imagePreview.style.textAlign = 'center';
       imagePreview.style.maxWidth = '100%';
 
+
+      budgetInput.addEventListener('input', validateBudget);
+
+      // Validate on form submission
+
+      customOrderForm.addEventListener('submit', function(e) {
+        if (!validateBudget() || !validatetitle() || !validatedescription()) {
+          e.preventDefault(); // Prevent form submission if validation fails
+        }
+      });
       // Insert the preview container after the file upload div
       imageInput.parentNode.appendChild(imagePreview);
 
       // Handle image preview
       imageInput.addEventListener('change', function(event) {
+
         const file = event.target.files[0];
         if (file) {
           const reader = new FileReader();
