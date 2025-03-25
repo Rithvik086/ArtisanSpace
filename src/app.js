@@ -5,12 +5,8 @@ import { fileURLToPath } from "url";
 import authroutes from "./routes/authroutes.js";
 import useroutes from "./routes/userRoutes.js";
 import cookieParser from "cookie-parser";
-import { initializeDatabases } from "./config/sqlite.js";
 import dbConnect from "./config/dbconnect.js";
-import {
-  verifytoken,
-  redirectBasedOnRole,
-} from "./middleware/authMiddleware.js";
+import { redirectBasedOnRole } from "./middleware/authMiddleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

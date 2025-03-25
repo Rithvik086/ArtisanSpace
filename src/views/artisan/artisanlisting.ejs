@@ -8,6 +8,17 @@
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
   <link rel="stylesheet" href="/artisan/listings.css">
+  <style>
+    .error-input {
+      border: 1px solid red !important;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin: 5px 0 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -24,6 +35,9 @@
           <div class="form-group">
             <label for="product-name">Product Name</label>
             <input type="text" id="product-name" name="productName" placeholder="Enter product name" required />
+            <p id="productNameError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+              Password must only contain letters, numbers, -, and spaces within 3-30 characters</p>
+            </p>
           </div>
         </div>
         <div class="form-group">
@@ -41,7 +55,10 @@
 
         <div class="form-group">
           <label for="original-price">Price</label>
-          <input type="number" id="original-price" name="price" step="10" placeholder="Enter price" required />
+          <input type="number" id="original-price" name="price" step=".01" placeholder="Enter price" required />
+          <p id="originalPriceError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Price must be a valid number with up to two decimal places
+          </p>
         </div>
 
 
@@ -54,12 +71,18 @@
         <div class="form-group">
           <label for="description">Description</label>
           <textarea id="description" name="description" placeholder="Enter a detailed description of the product, highlighting key features and benefits" required></textarea>
+          <p id="descriptionError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Description must be between 10 and 500 characters and only contain letters, numbers, spaces, and basic punctuation.
+          </p>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="quantity">Quantity</label>
             <input type="number" id="quantity" name="quantity" min="0" placeholder="Enter quantity in stock" required />
+            <p id="quantityError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+              Quantity must be a positive integer greater than 0
+            </p>
           </div>
         </div>
 
@@ -72,10 +95,18 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const productForm = document.getElementById('product-form');
-      const statusMessage = document.getElementById('status-message');
+      const productName = document.getElementById('product-name');
+      const productType = document.getElementById('product-type');
+      const originalPrice = document.getElementById('original-price');
+      const description = document.getElementById('description');
+      const quantity = document.getElementById('quantity');
       const productPhoto = document.getElementById('product-photo');
       const imagePreview = document.getElementById('image-preview');
+
+      const productNameregex = /^[a-zA-Z0-9\s-]+$/;
+      const originalPriceregex = /^\d+(\.\d{1,2})?$/;
+      const descriptionregex = /^[a-zA-Z0-9\s.,'"\-!?()]+$/;
+      const quantityregex = /^[1-9][0-9]*$/;
 
       // Handle image preview
       productPhoto.addEventListener('change', function(event) {
@@ -94,6 +125,48 @@
       // Handle form submission
       document.getElementById("product-form").addEventListener("submit", async function(event) {
         event.preventDefault();
+
+        // Reset previous error states
+        productName.classList.remove('error-input');
+        document.getElementById('productNameError').style.display = "none";
+
+        // Validate product name
+        if (!productNameregex.test(productName.value) || productName.value.length < 3 || productName.value.length > 30) {
+          document.getElementById('productNameError').style.display = "block";
+          productName.classList.add('error-input');
+          productName.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+          return;
+        }
+        if (!originalPriceregex.test(originalPrice.value)) {
+          document.getElementById('originalPriceError').style.display = "block";
+          originalPrice.classList.add('error-input');
+          originalPrice.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+          return;
+        }
+        if (!descriptionregex.test(description.value) || description.value.length < 10 || description.value.length > 500) {
+          document.getElementById('descriptionError').style.display = "block";
+          description.classList.add('error-input');
+          description.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+          return;
+        }
+        if (!quantityregex.test(quantity.value)) {
+          document.getElementById('quantityError').style.display = "block";
+          quantity.classList.add('error-input');
+          quantity.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+          return;
+        }
 
         const inputs = this.querySelectorAll("input");
         const formData = new FormData(this);
