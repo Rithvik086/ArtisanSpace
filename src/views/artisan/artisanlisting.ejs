@@ -129,6 +129,12 @@
         // Reset previous error states
         productName.classList.remove('error-input');
         document.getElementById('productNameError').style.display = "none";
+        originalPrice.classList.remove('error-input');
+        document.getElementById('originalPriceError').style.display = "none";
+        description.classList.remove('error-input');
+        document.getElementById('descriptionError').style.display = "none";
+        quantity.classList.remove('error-input');
+        document.getElementById('quantityError').style.display = "none";
 
         // Validate product name
         if (!productNameregex.test(productName.value) || productName.value.length < 3 || productName.value.length > 30) {
