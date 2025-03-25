@@ -80,7 +80,7 @@ body {
 .form form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 13px;
   width: 400px;
   align-items: center;
 }

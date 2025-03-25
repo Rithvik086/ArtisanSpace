@@ -9,14 +9,15 @@ import {
   getPendingProducts,
   getProductsCount,
 } from "../models/productmodel.js";
-import { getUserById } from "../models/usermodel.js";
+import { getUserById,getUsers } from "../models/usermodel.js";
 const router = express.Router();
 const mngrole = "manager";
 
 router.use(authorizerole("admin", "manager"));
 
-router.get("/", (req, res) => {
-  res.render("manager/managerdashboard", { role: mngrole });
+router.get("/", async(req, res) => {
+  const userlist = await getUsers();
+  res.render("manager/managerdashboard", { role: mngrole ,userlist });
 });
 
 router.get("/content-moderation", async (req, res) => {
