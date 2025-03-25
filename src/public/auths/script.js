@@ -104,7 +104,7 @@ document
       nameError.style.display = "none";
     }
     //email validation
-    let emailregex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    let emailregex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
     if (!emailregex.test(email.value)) {
       event.preventDefault();
       emailError.style.display = "block";

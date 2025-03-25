@@ -1,0 +1,242 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&display=swap");
+
+
+    body {
+      margin: 0;
+      font-family: "Baloo Bhai 2";
+    }
+
+    main {
+      width: 100%;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: #e4d9d4;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: #5c4033;
+      color: white;
+      padding: 20px 30px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .tabs {
+      font-size: 17px;
+      display: flex;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
+
+    .tab {
+      padding: 15px 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      color: #5c4033;
+      position: relative;
+    }
+
+    .tab:hover {
+      color: #5c4033;
+      background-color: #f9f9f9;
+    }
+
+    .tab.active {
+      color: #5c4033;
+      border-bottom: 2px solid#bd8267;
+    }
+
+    .tab-content {
+      padding: 30px;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+      font-size: 16px;
+    }
+
+    .form-control {
+      width: 88%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border 0.3s ease;
+      background-color: #f9f9f9;
+    }
+
+    .form-control:disabled {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+    }
+
+    .form-control:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    .btn {
+      font-size: 14px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #5c4033;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #bd8267;
+    }
+
+    .btn-edit {
+      position: absolute;
+      right: 0;
+      top: 35px;
+    }
+
+    .btn-address {
+      top: -15px;
+    }
+
+    .address-form {
+      position: relative;
+    }
+
+    .address-save-btn {
+      display: block;
+      margin-top: 20px;
+      background-color: #5c4033;
+      color: white;
+    }
+
+    .address-save-btn:hover {
+      background-color: #bd8267;
+    }
+
+    .address-edit-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.3s ease forwards;
+    }
+
+    .toast.success {
+      background: #2ecc71;
+    }
+
+    .toast.error {
+      background: #e74c3c;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    .account-delete {
+      display: flex;
+      justify-content: center;
+    }
+
+    .delete-btn {
+      margin: 10px auto 40px auto;
+      background-color: #ff4d4d;
+      /* Red color */
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .delete-btn:hover {
+      background-color: #cc0000;
+      /* Darker red */
+      transform: scale(1.05);
+    }
+
+    .delete-btn:active {
+      transform: scale(0.98);
+      background-color: #b30000;
+    }
