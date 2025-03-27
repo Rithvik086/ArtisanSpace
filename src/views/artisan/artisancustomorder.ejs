@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Orders</title>
+  <link rel="stylesheet" href="/navbar2.css" />
+  <link rel="stylesheet" href="/footer.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .request-card {
+      height: 100%;
+      transition: transform 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .request-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .section-title {
+      position: relative;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background-color: #007bff;
+    }
+
+    .badge-budget {
+      font-size: 1rem;
+      background-color: #28a745;
+    }
+
+    .badge-date {
+      font-size: 0.9rem;
+      background-color: #dc3545;
+    }
+
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('../partials/navbar2', { role }) %>
+  <main>
+    <div class="container py-5">
+      <!-- Available Custom Requests Section -->
+      <h2 class="section-title">Available Custom Requests</h2>
+
+      <% if (availableRequests && availableRequests.length > 0) { %>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+        <% availableRequests.forEach(request => { %>
+        <div class="col">
+          <div class="card request-card">
+            <img src="<%= request.image %>" class="card-img-top" alt="<%= request.title %>">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title">Title: <%= request.title %></h5>
+                <span class="badge badge-budget">Budget :₹<%= request.budget %></span>
+              </div>
+              <p class="card-text text-muted mb-1"><small><i class="bi bi-tag"><strong>Type:</strong> </i> <%= request.type %></small></p>
+              <p class="card-text">Description: <%= request.description %></p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Required by:</span>
+                <span class="badge badge-date"><%= request.requiredBy %></span>
+              </li>
+              <li class="list-group-item">
+                <strong>Requested by:</strong> <%= request.username || 'Unknown User' %>
+
+              </li>
+            </ul>
+            <div class="card-footer">
+              <form id="requestForm-<%= request.requestId %>" class="request-form">
+                <input type="hidden" name="requestId" value="<%= request.requestId %>">
+                <input type="hidden" name="artisanId" value="<%= currentArtisanId %>">
+                <button type="submit" class="btn btn-primary w-100">Accept Request</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <% } else { %>
+    <div class="empty-state mb-5">
+      <h4>No available custom requests at the moment</h4>
+      <p class="text-muted">Check back later for new requests from customers.</p>
+    </div>
+    <% } %>
+
+    <!-- Accepted Orders Section -->
+    <h2 class="section-title">Your Accepted Orders</h2>
+
+    <% if (acceptedRequests && acceptedRequests.length > 0) { %>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <% acceptedRequests.forEach(request => { %>
+      <div class="col">
+        <div class="card request-card">
+          <div class="card-header bg-success text-white">
+            Accepted Order
+          </div>
+          <img src="<%= request.image %>" class="card-img-top" alt="<%= request.title %>">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title"><%= request.title %></h5>
+              <span class="badge badge-budget">₹<%= request.budget %></span>
+            </div>
+            <p class="card-text text-muted mb-1"><small><i class="bi bi-tag"></i> <%= request.type %></small></p>
+            <p class="card-text"><%= request.description %></p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Required by:</span>
+              <span class="badge badge-date"><%= request.requiredBy %></span>
+            </li>
+            <li class="list-group-item">
+              <strong>Requested by:</strong> <%= request.username || 'Unknown User' %>
+              <br>
+              <strong>Contact Details:</strong>
+              <%= `${request.username || 'Unknown User'} | ${request.email || 'No Email'} | ${request.mobile_no || 'No Phone'}` %>
+            </li>
+          </ul>
+          <div class="card-footer">
+            <a href="/artisan/customrequests/<%= request.requestId %>" class="btn btn-outline-primary w-100 complete-btn">Completed</a>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <% } else { %>
+    <div class="empty-state">
+      <h4>You haven't accepted any orders yet</h4>
+      <p class="text-muted">Accept custom requests from the section above to see them here.</p>
+    </div>
+    <% } %>
+    </div>
+  </main>
+
+  <%- include("../partials/footer") %>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Select all forms with the request-form class
+      const requestForms = document.querySelectorAll('.request-form');
+
+      // Add event listener to each form
+      requestForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault(); // Prevent default form submission
+
+          // Get form data
+          const formData = new FormData(this);
+          const requestId = formData.get('requestId');
+          const artisanId = formData.get('artisanId');
+
+          // Convert to JSON for sending
+          const data = {
+            requestId: requestId,
+            artisanId: artisanId
+          };
+
+          // Show loading state on button
+          const submitBtn = this.querySelector('button[type="submit"]');
+          const originalBtnText = submitBtn.innerHTML;
+          submitBtn.innerHTML = 'Processing...';
+          submitBtn.disabled = true;
+
+          // Send AJAX request
+          fetch('/artisan/customrequests', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then(response => {
+              if (response.ok) {
+                // If success, reload the page
+                window.location.reload();
+              } else {
+                // If error, restore button and show error
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                alert('Failed to accept the request. Please try again.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              submitBtn.innerHTML = originalBtnText;
+              submitBtn.disabled = false;
+              alert('An error occurred. Please try again.');
+            });
+        });
+      });
+      const completeButtons = document.querySelectorAll('.complete-btn');
+
+      completeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault(); // Prevent default link navigation
+
+          // Get the request ID from the href
+          const url = this.getAttribute('href');
+
+          // Show loading state on button
+          const originalBtnText = this.innerHTML;
+          this.innerHTML = 'Processing...';
+          this.disabled = true;
+
+          // Send AJAX request
+          fetch(url, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(response => {
+              if (response.ok) {
+                // If success (200 response), reload the page
+                window.location.reload();
+              } else {
+                // If error, restore button and show error
+                this.innerHTML = originalBtnText;
+                this.disabled = false;
+                alert('Failed to mark as completed. Please try again.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              this.innerHTML = originalBtnText;
+              this.disabled = false;
+              alert('An error occurred. Please try again.');
+            });
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -12,33 +12,109 @@
 
 <body>
   <%- include("../partials/navbar2",{role}) %>
-  <div class="content">
-    <ul class="product-list">
-      <% products.forEach(product=> { %>
-      <li><%- include("../partials/product-card", {product, userId}) %></li>
-      <%})%>
-    </ul>
-    <ul class="pagination">
-      <% if (currentPage> 1) { %>
-      <a href="/customer/store?page=<%= currentPage - 1 %>">Previous</a>
-      <% } %>
+  <main>
+    <div class="left">
+      <form action="/customer/store" method="GET" id="filter-form">
+        <h3>Filter Products</h3>
 
-      <% for (let i=1; i <=totalPages; i++) { %>
-      <a href="/customer/store?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
-        <%= i %>
-      </a>
-      <% } %>
+        <div class="filter-category">
+          <h4>Category</h4>
+          <label>
+            <input type="checkbox" name="category" value="statue"> Statue
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="painting"> Painting
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="footware"> Footware
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="pottery"> Pottery
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="toys"> Toys
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="headware"> Headware
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="musical instrument">
+            Musical Instrument
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="other">
+            Others
+          </label>
+        </div>
+      </form>
+    </div>
 
-      <% if (currentPage < totalPages) { %>
-      <a href="/customer/store?page=<%= currentPage + 1 %>">Next</a>
-      <% } %>
-      <ul />
 
-  </div>
+
+    <div class="right">
+      <div class="content">
+        <ul class="product-list">
+          <% products.forEach(product=> { %>
+          <li><%- include("../partials/product-card", {product, userId}) %></li>
+          <%})%>
+        </ul>
+        <ul class="pagination">
+          <% if (currentPage> 1) { %>
+          <a href="/customer/store?page=<%= currentPage - 1 %>">Previous</a>
+          <% } %>
+
+          <% for (let i=1; i <=totalPages; i++) { %>
+          <a href="/customer/store?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
+            <%= i %>
+          </a>
+          <% } %>
+
+          <% if (currentPage < totalPages) { %>
+          <a href="/customer/store?page=<%= currentPage + 1 %>">Next</a>
+          <% } %>
+          <ul />
+
+      </div>
+    </div>
+  </main>
   <div class="notification-container"></div>
+
 
   <%- include("../partials/footer") %>
   <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const checkboxes = document.querySelectorAll('input[name="category"]');
+      let timeout = 300;
+
+      // Retain selected checkboxes after reload
+      const urlParams = new URLSearchParams(window.location.search);
+      checkboxes.forEach((checkbox) => {
+        if (urlParams.getAll("category").includes(checkbox.value)) {
+          checkbox.checked = true;
+        }
+
+        // Listen for changes and update the URL with a delay
+        checkbox.addEventListener("change", function() {
+          clearTimeout(timeout); // Clear previous timeout
+
+          timeout = setTimeout(() => {
+            const selected = Array.from(document.querySelectorAll('input[name="category"]:checked'))
+              .map((cb) => cb.value);
+
+            // Update URL and reload page
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete("category");
+            selected.forEach((category) => newUrl.searchParams.append("category", category));
+
+            window.location.href = newUrl.toString(); // Reload page after timeout
+          }, 500); // Adjust timeout as needed (500ms = 0.5s)
+        });
+      });
+    });
+
+
+
+
     async function updateCart(userId, productId) {
       try {
         console.log("Adding to cart:", userId, productId); // Debugging line

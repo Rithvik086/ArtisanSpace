@@ -7,13 +7,13 @@ import { fileURLToPath } from "url";
 import { getProducts } from "../models/productmodel.js";
 import {
   addUser,
-  findUserByName,
+  getUserById,
   getUsers,
   removeUser,
 } from "../models/usermodel.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 import { getTickets, removeTicket } from "../models/supportticketmodel.js";
-// Middleware to parse JSON
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const custrespath = path.resolve(__dirname, "../../customerresponse.json");
@@ -102,5 +102,12 @@ router.post("/support-ticket", async (req, res) => {
   }
 });
 
+router.get("/settings", async (req, res) => {
+  const user = await getUserById(req.user.id);
+  delete user.password;
+  delete user.userId;
+  delete user.role;
+  res.render("settings", { role: admrole, user });
+});
 
 export default router;

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Order</title>
+  <link rel="stylesheet" href="/navbar2.css" />
+  <link rel="stylesheet" href="/footer.css" />
+  <style>
+    main {
+      width: 50%;
+      margin: 40px auto;
+      display: flex;
+      justify-content: center;
+
+
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0 auto;
+      background-color: #f8f5f2;
+    }
+
+    .form-container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+
+
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .form-header h1 {
+      color: #663300;
+      margin-bottom: 10px;
+    }
+
+    .form-header p {
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .file-upload {
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+      background-color: #f5f5f5;
+      border: 2px dashed #ddd;
+      padding: 20px;
+      text-align: center;
+      border-radius: 4px;
+    }
+
+    .file-upload input {
+      position: absolute;
+      font-size: 100px;
+      opacity: 0;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: #663300;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #8a4500;
+    }
+
+    .required:after {
+      content: "*";
+      color: #e32;
+      margin-left: 4px;
+    }
+
+    .note-box {
+      background-color: #fff8f0;
+      border-left: 4px solid #663300;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 4px 4px 0;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <%- include('../partials/navbar2', { role }) %>
+  <main>
+    <div class="form-container">
+      <div class="form-header">
+        <h1>Request a Custom Handcrafted Item</h1>
+        <p>Describe your dream creation and our skilled artisans will bring it to life</p>
+      </div>
+
+      <div class="note-box">
+        <p>Your request will be visible to all artisans on our platform. Interested artisans will contact you with proposals.</p>
+      </div>
+
+      <form id="customOrderForm" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="userId" name="userId" value="" required>
+
+        <div class="form-group">
+          <label for="title" class="required">Request Title</label>
+          <input type="text" id="title" name="title" placeholder="Give your request a name" required>
+        </div>
+        <p id="titleError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          title is only alphanumeric
+        </p>
+
+        <div class="form-group">
+          <label for="type" class="required">Type of Product</label>
+          <select id="type" name="type" required>
+            <option value="" disabled selected>Select product type</option>
+            <option value="statue">Statue</option>
+            <option value="painting">Painting</option>
+            <option value="footware">Footware</option>
+            <option value="pottery">Pottery</option>
+            <option value="toys">Toys</option>
+            <option value="headware">Headware</option>
+            <option value="musical instrument">Musical instrument</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="required">Detailed Description</label>
+          <textarea id="description" name="description" placeholder="Please describe your custom item in detail. Include size, color preferences, materials, design elements, intended use, etc." required></textarea>
+        </div>
+        <p id="descError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          Description from 10 -300 words
+        </p>
+
+        <div class="form-group">
+          <label for="image">Reference Image</label>
+          <div class="file-upload">
+            <p>Drag & drop an image here or click to upload</p>
+            <p>(Max 5MB)</p>
+            <input type="file" id="image" name="image" accept="image/*">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="budget" class="required">Budget</label>
+
+            <input type="text" id="budget" name="budget" required>
+          </div>
+          <p id="budgetError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            invalid Budget(1-1,00,000)
+          </p>
+
+          <div class="form-group">
+            <label for="requiredBy" class="required">Required By</label>
+            <input type="date" id="requiredBy" name="requiredBy" required>
+          </div>
+        </div>
+
+        <button type="submit">Submit Custom Order Request</button>
+        <div id="status-message"></div>
+      </form>
+    </div>
+
+  </main>
+  <%- include("../partials/footer") %>
+
+  <script>
+    document.getElementById('customOrderForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Ensure all validations are called and respected
+      const isTitleValid = validatetitle();
+      const isBudgetValid = validateBudget();
+      const isDescriptionValid = validatedescription();
+
+      if (!isTitleValid || !isBudgetValid || !isDescriptionValid) {
+        console.warn('Form submission prevented due to validation errors.');
+        return; // Stop submission if any validation fails
+      }
+
+      const formData = new FormData(this);
+
+      try {
+        const response = await fetch('/customer/customorder', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        const statusMessage = document.getElementById('status-message');
+        statusMessage.innerText = result.message;
+        statusMessage.classList.add(result.success ? 'success' : 'error');
+        statusMessage.style.display = 'block';
+
+        if (result.success) {
+          setTimeout(() => {
+            this.reset();
+            statusMessage.style.display = 'none';
+          }, 2000);
+
+          setTimeout(() => {
+            window.location.href = "/customer/";
+          }, 1500);
+        }
+
+      } catch (error) {
+        console.error('Error submitting Custom order:', error);
+      }
+    });
+
+    function validateBudget() {
+      const budgetInput = document.getElementById('budget');
+      const budgetError = document.getElementById('budgetError');
+
+
+      const budgetRegex = /^(?!0+$)([1-9]\d{0,5})$/;
+
+      if (!budgetRegex.test(budgetInput.value)) {
+        budgetError.textContent = 'Invalid budget (1-100,000)';
+        budgetError.style.display = 'block';
+        return false;
+      } else {
+        budgetError.style.display = 'none';
+        return true;
+      }
+    }
+
+    function validatetitle() {
+      const titleInput = document.getElementById('title');
+      const titleError = document.getElementById('titleError');
+      const titleRegex = /^[a-zA-Z0-9 ]+$/;
+
+      if (!titleRegex.test(titleInput.value)) {
+        titleError.textContent = 'title is only alphanumeric';
+        titleError.style.display = 'block';
+        return false;
+      } else {
+        titleError.style.display = 'none';
+        return true;
+      }
+    }
+
+    function validatedescription() {
+      const descriptionInput = document.getElementById('description');
+      const descriptionError = document.getElementById('descError');
+      const wordCount = descriptionInput.value.trim().split(/\s+/).length;
+
+      if (wordCount < 10 || wordCount > 300) {
+        descriptionError.textContent = 'Description must be between 10 and 300 words';
+        descriptionError.style.display = 'block';
+        return false;
+      } else {
+        descriptionError.style.display = 'none';
+        return true;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const customOrderForm = document.getElementById('customOrderForm');
+      const statusMessage = document.getElementById('status-message');
+      const imageInput = document.getElementById('image');
+      const imagePreview = document.createElement('div');
+      const budgetInput = document.getElementById('budget'); // Add missing budgetInput declaration
+
+      // Create a container for image preview
+      imagePreview.style.marginTop = '10px';
+      imagePreview.style.textAlign = 'center';
+      imagePreview.style.maxWidth = '100%';
+
+
+      budgetInput.addEventListener('input', validateBudget);
+
+      // Validate on form submission
+
+      customOrderForm.addEventListener('submit', function(e) {
+        if (!validateBudget() || !validatetitle() || !validatedescription()) {
+          e.preventDefault(); // Prevent form submission if validation fails
+        }
+      });
+      // Insert the preview container after the file upload div
+      imageInput.parentNode.appendChild(imagePreview);
+
+      // Handle image preview
+      imageInput.addEventListener('change', function(event) {
+
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Image Preview" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">`;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          imagePreview.innerHTML = ''; // Clear preview if no file selected
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -8,6 +8,17 @@
   <link rel="stylesheet" href="/customer/workshop.css" />
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
+  <style>
+    .error-input {
+      border: 1px solid red !important;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin: 5px 0 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -21,15 +32,21 @@
     </div>
 
     <div class="form-container">
-      <form id="booking-form" class="form" method="POST" >
+      <form id="booking-form" class="form" method="POST">
         <div class="form-group">
-          <label for="workshop-title">Workshop Title</label>
+          <label for="workshop-title">Workshop Title</label>`
           <input type="text" id="workshop-title" name="workshopTitle" placeholder="Enter workshop title" required />
+          <p id="titleError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Title must be between 10 and 60 characters and only contain letters, numbers, spaces, and basic punctuation.
+          </p>
         </div>
 
         <div class="form-group">
           <label for="workshop-description">Workshop Description</label>
           <textarea id="workshop-description" name="workshopDesc" placeholder="Enter workshop details, requirements, or any special instructions" required></textarea>
+          <p id="descriptionError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Description must be between 10 and 500 characters and only contain letters, numbers, spaces, and basic punctuation.
+          </p>
         </div>
 
         <div class="form-row">
@@ -52,43 +69,70 @@
   <%- include("../partials/footer") %>
 
   <script>
-    document
-  .getElementById("booking-form")
-  .addEventListener("submit", async function (e) {
-    e.preventDefault();
-  console.log('submitted')
-    var statusMessage = document.getElementById("status-message");
-    
-    const formData = new FormData(this);
-  
-    const formValues = Object.fromEntries(formData.entries());
-  try{
-    const workshopreq = await fetch('/customer/requestWorkshop',{
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(formValues)
+    const title = document.getElementById("workshop-title");
+    const description = document.getElementById("workshop-description");
+    const titleError = document.getElementById("titleError");
+    const descriptionError = document.getElementById("descriptionError");
+
+    const titleRegex = /^[a-zA-Z0-9\s-]{10,60}$/;
+    const descriptionRegex = /^[a-zA-Z0-9\s.,'"\-!?()]{10,500}$/;
+
+
+    document.getElementById("booking-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      var statusMessage = document.getElementById("status-message");
+
+
+      if (!titleRegex.test(title.value)) {
+        titleError.style.display = "block";
+        title.classList.add("error-input");
+        return;
+      } else {
+        title.classList.remove("error-input");
+        titleError.style.display = "none";
+      }
+
+      if (!descriptionRegex.test(description.value)) {
+        descriptionError.style.display = "block";
+        description.classList.add("error-input");
+        return;
+      } else {
+        description.classList.remove("error-input");
+        descriptionError.style.display = "none";
+      }
+
+      const formData = new FormData(this);
+
+      const formValues = Object.fromEntries(formData.entries());
+      try {
+        const workshopreq = await fetch('/customer/requestWorkshop', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formValues)
+        });
+
+        const result = await workshopreq.json();
+        const statusMessage = document.getElementById("status-message");
+        statusMessage.innerText =
+          "Workshop successfully booked! ";
+        statusMessage.classList.add("success");
+        statusMessage.style.display = "block";
+
+        if (result.success) {
+          setTimeout(function() {
+            document.getElementById("booking-form").reset();
+            statusMessage.style.display = "none";
+          }, 3000);
+
+        }
+      } catch (error) {
+        console.error('Error registering workshop', error)
+      }
+
     });
-
-    const result = await workshopreq.json();
-    const statusMessage = document.getElementById("status-message");
-    statusMessage.innerText =
-    "Workshop successfully booked! ";
-  statusMessage.classList.add("success");
-  statusMessage.style.display = "block";
-
-  if(result.success){
-    setTimeout(function () {
-      document.getElementById("booking-form").reset();
-      statusMessage.style.display = "none";
-    }, 3000);
-
-  }
-  }catch(error){
-    console.error('Error registering workshop', error)
-  }
-   
-  });
-
   </script>
 </body>
 

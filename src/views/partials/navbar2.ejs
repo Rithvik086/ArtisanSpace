@@ -8,30 +8,110 @@
         <li><a href="/customer/store">Store</a></li>
         <li><a href="/customer/orders">Orders</a></li>
         <li><a href="/customer/workshop">Workshops</a></li>
-        <li><a href="/logout">Logout</a></li>
+        <li><a href="/customer/customorder">Custom Order</a></li>
+        <li class="dropdown">
+          <i class="fa-solid fa-bars fa-lg"></i>
+          <div class="dropdown-menu">
+            <a href="/customer/settings" class="dropdown-item settings-btn">
+              <i class="fa-solid fa-gear"></i>
+              <p>Settings</p>
+            </a>
+            <a href="/logout" class="dropdown-item logout-btn">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <p>Logout</p>
+            </a>
+          </div>
+
+        </li>
 
         <% } else if (role === "admin") { %>
         <li><a href="/admin">Dashboard</a></li>
         <li><a href="/admin/support-ticket">Support-ticket</a></li>
-        <li><a href="/logout">Logout</a></li>
+        <li class="dropdown">
+          <i class="fa-solid fa-bars fa-lg"></i>
+          <div class="dropdown-menu">
+            <a href="/admin/settings" class="dropdown-item settings-btn">
+              <i class="fa-solid fa-gear"></i>
+              <p>Settings</p>
+            </a>
+            <a href="/logout" class="dropdown-item logout-btn">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <p>Logout</p>
+            </a>
+          </div>
+
+        </li>
 
 
         <% } else if (role === "artisan") { %>
         <li><a href="/artisan/">Dashboard</a></li>
         <li><a href="/artisan/listings">Listings</a></li>
         <li><a href="/artisan/workshops">Workshops</a></li>
-        <li><a href="/logout">Logout</a></li>
+        <li><a href="/artisan/customrequests">Custom Requests</a></li>
+        <li class="dropdown">
+          <i class="fa-solid fa-bars fa-lg"></i>
+          <div class="dropdown-menu">
+            <a href="/artisan/settings" class="dropdown-item settings-btn">
+              <i class="fa-solid fa-gear"></i>
+              <p>Settings</p>
+            </a>
+            <a href="/logout" class="dropdown-item logout-btn">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <p>Logout</p>
+            </a>
+          </div>
+
+        </li>
 
 
         <% } else if (role === "manager") { %>
-          <li><a href="/manager">Dashboard</a></li>
-        <li><a href="/manager/content-moderation">content-moderation</a></li>
-        <li><a href="/manager/listing">listings</a></li>
-        <li><a href="/logout">Logout</a></li>
+        <li><a href="/manager">Dashboard</a></li>
+        <li><a href="/manager/content-moderation">Content Moderation</a></li>
+        <li><a href="/manager/listing">Listings</a></li>
+        <li class="dropdown">
+          <i class="fa-solid fa-bars fa-lg"></i>
+          <div class="dropdown-menu">
+            <a href="/manager/settings" class="dropdown-item settings-btn">
+              <i class="fa-solid fa-gear"></i>
+              <p>Settings</p>
+            </a>
+            <a href="/logout" class="dropdown-item logout-btn">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <p>Logout</p>
+            </a>
+          </div>
 
-
+        </li>
         <%}%>
       </ul>
     </nav>
   </div>
 </header>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const barsIcon = document.querySelector(".fa-bars");
+  const dropdownMenu = document.querySelector(".dropdown-menu");
+
+  barsIcon.addEventListener("click", (event) => {
+    dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    event.stopPropagation();
+  });
+
+  document.addEventListener("click", () => {
+    dropdownMenu.style.display = "none";
+  });
+
+  dropdownMenu.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+});
+
+function openSettings() {
+  window.location.href = "/settings"
+}
+
+function logout() {
+  window.location.href = "/logout";
+}
+
+</script>

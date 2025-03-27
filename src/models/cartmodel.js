@@ -1,17 +1,27 @@
-import { cart_db } from "../config/sqlite.js";
+import { getDb } from "../config/sqlite.js";
 import { productCount } from "./productmodel.js";
 
-cart_db.run(
-  `create table if not exists cart(userId text not null, productId text not null, quantity integer not null, primary key(userId, productId))`,
-  (err) => {
-    if (err) {
-      console.log("Cart table error", err.message);
-    }
-  }
-);
+const { cart_db } = await getDb();
 
-export function getCart(userId) {
-  return new Promise((resolve, reject) => {
+async function initializeDatabase() {
+  await new Promise((resolve, reject) => {
+    cart_db.run(
+      `create table if not exists cart(userId text not null, productId text not null, quantity integer not null, primary key(userId, productId))`,
+      (err) => {
+        if (err) {
+          console.log("Cart table creation error", err.message);
+          return reject(err);
+        }
+        resolve();
+      }
+    );
+  });
+}
+
+await initializeDatabase();
+
+export async function getCart(userId) {
+  return await new Promise((resolve, reject) => {
     cart_db.all(
       "select productId, quantity from cart where userId = ?",
       [userId],
@@ -27,8 +37,8 @@ export function getCart(userId) {
   });
 }
 
-export function getCartProductQuantity(userId, productId) {
-  return new Promise((resolve, reject) => {
+export async function getCartProductQuantity(userId, productId) {
+  return await new Promise((resolve, reject) => {
     cart_db.get(
       "select quantity from cart where userId=? and productId=?",
       [userId, productId],

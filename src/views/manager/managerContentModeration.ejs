@@ -7,7 +7,7 @@
   <title>Content-Moderation</title>
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
-  <link rel="stylesheet" href="/manager/managermanageproducts.css">
+  <link rel="stylesheet" href="/manager/managerContentModeration.css">
 
 </head>
 
@@ -17,9 +17,9 @@
     <h2>Manage Products</h2>
 
     <div class="tabs">
-      <div class="tab" id="tab-approved">Approved Products </div>
-      <div class="tab active" id="tab-pending">Pending Products </div>
-      <div class="tab" id="tab-disapproved">Disapproved Products </div>
+      <div class="tab" id="tab-approved">Approved Products <span class="count approved-count"></span></div>
+      <div class="tab active" id="tab-pending">Pending Products <span class="count pending-count"></span></div>
+      <div class="tab" id="tab-disapproved">Disapproved Products <span class="count disapproved-count"></span></div>
     </div>
     <!-- Approved Products -->
     <div id="approved-section" class="hidden">
@@ -34,7 +34,7 @@
 
 
   <%- include("../partials/footer") %>
-  <script type="module" src="/manager/managermanageproducts.js"></script>
+  <script  src="/manager/managerContentModeration.js"></script>
 
 </body>
 

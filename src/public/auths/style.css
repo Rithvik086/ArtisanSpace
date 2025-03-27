@@ -74,12 +74,13 @@ body {
 .left-sidesign,
 .right-sidelog {
   background-color: #f8ead8;
+  overflow-y: scroll;
 }
 
 .form form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 13px;
   width: 400px;
   align-items: center;
 }

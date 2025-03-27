@@ -17,20 +17,31 @@
           <p>Sign-up</p>
           <div class="form">
             <form action="/signup" method="post" id="signup-form">
-              <input class="inpuser" type="text" placeholder="username" required name="username">
-              <input type="email" placeholder="Email" required name="email">
+              <input class="inpuser" type="text" placeholder="username" required name="username" id="username">
+              <p id="usernameError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+                only allowed characters [alphanumeric _ .]
+              </p>
+              <input class="name" type="text" placeholder="name" required name="name" id="name">
+              <p id="nameError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+                Name must only contain alphabets.
+              </p>
+              <input type="email" placeholder="Email" required name="email" id="email">
+              <p id="emailError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+                Invalid Email address.
+              </p>
               <div>
                 <input type="password" placeholder="Password" name="password" id="password">
                 <p id="passwordError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
                   Password must be exactly 8 characters long.
                 </p>
               </div>
-              <input class="mobile_no" type="text" placeholder="mobile_no" required name="mobile_no">
+              <input class="mobile_no" type="text" placeholder="mobile_no" required name="mobile_no" id="mobile_no">
+              <p id="mobile_noError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+                Mobile number must be exactly 10 digits long.
+              </p>
               <select name="role" required>
                 <option value="customer">Customer</option>
                 <option value="artisan">Artisan</option>
-                <option value="manager">Manager</option>
-                <option value="admin">Admin</option>
               </select>
               <button type="submit">Sign Up</button>
             </form>

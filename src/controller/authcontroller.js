@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { sendMail } from "../utils/emailService.js";
 
 const signup = async (req, res) => {
-  const { username, email, password, mobile_no, role } = req.body;
+  const { username, name, email, password, mobile_no, role } = req.body;
 
   // username = username.toLowerCase();
   // email = email.toLowerCase();
@@ -15,7 +15,7 @@ const signup = async (req, res) => {
   // const newUser = new User({ username, email, password: hashpass, role });
   // await newUser.save();
   try {
-    await addUser(username, email, hashpass, mobile_no, role);
+    await addUser(username, name, email, hashpass, mobile_no, role);
     await sendMail(
       email,
       "Successfully Registered",

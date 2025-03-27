@@ -87,6 +87,7 @@ td {
   font-size: 14px;
   margin-right: 8px;
   transition: background 0.3s ease;
+  margin-bottom: 4px;
 }
 
 .approve-btn {
@@ -102,6 +103,14 @@ td {
 }
 
 .disapprove-btn:hover {
+  background-color: #c82333;
+}
+
+.remove-btn {
+  background-color: #dc3545;
+}
+
+.remove-btn:hover {
   background-color: #c82333;
 }
 

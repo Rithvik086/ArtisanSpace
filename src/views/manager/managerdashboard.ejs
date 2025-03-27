@@ -44,54 +44,40 @@
 
 
 
-    <div class="user-section">
-      <div class="top-table">
-        <h2>Users</h2>
-        <button class="add-user-btn">Add New User</button>
+    <div class="tab-content active" id="users-content">
+      <div class="action-bar">
+        <h3>Manage Users</h3>
+        <button id="add-user-btn" class="primary-btn">Add New User</button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td data-label="ID">1741721436225</td>
-            <td data-label="Name">admin</td>
-            <td data-label="Email">admin@admin</td>
-            <td data-label="Role">admin</td>
-            <td data-label="Actions">
-              <button class="edit-btn">Edit</button>
-              <button class="delete-btn">Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="ID">1741811543435</td>
-            <td data-label="Name">customer</td>
-            <td data-label="Email">customer@customer</td>
-            <td data-label="Role">customer</td>
-            <td data-label="Actions">
-              <button class="edit-btn">Edit</button>
-              <button class="delete-btn">Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="ID">1742069876547</td>
-            <td data-label="Name">artisan</td>
-            <td data-label="Email">artisan@artisan</td>
-            <td data-label="Role">artisan</td>
-            <td data-label="Actions">
-              <button class="edit-btn">Edit</button>
-              <button class="delete-btn">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="users-table-container">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+            <% userlist.forEach(user=> {%>
+
+            <tr>
+              <td><%=user.userId %></td>
+              <td><%=user.username %></td>
+              <td><%=user.email %></td>
+              <td><%=user.role %></td>
+
+              <td class="actions">
+                
+                <button class="delete-btn" data-id="<%=user.userId %>">Delete</button>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

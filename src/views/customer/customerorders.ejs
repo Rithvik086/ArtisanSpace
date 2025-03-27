@@ -35,6 +35,7 @@
         console.log(data.message);
         if (data.success) {
           showNotification(data.message, "success");
+
         } else {
           showNotification(data.message || "Failed to Add. Try Again", "error")
         }
@@ -77,6 +78,8 @@
       }
     }
 
+
+    
     function attachQuantityListeners() {
       document.querySelectorAll(".quantity-input").forEach(input => {
         input.addEventListener("change", async function() {

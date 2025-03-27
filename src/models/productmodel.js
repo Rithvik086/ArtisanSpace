@@ -1,20 +1,37 @@
-import { main_db } from "../config/sqlite.js";
+import { getDb } from "../config/sqlite.js";
 import { removeProductFromAllCarts } from "./cartmodel.js";
 import crypto from "crypto";
 
-main_db.run(`create table if not exists products(
-productId text primary key,
-artisanId text not null,
-name text not null,
-type text not null,
-image text not null,
-oldPrice real not null,
-newPrice real not null,
-quantity integer default 1,
-description text not null,
-status text not null,
-foreign key(artisanId) references users(userId) ON DELETE CASCADE
-)`);
+const { main_db } = await getDb();
+
+async function initializeDatabase() {
+  await new Promise((resolve, reject) => {
+    main_db.run(
+      `create table if not exists products(
+      productId text primary key,
+      artisanId text not null,
+      name text not null,
+      type text not null,
+      image text not null,
+      oldPrice real not null,
+      newPrice real not null,
+      quantity integer default 1,
+      description text not null,
+      status text not null,
+      foreign key(artisanId) references users(userId) ON DELETE CASCADE
+      )`,
+      (err) => {
+        if (err) {
+          console.log("Products table creation error", err.message);
+          return reject(err);
+        }
+        resolve();
+      }
+    );
+  });
+}
+
+await initializeDatabase();
 
 export async function addProduct(
   artisanId,
@@ -25,7 +42,7 @@ export async function addProduct(
   quantity,
   description
 ) {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     oldPrice = parseFloat(oldPrice).toFixed(2);
     quantity = parseInt(quantity);
     const newPrice = (oldPrice - oldPrice * 0.1).toFixed(2);
@@ -58,7 +75,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 }
 
 export async function delProduct(productId) {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     main_db.run(
       "DELETE FROM products WHERE productId = ?",
       [productId],
@@ -81,24 +98,27 @@ export async function delProduct(productId) {
   });
 }
 
-export async function getProducts() {
-  return new Promise((resolve, reject) => {
-    main_db.all(
-      "SELECT * FROM products WHERE status = ?",
-      ["approved"],
-      (err, rows) => {
-        if (err) {
-          console.error("DB error in getProducts:", err);
-          return reject(err);
-        }
-        resolve(rows || []);
+export async function getProducts(artisanId = null) {
+  let query = `SELECT * FROM products`;
+  let parms = [];
+
+  if (artisanId) {
+    query += ` WHERE artisanId = ?`;
+    parms.push(artisanId);
+  }
+  return await new Promise((resolve, reject) => {
+    main_db.all(query, parms, (err, rows) => {
+      if (err) {
+        console.error("DB error in getProducts:", err);
+        return reject(err);
       }
-    );
+      resolve(rows || []);
+    });
   });
 }
 
 export async function productCount(productId) {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     main_db.get(
       `SELECT quantity as count FROM products WHERE productId = ? AND status = ?`,
       [productId, "approved"],
@@ -116,7 +136,7 @@ export async function productCount(productId) {
 }
 
 export async function approveProduct(productId) {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     main_db.run(
       `UPDATE products SET status = ? WHERE productId = ?`,
       ["approved", productId],
@@ -134,7 +154,7 @@ export async function approveProduct(productId) {
 }
 
 export async function disapproveProduct(productId) {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     main_db.run(
       `UPDATE products SET status = ? WHERE productId = ?`,
       ["disapproved", productId],
@@ -151,26 +171,55 @@ export async function disapproveProduct(productId) {
   });
 }
 
-export async function getApprovedProducts() {
-  return new Promise((resolve, reject) => {
-    main_db.all(
-      `SELECT * FROM products WHERE status = ?`,
-      ["approved"],
-      (err, rows) => {
+export async function getApprovedProducts(category = null) {
+  if (!category) {
+    return await new Promise((resolve, reject) => {
+      main_db.all(
+        `SELECT * FROM products WHERE status = ?`,
+        ["approved"],
+        (err, rows) => {
+          if (err) {
+            console.error("DB error in getApprovedProducts: ", err.message);
+            return reject(err);
+          } else {
+            console.log("successfully got the approved products");
+            resolve(rows || []);
+          }
+        }
+      );
+    });
+  } else {
+    let query = `SELECT * FROM products WHERE status = ? and type IN (?`;
+    let parms = ["approved"];
+
+    if (!Array.isArray(category)) {
+      parms.push(category);
+    } else {
+      category.forEach((type) => {
+        query += `, ?`;
+        parms.push(type);
+      });
+    }
+    query += `)`;
+    return await new Promise((resolve, reject) => {
+      main_db.all(query, parms, (err, rows) => {
         if (err) {
-          console.error("DB error in getApprovedProducts: ", err.message);
+          console.error(
+            "DB error in getApprovedProducts(filter): ",
+            err.message
+          );
           return reject(err);
         } else {
-          console.log("successfully got the approved products");
+          console.log("successfully got the approved products(filter)");
           resolve(rows || []);
         }
-      }
-    );
-  });
+      });
+    });
+  }
 }
 
 export async function getDisapprovedProducts() {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     main_db.all(
       `SELECT * FROM products WHERE status = ?`,
       ["disapproved"],
@@ -188,7 +237,7 @@ export async function getDisapprovedProducts() {
 }
 
 export async function getPendingProducts() {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     main_db.all(
       `SELECT * FROM products WHERE status = ?`,
       ["pending"],
@@ -199,6 +248,29 @@ export async function getPendingProducts() {
         } else {
           console.log("successfully got the pending products");
           resolve(rows || []);
+        }
+      }
+    );
+  });
+}
+
+export async function getProductsCount() {
+  return await new Promise((resolve, reject) => {
+    main_db.all(
+      `SELECT status, count(*) AS count FROM products GROUP BY status`,
+      (err, rows) => {
+        if (err) {
+          console.error("DB error in getProductsCount: ", err.message);
+          return reject(err);
+        } else {
+          console.log("successfully got the products count");
+
+          let counts = { approved: 0, pending: 0, disapproved: 0 };
+
+          rows.forEach(({ status, count }) => {
+            counts[status] = count;
+          });
+          resolve(counts);
         }
       }
     );
