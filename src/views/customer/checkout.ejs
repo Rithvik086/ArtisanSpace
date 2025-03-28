@@ -116,12 +116,14 @@
   <%- include("../partials/footer") %>
 
   <script>
-    const addressString = "<%= user.address %>";
-    const addressParts = addressString.split("|");
-    if (addressString = null) {
-      const formattedAddress = "";
+    let addressString = "<%= user.address %>";
+    console.log(addressString);
+    let formattedAddress;
+    if (addressString === "") {
+      formattedAddress = "Address not provied, please go change the address from below button.";
     } else {
-      const formattedAddress = `
+      const addressParts = addressString.split("|");
+      formattedAddress = `
     <div>${addressParts[0]}, ${addressParts[1]}, ${addressParts[2]}</div>
     <div>State : ${addressParts[3]}</div>
     <div>Pincode : ${addressParts[4]}</div>
