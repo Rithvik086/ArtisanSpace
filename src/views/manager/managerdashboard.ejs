@@ -47,7 +47,6 @@
     <div class="tab-content active" id="users-content">
       <div class="action-bar">
         <h3>Manage Users</h3>
-        <button id="add-user-btn" class="primary-btn">Add New User</button>
       </div>
       <div class="users-table-container">
         <table class="users-table">
@@ -57,7 +56,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Actions</th>
+              <!-- <th>Actions</th> -->
             </tr>
           </thead>
           <tbody id="users-table-body">
@@ -70,8 +69,8 @@
               <td><%=user.role %></td>
 
               <td class="actions">
-                
-                <button class="delete-btn" data-id="<%=user.userId %>">Delete</button>
+
+                <!-- <button class="delete-btn" data-id="user.userId">Delete</button> -->
               </td>
             </tr>
             <% }); %>
