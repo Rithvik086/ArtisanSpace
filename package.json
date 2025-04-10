@@ -5,6 +5,7 @@
   "main": "script.js",
   "type": "module",
   "scripts": {
+    "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "test": "node src/models/test.js"
   },
