@@ -23,8 +23,10 @@ export async function addUser(
   email,
   hashpass,
   mobile_no,
-  role,
+  role
 ) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const existingUser = await User.findOne({
       $OR: [{ username: username }, { email: email }],
@@ -42,13 +44,17 @@ export async function addUser(
       mobile_no,
       role,
     });
-    await user.save();
+    await user.save({ session });
+    await session.commitTransaction();
     return { success: true };
   } catch (e) {
+    await session.abortTransaction();
     if (e.code === 11000) {
       throw new Error("Username or email already exists.");
     }
     throw new Error("Error adding user: " + e.message);
+  } finally {
+    session.endSession();
   }
 }
 
@@ -88,23 +94,33 @@ export async function getUsers() {
 }
 
 export async function removeUser(userId) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const user = await User.findById(userId);
 
     if (user) {
-      await user.remove();
+      await User.deleteOne({ _id: userId }, { session });
+      await session.commitTransaction();
       return { success: true };
     } else {
+      await session.abortTransaction();
       throw new Error("User not found.");
     }
   } catch (e) {
+    await session.abortTransaction();
     throw new Error("Error removing user: " + e.message);
+  } finally {
+    session.endSession();
   }
 }
 
 export async function updateUser(userId, name, mobile_no, address) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
+      await session.abortTransaction();
       throw new Error("Invalid user ID.");
     }
     const updateFields = {};
@@ -115,14 +131,20 @@ export async function updateUser(userId, name, mobile_no, address) {
     const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
       new: true,
       runValidators: true,
+      session,
     });
 
     if (!updatedUser) {
+      await session.abortTransaction();
       throw new Error("User not found.");
     } else {
+      await session.commitTransaction();
       return { success: true, data: updatedUser };
     }
   } catch (e) {
+    await session.abortTransaction();
     throw new Error("Error updating user: " + e.message);
+  } finally {
+    session.endSession();
   }
 }

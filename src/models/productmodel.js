@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Types } from "mongoose";
+import Cart from "./cartmodel.js";
 
 const productSchema = new mongoose.Schema({
   artisanId: {
@@ -36,6 +37,19 @@ const productSchema = new mongoose.Schema({
     },
   },
 });
+
+productSchema.pre(
+  "deleteOne",
+  { document: true, query: false },
+  async function (next) {
+    try {
+      await Promise.all([Cart.deleteMany({ productId: this._id })]);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default mongoose.model("Product", productSchema);
 
