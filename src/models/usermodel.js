@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Product from "./productmodel.js";
 import Cart from "./cartmodel.js";
 import Ticket from "./supportticketmodel.js";
+import Workshop from "./workshopmodel.js";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -49,6 +50,11 @@ userSchema.pre(
         Product.deleteMany({ artisanId: this._id }),
         Cart.deleteMany({ userId: this._id }),
         Ticket.deleteMany({ userId: this._id }),
+        Workshop.deleteMany({ userId: this._id }),
+        Workshop.updateMany(
+          { artisanId: this._id },
+          { $set: { artisanId: null, status: 0 } }
+        ),
       ]);
       next();
     } catch (error) {
