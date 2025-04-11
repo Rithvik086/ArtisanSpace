@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Product from "./productmodel.js";
 import Cart from "./cartmodel.js";
+import Ticket from "./supportticketmodel.js";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -41,18 +42,19 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre(
   "deleteOne",
-  { document: true, query: false },
+  { document: true, query: true },
   async function (next) {
     try {
       await Promise.all([
         Product.deleteMany({ artisanId: this._id }),
         Cart.deleteMany({ userId: this._id }),
+        Ticket.deleteMany({ userId: this._id }),
       ]);
       next();
     } catch (error) {
       next(error);
     }
-  },
+  }
 );
 
 export default mongoose.model("User", userSchema);

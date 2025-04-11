@@ -40,7 +40,7 @@ const productSchema = new mongoose.Schema({
 
 productSchema.pre(
   "deleteOne",
-  { document: true, query: false },
+  { document: true, query: true },
   async function (next) {
     try {
       await Promise.all([Cart.deleteMany({ productId: this._id })]);
@@ -48,7 +48,7 @@ productSchema.pre(
     } catch (error) {
       next(error);
     }
-  },
+  }
 );
 
 export default mongoose.model("Product", productSchema);
