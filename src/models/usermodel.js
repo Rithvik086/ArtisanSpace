@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import Product from "./productmodel.js";
 
-const userschema = new mongoose.schema({
+const userSchema = new mongoose.schema({
   username: {
     type: String,
     required: true,
@@ -30,12 +31,23 @@ const userschema = new mongoose.schema({
   role: {
     type: String,
     required: true,
-    enum: ["admin", "manager", "artisan", "customer"],
-    message: "{VALUE} is not a valid role",
+    enum: {
+      values: ["admin", "manager", "artisan", "customer"],
+      message: "{VALUE} is not a valid role",
+    },
   },
 });
 
-export default mongoose.model("User", userschema);
+userSchema.pre("remove", async function (next) {
+  try {
+    await Product.deleteMany({ artisanId: this._id });
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+export default mongoose.model("User", userSchema);
 
 // import crypto from "crypto";
 // import { removeCart } from "./cartmodel.js";
