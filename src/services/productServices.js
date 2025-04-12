@@ -47,13 +47,11 @@ export async function deleteProduct(productId) {
   session.startTransaction();
   try {
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      await session.abortTransaction();
       throw new Error("Invalid product ID");
     }
 
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).session(session);
     if (!product) {
-      session.abortTransaction();
       throw new Error("Product not found");
     }
 
@@ -77,13 +75,20 @@ export async function getProducts(artisanId) {
   }
 }
 
-export async function productCount(productId) {
+export async function productCount(productId, session = null) {
   try {
-    const product = await Product.findOne({
-      status: "approved",
-      productId,
-    });
-
+    let product;
+    if (session)
+      product = await Product.findOne({
+        status: "approved",
+        productId,
+      }).session(session);
+    else {
+      product = await Product.findOne({
+        status: "approved",
+        productId,
+      });
+    }
     return product ? product.quantity : 0;
   } catch (e) {
     throw new Error("Error getting product count: " + e.message);
@@ -95,7 +100,6 @@ export async function approveProduct(productId) {
   session.startTransaction();
   try {
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      await session.abortTransaction();
       throw new Error("Invalid product ID");
     }
 
@@ -106,7 +110,6 @@ export async function approveProduct(productId) {
     );
 
     if (!updatedProduct) {
-      await session.abortTransaction();
       throw new Error("Product not found");
     } else {
       await session.commitTransaction();
@@ -125,7 +128,6 @@ export async function disapproveProduct(productId) {
   session.startTransaction();
   try {
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      await session.abortTransaction();
       throw new Error("Invalid product ID");
     }
 
@@ -136,7 +138,6 @@ export async function disapproveProduct(productId) {
     );
 
     if (!updatedProduct) {
-      await session.abortTransaction();
       throw new Error("Product not found");
     } else {
       await session.commitTransaction();

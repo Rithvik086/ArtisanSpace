@@ -30,7 +30,7 @@ export async function addUser(
   try {
     const existingUser = await User.findOne({
       $OR: [{ username: username }, { email: email }],
-    });
+    }).session(session);
 
     if (existingUser) {
       throw new Error("Username or email already exists.");
@@ -97,14 +97,16 @@ export async function removeUser(userId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).session(session);
+    if (!user) {
+      throw new Error("User not found.");
+    }
 
     if (user) {
       await User.deleteOne({ _id: userId }, { session });
       await session.commitTransaction();
       return { success: true };
     } else {
-      await session.abortTransaction();
       throw new Error("User not found.");
     }
   } catch (e) {
@@ -120,7 +122,6 @@ export async function updateUser(userId, name, mobile_no, address) {
   session.startTransaction();
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      await session.abortTransaction();
       throw new Error("Invalid user ID.");
     }
     const updateFields = {};
@@ -135,10 +136,8 @@ export async function updateUser(userId, name, mobile_no, address) {
     });
 
     if (!updatedUser) {
-      await session.abortTransaction();
       throw new Error("User not found.");
     } else {
-      await session.commitTransaction();
       return { success: true, data: updatedUser };
     }
   } catch (e) {

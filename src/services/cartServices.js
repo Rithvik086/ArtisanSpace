@@ -3,9 +3,16 @@ import Cart from "../models/cartmodel.js";
 import { productCount } from "./productServices.js";
 
 //NOTE: this function now outputs a array of objects containing the productId and quantity
-export async function getCart(userId) {
+export async function getCart(userId, session = null) {
   try {
-    const cart = await Cart.findOne({ userId }, { products: 1, _id: 0 });
+    let cart;
+    if (session) {
+      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 }).session(
+        session
+      );
+    } else {
+      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 });
+    }
     if (!cart || !cart.products || cart.products.length === 0) {
       throw new Error("Cart not found");
     }
@@ -15,12 +22,24 @@ export async function getCart(userId) {
   }
 }
 
-export async function getCartProductQuantity(userId, productId) {
+export async function getCartProductQuantity(
+  userId,
+  productId,
+  session = null
+) {
   try {
-    const cart = await Cart.findOne(
-      { userId, "productId.productId": productId },
-      { "products.$": 1, _id: 0 }
-    );
+    let cart;
+    if (session) {
+      cart = await Cart.findOne(
+        { userId, "products.productId": productId },
+        { "products.$": 1, _id: 0 }
+      ).session(session);
+    } else {
+      cart = await Cart.findOne(
+        { userId, "productId.productId": productId },
+        { "products.$": 1, _id: 0 }
+      );
+    }
     if (!cart || !cart.products || cart.products.length === 0) {
       throw new Error("Product not found in cart");
     }
@@ -34,14 +53,10 @@ export async function addItem(userId, productId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const productQuantity = await productCount(productId);
+    const productQuantity = await productCount(productId, session);
     let cartQuantity = 0;
 
-    try {
-      cartQuantity = await getCartProductQuantity(userId, productId);
-    } catch (e) {
-      // If product is not found in the cart, cartQuantity remains 0
-    }
+    cartQuantity = await getCartProductQuantity(userId, productId, session);
 
     if (productQuantity > cartQuantity) {
       if (cartQuantity > 0) {
@@ -64,7 +79,6 @@ export async function addItem(userId, productId) {
         return { success: true, message: "Product added to cart!" };
       }
     } else {
-      await session.abortTransaction();
       return { success: false, message: "Stock limit reached" };
     }
   } catch (e) {
@@ -79,9 +93,13 @@ export async function deleteItem(userId, productId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const userProductCount = await getCartProductQuantity(userId, productId);
-    const userCart = await getCart(userId);
-    const productsCount = userCart.length;
+    const userProductCount = await getCartProductQuantity(
+      userId,
+      productId,
+      session
+    );
+    const userCart = await getCart(userI, session);
+    const productCount = userCart.length;
 
     if (userProductCount > 1) {
       // Update the quantity of the existing product in the cart
@@ -120,7 +138,7 @@ export async function changeProductAmount(userId, productId, amount) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const productQuantity = await productCount(productId);
+    const productQuantity = await productCount(productId, session);
     if (amount > productQuantity) {
       await Cart.findOneAndUpdate(
         { userId, "products.productId": productId },
