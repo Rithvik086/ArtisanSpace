@@ -19,14 +19,13 @@
           <h3>Order Summary</h3>
           <div class="products">
             <% cart.forEach( item => { %>
-            <% let product = products.find(product => product.productId === item.productId) %>
             <div class="checkout-item">
-              <img src="<%= product.image %>" alt="<%= product.name %>" class="product-img">
+              <img src="<%= item.productId.image %>" alt="<%= item.productId.name %>" class="product-img">
               <div class="product-details">
-                <h3><%= product.name %></h3>
-                <p class="price"><%= "₹"+product.newPrice %></p>
+                <h3><%= item.productId.name %></h3>
+                <p class="price"><%= "₹"+item.productId.newPrice %></p>
                 <p class="quantity">Quantity: <%= item.quantity %></p>
-                <p class="item-total">Item Total: ₹<%= (product.newPrice * item.quantity).toFixed(2) %></p>
+                <p class="item-total">Item Total: ₹<%= (item.productId.newPrice * item.quantity).toFixed(2) %></p>
               </div>
             </div>
             <% }) %>

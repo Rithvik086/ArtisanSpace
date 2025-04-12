@@ -1,10 +1,13 @@
+import dotenv from "dotenv";
 import mail from "nodemailer";
+
+dotenv.config();
 
 const transporter = mail.createTransport({
   service: "gmail",
   auth: {
-    user: "artisanspace09@gmail.com",
-    pass: "ttjb onek tibr eitg",
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
     authMethod: "PLAIN",
   },
 });

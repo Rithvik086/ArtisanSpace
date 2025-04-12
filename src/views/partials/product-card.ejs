@@ -1,14 +1,14 @@
 <div class="product-card">
-  <a href="/products/<%= product.productId%>">
+  <a href="/products/<%= product._id.toString() %>">
     <img src="<%= product.image %>" alt="<%= product.name %>" />
   </a>
   <hr>
   <div class="details">
-    <a href="/products/<%= product.productId%>">
+    <a href="/products/<%= product._id.toString() %>">
       <h3>
         <%= product.name %>
       </h3>
-      <p>Category: <%= product.type %></p>
+      <p>Category: <%= product.category %></p>
     </a>
     <p class="price">
       <span class="old-price">
@@ -17,6 +17,6 @@
         <%= "₹"+product.newPrice %> inc. GST
       </span>
     </p>
-    <button onclick="updateCart('<%= userId %>', '<%= product.productId %>')">Add to Cart</button>
+    <button onclick="updateCart('<%= userId %>', '<%= product._id.toString() %>')">Add to Cart</button>
   </div>
 </div>

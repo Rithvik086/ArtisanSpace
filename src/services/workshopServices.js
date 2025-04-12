@@ -55,7 +55,7 @@ export async function acceptWorkshop(workshopId, artisanId) {
   try {
     const workshop = await Workshop.findByIdAndUpdate(
       workshopId,
-      { status: true, artisanId },
+      { status: true, artisanId, acceptedAt: new Date() },
       { new: true, runValidators: true }
     );
     if (!workshop) {

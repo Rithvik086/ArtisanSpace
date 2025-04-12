@@ -27,52 +27,6 @@ router.get("/", async (req, res) => {
   res.render("customer/customerhome", { role: custrole, products: pro });
 });
 
-router.get("/orders", async (req, res) => {
-  const userId = req.user.id;
-  const products = await getProducts();
-  const cart = await getCart(userId);
-
-  let amount = 0;
-  for (const item of cart) {
-    const product = products.find(
-      (product) => product.productId === item.productId
-    );
-    amount += item.quantity * product.newPrice;
-  }
-
-  if (req.headers["x-requested-with"] === "XMLHttpRequest") {
-    res.render("partials/cart", { cart, products, userId, amount });
-  } else {
-    res.render("customer/customerorders", {
-      role: custrole,
-      cart,
-      products,
-      userId,
-      amount,
-    });
-  }
-});
-
-router.post("/orders", async (req, res) => {
-  try {
-    const { userId, productId, action, amount } = req.query;
-    let msg;
-    if (action === "add") {
-      msg = await addItem(userId, productId);
-    } else if (action === "del") {
-      msg = await deleteItem(userId, productId);
-    } else if (action === "rem") {
-      msg = await removeCompleteItem(userId, productId);
-    } else if (action === "none") {
-      msg = await changeProductAmount(userId, productId, amount);
-    }
-    res.json(msg);
-  } catch (error) {
-    console.error("Error processing request:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
-
 router.get("/store", async (req, res) => {
   try {
     const userId = req.user.id;
@@ -106,6 +60,47 @@ router.post("/store", async (req, res) => {
   } catch (error) {
     console.error("Error processing request:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/orders", async (req, res) => {
+  const userId = req.user.id;
+  const cart = await getCart(userId);
+
+  let amount = 0;
+  for (const item of cart) {
+    amount += item.quantity * item.productId.newPrice;
+  }
+
+  if (req.headers["x-requested-with"] === "XMLHttpRequest") {
+    res.render("partials/cart", { cart, userId, amount });
+  } else {
+    res.render("customer/customerorders", {
+      role: custrole,
+      cart,
+      userId,
+      amount,
+    });
+  }
+});
+
+router.post("/orders", async (req, res) => {
+  try {
+    const { userId, productId, action, amount } = req.query;
+    let msg;
+    if (action === "add") {
+      msg = await addItem(userId, productId);
+    } else if (action === "del") {
+      msg = await deleteItem(userId, productId);
+    } else if (action === "rem") {
+      msg = await removeCompleteItem(userId, productId);
+    } else if (action === "none") {
+      msg = await changeProductAmount(userId, productId, amount);
+    }
+    res.json(msg);
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
 
@@ -206,9 +201,8 @@ router.get("/checkout", async (req, res) => {
     // Calculate total amount
     let amount = 0;
     cart.forEach((item) => {
-      const product = products.find((p) => p.productId === item.productId);
-      if (product) {
-        amount += product.newPrice * item.quantity;
+      if (item) {
+        amount += item.productId.newPrice * item.quantity;
       }
     });
 
@@ -219,8 +213,6 @@ router.get("/checkout", async (req, res) => {
 
     res.render("customer/checkout", {
       role: custrole,
-      // userId,
-
       cart,
       products,
       amount: amount.toFixed(2),

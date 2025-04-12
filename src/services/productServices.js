@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import Product from "../models/productmodel.js";
+import { flushCompileCache } from "module";
+import { stat } from "fs";
 
 //TODO: need to change the type of product to category
 
@@ -66,9 +68,22 @@ export async function deleteProduct(productId) {
   }
 }
 
-export async function getProducts(artisanId) {
+export async function getProducts(artisanId = null, approved = false) {
   try {
-    const products = await Product.find({ artisanId });
+    let products;
+    if (artisanId) {
+      if (approved) {
+        products = await Product.find({ artisanId, status: "approved" });
+      } else {
+        products = await Product.find({ artisanId });
+      }
+    } else {
+      if (approved) {
+        products = await Product.find({ status: "approved" });
+      } else {
+        products = await Product.find();
+      }
+    }
     return products;
   } catch (e) {
     throw new Error("Error getting products: " + e.message);
@@ -81,12 +96,12 @@ export async function productCount(productId, session = null) {
     if (session)
       product = await Product.findOne({
         status: "approved",
-        productId,
+        _id: productId,
       }).session(session);
     else {
       product = await Product.findOne({
         status: "approved",
-        productId,
+        _id: productId,
       });
     }
     return product ? product.quantity : 0;

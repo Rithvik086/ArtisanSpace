@@ -7,14 +7,16 @@ export async function getCart(userId, session = null) {
   try {
     let cart;
     if (session) {
-      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 }).session(
-        session
-      );
+      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 })
+        .populate("products.$.productId")
+        .session(session);
     } else {
-      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 });
+      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 }).populate(
+        "products.productId"
+      );
     }
-    if (!cart || !cart.products || cart.products.length === 0) {
-      throw new Error("Cart not found");
+    if (cart === null) {
+      return [];
     }
     return cart.products;
   } catch (e) {
@@ -36,14 +38,16 @@ export async function getCartProductQuantity(
       ).session(session);
     } else {
       cart = await Cart.findOne(
-        { userId, "productId.productId": productId },
+        { userId, "products.productId": productId },
         { "products.$": 1, _id: 0 }
       );
     }
+    console.log(cart);
+
     if (!cart || !cart.products || cart.products.length === 0) {
-      throw new Error("Product not found in cart");
+      return 0; // Product not found in cart
     }
-    return cart.quantity[0].quantity;
+    return cart.products[0].quantity;
   } catch (e) {
     throw new Error("Error fetching cart: " + e.message);
   }
@@ -57,7 +61,12 @@ export async function addItem(userId, productId) {
     let cartQuantity = 0;
 
     cartQuantity = await getCartProductQuantity(userId, productId, session);
-
+    console.log(
+      "productQuantity",
+      productQuantity,
+      "cartQuantity",
+      cartQuantity
+    );
     if (productQuantity > cartQuantity) {
       if (cartQuantity > 0) {
         // Update the quantity of the existing product in the cart
@@ -98,7 +107,7 @@ export async function deleteItem(userId, productId) {
       productId,
       session
     );
-    const userCart = await getCart(userI, session);
+    const userCart = await getCart(userId, session);
     const productCount = userCart.length;
 
     if (userProductCount > 1) {

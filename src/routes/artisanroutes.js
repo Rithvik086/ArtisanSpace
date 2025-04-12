@@ -87,6 +87,7 @@ router.post("/listings", upload.single("image"), async (req, res) => {
 router.get("/workshops", async (req, res) => {
   let availableWorkshops = await getAvailableWorkshops();
   let acceptedWorkshops = await getAcceptedWorkshops(req.user.id);
+
   res.render("artisan/artisanworkshop", {
     role: astrole,
     availableWorkshops,
@@ -102,9 +103,9 @@ router.get("/workshops/:action/:workshopId", async (req, res) => {
         const artisanUser = await getUserById(req.user.id);
         const customerUser = await getWorkshopById(req.params.workshopId);
         sendMail(
-          customerUser.email,
+          customerUser.userId.email,
           "Workshop Accepted - ArtisanSpace",
-          `Dear ${customerUser.username},
+          `Dear ${customerUser.userId.username},
         
         We are excited to inform you that your workshop request, **"${
           customerUser.workshopTitle
