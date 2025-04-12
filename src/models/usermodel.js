@@ -3,6 +3,7 @@ import Product from "./productmodel.js";
 import Cart from "./cartmodel.js";
 import Ticket from "./supportticketmodel.js";
 import Workshop from "./workshopmodel.js";
+import Request from "./customRequestModel.js";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -54,6 +55,11 @@ userSchema.pre(
         Workshop.updateMany(
           { artisanId: this._id },
           { $set: { artisanId: null, status: 0 } }
+        ),
+        Request.deleteMany({ userId: this._id }),
+        Request.updateMany(
+          { artisanId: this._id },
+          { $set: { artisanId: null, isAccepted: false } }
         ),
       ]);
       next();
