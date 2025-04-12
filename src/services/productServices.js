@@ -81,12 +81,12 @@ export async function productCount(productId, session = null) {
     if (session)
       product = await Product.findOne({
         status: "approved",
-        productId,
+        _id: productId,
       }).session(session);
     else {
       product = await Product.findOne({
         status: "approved",
-        productId,
+        _id: productId,
       });
     }
     return product ? product.quantity : 0;

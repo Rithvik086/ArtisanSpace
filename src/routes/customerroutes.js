@@ -27,6 +27,42 @@ router.get("/", async (req, res) => {
   res.render("customer/customerhome", { role: custrole, products: pro });
 });
 
+router.get("/store", async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { category } = req.query;
+    const products = await getApprovedProducts(category);
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 12;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const paginatedProducts = products.slice(startIndex, endIndex);
+
+    res.render("customer/store", {
+      products: paginatedProducts,
+      currentPage: page,
+      totalPages: Math.ceil(products.length / limit),
+      role: custrole,
+      userId,
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+router.post("/store", async (req, res) => {
+  const { userId, productId } = req.query;
+  try {
+    res.json(await addItem(userId, productId));
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.get("/orders", async (req, res) => {
   const userId = req.user.id;
   const products = await getProducts();
@@ -70,42 +106,6 @@ router.post("/orders", async (req, res) => {
   } catch (error) {
     console.error("Error processing request:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
-
-router.get("/store", async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { category } = req.query;
-    const products = await getApprovedProducts(category);
-
-    const page = parseInt(req.query.page) || 1;
-    const limit = 12;
-
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-
-    const paginatedProducts = products.slice(startIndex, endIndex);
-
-    res.render("customer/store", {
-      products: paginatedProducts,
-      currentPage: page,
-      totalPages: Math.ceil(products.length / limit),
-      role: custrole,
-      userId,
-    });
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-router.post("/store", async (req, res) => {
-  const { userId, productId } = req.query;
-  try {
-    res.json(await addItem(userId, productId));
-  } catch (error) {
-    console.error("Error processing request:", error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

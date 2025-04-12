@@ -12,16 +12,16 @@
   </thead>
   <tbody>
     <% disapprovedProducts.forEach(product => { %>
-    <tr id="product-<%= product.productId %>">
+    <tr id="product-<%= product._id.toString() %>">
       <td class="product-name">
         <img src="<%= product.image %>" class="product-img" alt="<%= product.name %>">
       </td>
       <td><%= product.name %></td>
-      <td><%= product.productId %></td>
+      <td><%= product._id.toString() %></td>
       <td><%= product.quantity %></td>
       <td><s>₹<%= product.oldPrice %></s> <br><span class="price">₹<%= product.newPrice %></span></td>
       <td><%= product.type %></td>
-      <td><button class="btn remove-btn" data-id="<%= product.productId %>">Remove</button></td>
+      <td><button class="btn remove-btn" data-id="<%= product._id.toString() %>">Remove</button></td>
     </tr>
     <% }); %>
   </tbody>

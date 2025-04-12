@@ -42,7 +42,7 @@
     <div class="slider-container">
       <div class="slider">
         <% products.forEach(product => {%>
-        <a href="/products/<%= product.productId %>">
+        <a href="/products/<%= product._id.toString() %>">
           <img src="<%= product.image %>" alt="<%= product.name %>">
         </a>
         <%}) %>

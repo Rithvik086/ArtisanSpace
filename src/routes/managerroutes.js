@@ -51,7 +51,7 @@ router.get("/load-partial/:section", async (req, res) => {
 
   if (section === "approved") {
     const approvedProducts = await getApprovedProducts();
-    html = await res.render(
+    html = res.render(
       "manager/partials/approved",
       { approvedProducts },
       (err, rendered) => {
@@ -62,7 +62,7 @@ router.get("/load-partial/:section", async (req, res) => {
     );
   } else if (section === "disapproved") {
     const disapprovedProducts = await getDisapprovedProducts();
-    html = await res.render(
+    html = res.render(
       "manager/partials/disapproved",
       { disapprovedProducts },
       (err, rendered) => {
@@ -73,7 +73,7 @@ router.get("/load-partial/:section", async (req, res) => {
     );
   } else if (section === "pending") {
     const pendingProducts = await getPendingProducts();
-    html = await res.render(
+    html = res.render(
       "manager/partials/pending",
       { pendingProducts },
       (err, rendered) => {
