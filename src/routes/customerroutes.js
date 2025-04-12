@@ -65,24 +65,21 @@ router.post("/store", async (req, res) => {
 
 router.get("/orders", async (req, res) => {
   const userId = req.user.id;
-  const products = await getProducts();
   const cart = await getCart(userId);
+
+  console.log(cart);
 
   let amount = 0;
   for (const item of cart) {
-    const product = products.find(
-      (product) => product.productId === item.productId
-    );
-    amount += item.quantity * product.newPrice;
+    amount += item.quantity * item.productId.newPrice;
   }
 
   if (req.headers["x-requested-with"] === "XMLHttpRequest") {
-    res.render("partials/cart", { cart, products, userId, amount });
+    res.render("partials/cart", { cart, userId, amount });
   } else {
     res.render("customer/customerorders", {
       role: custrole,
       cart,
-      products,
       userId,
       amount,
     });
@@ -206,9 +203,8 @@ router.get("/checkout", async (req, res) => {
     // Calculate total amount
     let amount = 0;
     cart.forEach((item) => {
-      const product = products.find((p) => p.productId === item.productId);
-      if (product) {
-        amount += product.newPrice * item.quantity;
+      if (item) {
+        amount += item.productId.newPrice * item.quantity;
       }
     });
 
@@ -219,8 +215,6 @@ router.get("/checkout", async (req, res) => {
 
     res.render("customer/checkout", {
       role: custrole,
-      // userId,
-
       cart,
       products,
       amount: amount.toFixed(2),

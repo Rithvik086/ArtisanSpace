@@ -7,11 +7,13 @@ export async function getCart(userId, session = null) {
   try {
     let cart;
     if (session) {
-      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 }).session(
-        session
-      );
+      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 })
+        .populate("products.$.productId")
+        .session(session);
     } else {
-      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 });
+      cart = await Cart.findOne({ userId }, { products: 1, _id: 0 }).populate(
+        "products.productId"
+      );
     }
     if (!cart || !cart.products || cart.products.length === 0) {
       throw new Error("Cart not found");
@@ -105,7 +107,7 @@ export async function deleteItem(userId, productId) {
       productId,
       session
     );
-    const userCart = await getCart(userI, session);
+    const userCart = await getCart(userId, session);
     const productCount = userCart.length;
 
     if (userProductCount > 1) {
