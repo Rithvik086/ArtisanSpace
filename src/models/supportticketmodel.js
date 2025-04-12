@@ -1,6 +1,6 @@
 import mongoose, { Types } from "mongoose";
 
-ticketSchema = new mongoose.Schema({
+const ticketSchema = new mongoose.Schema({
   userId: {
     type: Types.ObjectId,
     required: true,

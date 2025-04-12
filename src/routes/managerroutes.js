@@ -2,13 +2,13 @@ import express from "express";
 import authorizerole from "../middleware/roleMiddleware.js";
 import {
   approveProduct,
-  delProduct,
+  deleteProduct,
   disapproveProduct,
   getApprovedProducts,
   getDisapprovedProducts,
   getPendingProducts,
   getProductsCount,
-} from "../models/productmodel.js";
+} from "../services/productServices.js";
 import { getUserById, getUsers } from "../services/userServices.js";
 const router = express.Router();
 const mngrole = "manager";
@@ -30,7 +30,7 @@ router.get("/content-moderation", async (req, res) => {
     } else if (action === "disapprove") {
       msg = await disapproveProduct(productId);
     } else if (action === "remove") {
-      msg = await delProduct(productId);
+      msg = await deleteProduct(productId);
     } else {
       return res.status(400).json({ success: false, error: "Invalid action" });
     }

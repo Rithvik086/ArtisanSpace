@@ -29,7 +29,7 @@ export async function addUser(
   session.startTransaction();
   try {
     const existingUser = await User.findOne({
-      $OR: [{ username: username }, { email: email }],
+      $or: [{ username: username }, { email: email }],
     }).session(session);
 
     if (existingUser) {
@@ -72,7 +72,7 @@ export async function findUserByName(username) {
   }
 }
 
-export async function findUserById(userId) {
+export async function getUserById(userId) {
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return null;

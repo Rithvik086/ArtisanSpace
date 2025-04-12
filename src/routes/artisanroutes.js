@@ -4,7 +4,7 @@ import authorizerole from "../middleware/roleMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
 import {
   addProduct,
-  delProduct,
+  deleteProduct,
   getProducts,
 } from "../services/productServices.js";
 import {
@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
 router.post("/delete-product/:id", async (req, res) => {
   try {
     const productId = req.params.id;
-    const result = await delProduct(productId);
+    const result = await deleteProduct(productId);
     if (result.success) {
       res.status(200).json({ success: true });
     } else {

@@ -41,7 +41,7 @@ const customRequestSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("CustomRequest", customRequestSchema);
+export default mongoose.model("Request", customRequestSchema);
 
 // import { error } from "console";
 // import { getDb } from "../config/sqlite.js";

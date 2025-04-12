@@ -172,7 +172,7 @@ export async function getApprovedProducts(category = null) {
   }
 }
 
-export async function getDiassprovedProducts() {
+export async function getDisapprovedProducts() {
   try {
     return await Product.find({ status: "disapproved" });
   } catch (e) {

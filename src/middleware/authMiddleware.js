@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { userExist } from "../services/userServices.js";
+import { userExists } from "../services/userServices.js";
 
 export const verifytoken = async (req, res, next) => {
   if (req.path === "/login" || req.path === "/signup") {
@@ -13,7 +13,7 @@ export const verifytoken = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    if (await userExist(req.user.id)) {
+    if (await userExists(req.user.id)) {
       next();
     } else {
       res.clearCookie("token");
@@ -38,7 +38,7 @@ export const redirectBasedOnRole = async (req, res, next) => {
     req.user = user;
 
     // Check if user exists in the database
-    if (await userExist(user.id)) {
+    if (await userExists(user.id)) {
       // Extract role from the token
       const role = user.role;
 

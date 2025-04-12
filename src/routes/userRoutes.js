@@ -5,7 +5,7 @@ import adminroutes from "../routes/adminroutes.js";
 import managerroutes from "../routes/managerroutes.js";
 import customerroutes from "../routes/customerroutes.js";
 import artisanroutes from "../routes/artisanroutes.js";
-import { addTicket } from "../models/supportticketmodel.js";
+import { addTicket } from "../services/ticketServices.js";
 import { removeUser, updateUser } from "../services/userServices.js";
 import { getProducts } from "../services/productServices.js";
 const router = express.Router();

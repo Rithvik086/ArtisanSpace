@@ -14,7 +14,7 @@ import { getUserById } from "../services/userServices.js";
 import { bookWorkshop } from "../services/workshopServices.js";
 import upload from "../middleware/multer.js";
 import cloudinary from "../config/cloudinary.js";
-import { addRequest } from "../models/customordermodel.js";
+import { addRequest } from "../services/requestServices.js";
 
 const router = express.Router();
 const custrole = "customer";

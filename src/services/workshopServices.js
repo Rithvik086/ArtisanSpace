@@ -1,4 +1,4 @@
-import Workshop from "../models/Workshop.js";
+import Workshop from "../models/workshopmodel.js";
 
 export async function bookWorkshop(
   userId,
