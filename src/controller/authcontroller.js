@@ -1,4 +1,4 @@
-import { addUser, findUserByName } from "../models/usermodel.js";
+import { addUser, findUserByName } from "../services/userServices.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../utils/emailService.js";

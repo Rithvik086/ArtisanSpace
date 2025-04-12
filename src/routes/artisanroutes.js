@@ -2,21 +2,25 @@ import express from "express";
 import upload from "../middleware/multer.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
-import { addProduct, delProduct, getProducts } from "../models/productmodel.js";
+import {
+  addProduct,
+  delProduct,
+  getProducts,
+} from "../services/productServices.js";
 import {
   getAvailableWorkshops,
   getAcceptedWorkshops,
   acceptWorkshop,
   removeWorkshop,
   getWorkshopById,
-} from "../models/workshopmodel.js";
+} from "../services/workshopServices.js";
 import {
   approveRequest,
   deleteRequest,
   getRequests,
-} from "../models/customordermodel.js";
+} from "../services/requestServices.js";
 import { sendMail } from "../utils/emailService.js";
-import { getUserById } from "../models/usermodel.js";
+import { getUserById } from "../services/userServices.js";
 
 const router = express.Router();
 const astrole = "artisan";

@@ -1,18 +1,17 @@
 import express from "express";
-
 import bcrypt from "bcryptjs";
-import { loadcustData, updateResponse } from "../models/customerresponse.js";
 import path from "path";
 import { fileURLToPath } from "url";
-import { getProducts } from "../models/productmodel.js";
+import authorizerole from "../middleware/roleMiddleware.js";
+import { getProducts } from "../services/productServices.js";
 import {
   addUser,
   getUserById,
   getUsers,
   removeUser,
-} from "../models/usermodel.js";
-import authorizerole from "../middleware/roleMiddleware.js";
-import { getTickets, removeTicket } from "../models/supportticketmodel.js";
+} from "../services/userServices.js";
+import { getTickets, removeTicket } from "../services/ticketServices.js";
+import { loadcustData, updateResponse } from "../models/customerresponse.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { userExist } from "../models/usermodel.js";
+import { userExist } from "../services/userServices.js";
 
 export const verifytoken = async (req, res, next) => {
   if (req.path === "/login" || req.path === "/signup") {
