@@ -17,10 +17,15 @@ dbConnect();
 
 const app = express();
 const port = 3000;
-const hostname = "0.0.0.0";
+
+// Middleware that parses incoming requests with JSON payloads(send through postman)
 app.use(express.json());
-app.use(cookieParser());
+
+// Middleware that parses incoming requests with urlencoded payloads(sent through forms)
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware that parses incoming requests with cookies (just to p)
+app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -41,7 +46,6 @@ app.use("/", authroutes);
 app.use("/", useroutes);
 
 app.all("*", (req, res) => {
-  // res.send("This route is accessible");
   res.status(404).render("accessdenied");
 });
 

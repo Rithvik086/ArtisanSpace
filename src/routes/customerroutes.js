@@ -1,17 +1,20 @@
 import express from "express";
-import { getApprovedProducts, getProducts } from "../models/productmodel.js";
+import {
+  getApprovedProducts,
+  getProducts,
+} from "../services/productServices.js";
 import {
   addItem,
   changeProductAmount,
   deleteItem,
   getCart,
   removeCompleteItem,
-} from "../models/cartmodel.js";
-import { getUserById } from "../models/usermodel.js";
-import { bookWorkshop } from "../models/workshopmodel.js";
+} from "../services/cartServices.js";
+import { getUserById } from "../services/userServices.js";
+import { bookWorkshop } from "../services/workshopServices.js";
 import upload from "../middleware/multer.js";
 import cloudinary from "../config/cloudinary.js";
-import { addRequest } from "../models/customordermodel.js";
+import { addRequest } from "../services/requestServices.js";
 
 const router = express.Router();
 const custrole = "customer";
@@ -105,9 +108,6 @@ router.post("/store", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-
-
 
 router.get("/workshop", (req, res) => {
   res.render("customer/workshop", { role: custrole });
@@ -216,19 +216,17 @@ router.get("/checkout", async (req, res) => {
     const shipping = 50; // Fixed shipping fee
     const tax = Math.round(amount * 0.05 * 100) / 100; // 5% tax
     let user = await getUserById(userId);
-   
-
 
     res.render("customer/checkout", {
       role: custrole,
       // userId,
-     
+
       cart,
       products,
       amount: amount.toFixed(2),
       shipping,
       tax,
-      user
+      user,
     });
   } catch (error) {
     console.error("Error loading checkout page:", error);
