@@ -60,6 +60,7 @@ router.post("/submit-ticket", async (req, res) => {
 
 router.post("/update-profile", async (req, res) => {
   try {
+    console.log(req.body);
     const { name, mobile_no, address } = req.body;
     if (address) {
       address.toLowerCase();

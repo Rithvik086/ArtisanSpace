@@ -129,6 +129,8 @@ export async function updateUser(userId, name, mobile_no, address) {
     if (mobile_no !== undefined) updateFields.mobile_no = mobile_no;
     if (address !== undefined) updateFields.address = address;
 
+    console.log(updateFields);
+
     const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
       new: true,
       runValidators: true,
@@ -138,6 +140,7 @@ export async function updateUser(userId, name, mobile_no, address) {
     if (!updatedUser) {
       throw new Error("User not found.");
     } else {
+      await session.commitTransaction();
       return { success: true, data: updatedUser };
     }
   } catch (e) {

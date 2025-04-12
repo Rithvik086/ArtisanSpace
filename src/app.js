@@ -49,6 +49,14 @@ app.all("*", (req, res) => {
   res.status(404).render("accessdenied");
 });
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
 // Starts an Express server locally on port 3000
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}/`);
