@@ -67,8 +67,6 @@ router.get("/orders", async (req, res) => {
   const userId = req.user.id;
   const cart = await getCart(userId);
 
-  console.log(cart);
-
   let amount = 0;
   for (const item of cart) {
     amount += item.quantity * item.productId.newPrice;

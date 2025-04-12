@@ -18,16 +18,16 @@
       <div class="workshops-container" id="available-workshops">
         <% if (availableWorkshops && availableWorkshops.length > 0) { %>
         <% availableWorkshops.forEach(workshop => { %>
-        <div class="workshop-card" data-id="<%= workshop.workshopId %>">
+        <div class="workshop-card" data-id="<%= workshop._id %>">
           <h3><%= workshop.workshopTitle %></h3>
           <p class="description"><%= workshop.workshopDescription %></p>
           <div class="workshop-details">
-            <p><strong>Client:</strong> <%= workshop.username %></p>
+            <p><strong>Client:</strong> <%= workshop.userId.username %></p>
             <p><strong>Scheduled Date:</strong> <%= workshop.date %></p>
             <p><strong>Schedule Time:</strong> <%= workshop.time %></p>
           </div>
           <div class="workshop-actions">
-            <button class="accept-btn" data-id="<%= workshop.workshopId %>">Accept Workshop</button>
+            <button class="accept-btn" data-id="<%= workshop._id %>">Accept Workshop</button>
           </div>
         </div>
         <% }); %>
@@ -44,19 +44,19 @@
       <div class="workshops-container" id="accepted-workshops">
         <% if (acceptedWorkshops && acceptedWorkshops.length > 0) { %>
         <% acceptedWorkshops.forEach(workshop => { %>
-        <div class="workshop-card accepted" data-id="<%= workshop.workshopId %>">
+        <div class="workshop-card accepted" data-id="<%= workshop._id %>">
           <div class="accepted-badge">Accepted</div>
           <h3><%= workshop.workshopTitle %></h3>
           <p class="description"><%= workshop.workshopDescription %></p>
           <div class="workshop-details">
-            <p><strong>Client:</strong> <%= workshop.username %></p>
-            <p><strong>Contact:</strong> <%= workshop.email %> | <%= workshop.mobile_no %></p>
+            <p><strong>Client:</strong> <%= workshop.userId.username %></p>
+            <p><strong>Contact:</strong> <%= workshop.userId.email %> | <%= workshop.userId.mobile_no %></p>
             <p><strong>Date:</strong> <%= workshop.date %></p>
             <p><strong>Time:</strong> <%= workshop.time %></p>
             <p><strong>Accepted on:</strong> <%= new Date(workshop.acceptedAt).toLocaleDateString() %></p>
           </div>
           <div class="workshop-actions">
-            <button class="remove-btn" data-id="<%= workshop.workshopId %>">Remove Workshop</button>
+            <button class="remove-btn" data-id="<%= workshop._id %>">Remove Workshop</button>
           </div>
         </div>
         <% }); %>

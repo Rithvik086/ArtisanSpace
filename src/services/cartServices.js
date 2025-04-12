@@ -15,8 +15,8 @@ export async function getCart(userId, session = null) {
         "products.productId"
       );
     }
-    if (!cart || !cart.products || cart.products.length === 0) {
-      throw new Error("Cart not found");
+    if (cart === null) {
+      return [];
     }
     return cart.products;
   } catch (e) {
