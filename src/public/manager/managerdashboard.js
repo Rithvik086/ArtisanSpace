@@ -94,6 +94,29 @@ new Chart(document.getElementById("customersChart"), {
   options: commonOptions,
 });
 
+// tab switching
+
+document.addEventListener("DOMContentLoaded", () => {
+  const usersTabBtn = document.getElementById("usersTabBtn");
+  const productsTabBtn = document.getElementById("productsTabBtn");
+  const usersTab = document.getElementById("usersTab");
+  const productsTab = document.getElementById("productsTab");
+
+  usersTabBtn.addEventListener("click", () => {
+    usersTab.style.display = "block";
+    productsTab.style.display = "none";
+    usersTabBtn.classList.add("active");
+    productsTabBtn.classList.remove("active");
+  });
+
+  productsTabBtn.addEventListener("click", () => {
+    usersTab.style.display = "none";
+    productsTab.style.display = "block";
+    usersTabBtn.classList.remove("active");
+    productsTabBtn.classList.add("active");
+  });
+});
+
 // general functions
 
 function closeModal() {

@@ -115,6 +115,27 @@ canvas {
   }
 }
 
+/* === tab switching === */
+.tabs-container {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #ddd;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.tab-button.active {
+  background-color: #4285f4;
+  color: white;
+}
+
 /* === User Section === */
 
 .users-section {

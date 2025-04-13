@@ -43,93 +43,101 @@
     </section>
 
 
+    <div class="tabs-container">
+      <button id="usersTabBtn" class="tab-button active">Manage Users</button>
+      <button id="productsTabBtn" class="tab-button">Manage Products</button>
+    </div>
 
 
-    <section class="users-section">
-      <div class="users-header">
-        <h2 class="users-title">Manage Users<span><%= userlist.length %></span></h2>
-      </div>
+    <section id="usersTab" class="users-section">
+      <section class="users-section">
+        <div class="users-header">
+          <h2 class="users-title">Manage Users<span><%= userlist.length %></span></h2>
+        </div>
 
-      <table id="userTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (userlist.length > 0) { %>
-          <% userlist.forEach(user => { %>
-          <tr data-user-id="<%= user._id.toString() %>">
+        <table id="userTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (userlist.length > 0) { %>
+            <% userlist.forEach(user => { %>
+            <tr data-user-id="<%= user._id.toString() %>">
 
-            <td><%=user.username %></td>
-            <td><%=user.email %></td>
-            <td><%=user.role %></td>
+              <td><%=user.username %></td>
+              <td><%=user.email %></td>
+              <td><%=user.role %></td>
 
-            <td>
-              <button class="btn btn-delete" onclick="confirmUserDelete('<%= user._id.toString() %>')">Delete</button>
-            </td>
-          </tr>
-          <% }) %>
-          <% } else { %>
-          <tr id="noUserRow">
-            <td colspan="8">No users found</td>
-          </tr>
-          <% } %>
-        </tbody>
+              <td>
+                <button class="btn btn-delete" onclick="confirmUserDelete('<%= user._id.toString() %>')">Delete</button>
+              </td>
+            </tr>
+            <% }) %>
+            <% } else { %>
+            <tr id="noUserRow">
+              <td colspan="8">No users found</td>
+            </tr>
+            <% } %>
+          </tbody>
 
-      </table>
+        </table>
+      </section>
     </section>
 
-    <section class="products-section">
-      <div class="products-header">
-        <h2 class="products-title">Manage Own Products<span><%= products.length %></span></h2>
-      </div>
+    <section id="productsTab" class="products-section" style="display: none;">
+      <section class="products-section">
+        <div class="products-header">
+          <h2 class="products-title">Manage Own Products<span><%= products.length %></span></h2>
+        </div>
 
-      <table id="productTable">
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Original Price</th>
-            <th>Website Price</th>
-            <th>Stock</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (products.length > 0) { %>
-          <% products.forEach(product => { %>
-          <tr data-product-id="<%= product._id.toString() %>">
-            <td><%= product.category%></td>
-            <td><img src="<%= product.image %>" alt="Product Image" class="product-image"></td>
-            <td><%= product.name %></td>
-            <td>₹<%= product.oldPrice %></td>
-            <td>₹<%= product.newPrice %></td>
-            <td><%= product.quantity %></td>
-            <td>
-              <span class="status-badge status-<%= product.status %>">
-                <%= product.status.charAt(0).toUpperCase() + product.status.slice(1) %>
-              </span>
-            </td>
-            <td>
-              <button class="btn btn-edit" onclick="openEditModal('<%= product._id.toString() %>', '<%= product.name %>', '<%= product.oldPrice %>', '<%= product.newPrice %>', '<%= product.quantity %>','<%= product.description %>')">Edit</button>
-              <button class="btn btn-delete" onclick="confirmDelete('<%= product._id.toString() %>')">Delete</button>
-            </td>
-          </tr>
-          <% }) %>
-          <% } else { %>
-          <tr id="noProductRow">
-            <td colspan="8">No products found</td>
-          </tr>
-          <% } %>
-        </tbody>
+        <table id="productTable">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Original Price</th>
+              <th>Website Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (products.length > 0) { %>
+            <% products.forEach(product => { %>
+            <tr data-product-id="<%= product._id.toString() %>">
+              <td><%= product.category%></td>
+              <td><img src="<%= product.image %>" alt="Product Image" class="product-image"></td>
+              <td><%= product.name %></td>
+              <td>₹<%= product.oldPrice %></td>
+              <td>₹<%= product.newPrice %></td>
+              <td><%= product.quantity %></td>
+              <td>
+                <span class="status-badge status-<%= product.status %>">
+                  <%= product.status.charAt(0).toUpperCase() + product.status.slice(1) %>
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-edit" onclick="openEditModal('<%= product._id.toString() %>', '<%= product.name %>', '<%= product.oldPrice %>', '<%= product.newPrice %>', '<%= product.quantity %>','<%= product.description %>')">Edit</button>
+                <button class="btn btn-delete" onclick="confirmDelete('<%= product._id.toString() %>')">Delete</button>
+              </td>
+            </tr>
+            <% }) %>
+            <% } else { %>
+            <tr id="noProductRow">
+              <td colspan="8">No products found</td>
+            </tr>
+            <% } %>
+          </tbody>
 
-      </table>
+        </table>
+      </section>
     </section>
   </div>
 
