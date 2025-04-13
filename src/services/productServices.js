@@ -4,7 +4,8 @@ import Product from "../models/productmodel.js";
 //TODO: need to change the type of product to category
 
 export async function addProduct(
-  artisanId,
+  userId,
+  uploadedBy,
   name,
   category,
   image,
@@ -20,7 +21,8 @@ export async function addProduct(
     const newPrice = (oldPrice * 0.9).toFixed(2);
 
     const product = new Product({
-      artisanId,
+      userId,
+      uploadedBy,
       name,
       category,
       image,
@@ -83,20 +85,34 @@ export async function getProducts(artisanId = null, approved = false) {
     let products;
     if (artisanId) {
       if (approved) {
-        products = await Product.find({ artisanId, status: "approved" });
+        products = await Product.find({
+          userId: artisanId,
+          status: "approved",
+        }).populate("userId");
       } else {
-        products = await Product.find({ artisanId });
+        products = await Product.find({ userId: artisanId }).populate("userId");
       }
     } else {
       if (approved) {
-        products = await Product.find({ status: "approved" });
+        products = await Product.find({ status: "approved" }).populate(
+          "userId"
+        );
       } else {
-        products = await Product.find();
+        products = await Product.find().populate("userId");
       }
     }
     return products;
   } catch (e) {
     throw new Error("Error getting products: " + e.message);
+  }
+}
+
+export async function getProductsByRole(role) {
+  try {
+    const products = Product.find({ uploadedBy: role });
+    return products;
+  } catch (e) {
+    throw new Error("Error getting products by role: " + e.message);
   }
 }
 
@@ -185,16 +201,18 @@ export async function getApprovedProducts(category = null) {
   try {
     // if no category is provided, return all approved products
     if (!category) {
-      return await Product.find({ status: "approved" });
+      return await Product.find({ status: "approved" }).populate("userId");
     } else {
       if (!Array.isArray(category)) {
         //checking if category is not a array
-        return await Product.find({ status: "approved", category });
+        return await Product.find({ status: "approved", category }).populate(
+          "userId"
+        );
       } else {
         return await Product.find({
           status: "approved",
           category: { $in: category },
-        });
+        }).populate("userId");
       }
     }
   } catch (e) {
@@ -204,7 +222,7 @@ export async function getApprovedProducts(category = null) {
 
 export async function getDisapprovedProducts() {
   try {
-    return await Product.find({ status: "disapproved" });
+    return await Product.find({ status: "disapproved" }).populate("userId");
   } catch (e) {
     throw new Error("Error getting disapproved products: " + e.message);
   }
@@ -212,7 +230,7 @@ export async function getDisapprovedProducts() {
 
 export async function getPendingProducts() {
   try {
-    return await Product.find({ status: "pending" });
+    return await Product.find({ status: "pending" }).populate("userId");
   } catch (e) {
     throw new Error("Error getting pending products: " + e.message);
   }

@@ -40,4 +40,5 @@ router.post("/customrequests", approveCustomRequest);
 router.get("/customrequests/:requestId", deleteCustomRequest);
 
 router.get("/settings", getSettingsArtisan);
+
 export default router;

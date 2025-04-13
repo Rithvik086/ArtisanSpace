@@ -8,7 +8,7 @@ import {
   deletUser,
   getSupportTickets,
   deleteTicket,
-  getSettingsAdmin
+  getSettingsAdmin,
 } from "../controller/adminController.js";
 
 const router = express.Router();
