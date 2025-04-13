@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import Product from "../models/productmodel.js";
-import { flushCompileCache } from "module";
-import { stat } from "fs";
 
 //TODO: need to change the type of product to category
 
@@ -304,5 +302,40 @@ export async function decreaseProductQuantity(
     if (newSession) {
       session.endSession();
     }
+  }
+}
+
+export async function updateProduct(
+  productId,
+  name,
+  oldPrice,
+  newPrice,
+  quantity,
+  description
+) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      throw new Error("Invalid product ID");
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { name, oldPrice, newPrice, quantity, description },
+      { new: true, runValidators: true, session }
+    );
+
+    if (!updatedProduct) {
+      throw new Error("Product not found");
+    } else {
+      await session.commitTransaction();
+      return { success: true, message: "Product updated successfully!" };
+    }
+  } catch (e) {
+    await session.abortTransaction();
+    throw new Error("Error updating product: " + e.message);
+  } finally {
+    session.endSession();
   }
 }

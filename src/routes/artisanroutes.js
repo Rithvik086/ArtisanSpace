@@ -6,6 +6,7 @@ import {
   addProduct,
   deleteProduct,
   getProducts,
+  updateProduct,
 } from "../services/productServices.js";
 import {
   getAvailableWorkshops,
@@ -35,6 +36,31 @@ router.get("/", async (req, res) => {
   } catch (err) {
     console.error("Error fetching requests:", err);
     res.status(500).send("error");
+  }
+});
+
+router.put("/edit-product/:id", async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { name, oldPrice, newPrice, quantity, description } = req.body;
+
+    const result = await updateProduct(
+      productId,
+      name,
+      oldPrice,
+      newPrice,
+      parseInt(quantity),
+      description
+    );
+
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(500).json({ success: false });
+    }
+  } catch (e) {
+    console.log(e);
+    res.send(500).send("Server Error");
   }
 });
 
