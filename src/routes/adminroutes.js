@@ -1,112 +1,27 @@
 import express from "express";
-import bcrypt from "bcryptjs";
-import path from "path";
-import { fileURLToPath } from "url";
-import authorizerole from "../middleware/roleMiddleware.js";
-import { getProducts } from "../services/productServices.js";
-import {
-  addUser,
-  getUserById,
-  getUsers,
-  removeUser,
-} from "../services/userServices.js";
-import { getTickets, removeTicket } from "../services/ticketServices.js";
-import { loadcustData, updateResponse } from "../models/customerresponse.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const custrespath = path.resolve(__dirname, "../../customerresponse.json");
+import authorizerole from "../middleware/roleMiddleware.js";
+
+import {
+  getAdminDashboard,
+  addUserHandler,
+  deletUser,
+  getSupportTickets,
+  deleteTicket,
+  getSettingsAdmin
+} from "../controller/adminController.js";
 
 const router = express.Router();
-const admrole = "admin";
 
 router.use(authorizerole("admin"));
 
-router.get("/", async (req, res) => {
-  await updateResponse(custrespath);
-  const responses = await loadcustData(custrespath);
-  const userlist = await getUsers();
-  const products = await getProducts();
-  res.render("admin/admindashboard", {
-    role: admrole,
-    responses,
-    userlist,
-    products,
-  });
-});
+router.get("/", getAdminDashboard);
 
-router.post("/add-user", async (req, res) => {
-  console.log("Received data:", req.body);
-  const { name, email, role, pass } = req.body;
-  const hashpass = await bcrypt.hash(pass, 9);
-  try {
-    const result = await addUser(name, email, hashpass, role); // Assuming addUser returns a success status
+router.post("/add-user", addUserHandler);
+router.delete("/delete-user/:userID", deletUser);
+router.get("/support-ticket", getSupportTickets);
+router.post("/support-ticket", deleteTicket);
 
-    if (result.success) {
-      res.status(200).json({
-        success: true,
-        message: "User added successfully",
-        userData: result.user, // Send back user data if needed
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: result.message || "Failed to add user",
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-});
-router.delete("/delete-user/:userID", async (req, res) => {
-  const userId = req.params.userID;
-
-  try {
-    const result = await removeUser(userId);
-    if (result.success) {
-      res.status(200).json({
-        success: true,
-        message: "User deleted",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: result.message || "Failed to delete user",
-      });
-    }
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-  // return res.redirect("/admin/")
-});
-router.get("/support-ticket", async (req, res) => {
-  let tickets = await getTickets();
-  res.render("admin/adminsupportticket", { role: admrole, tickets });
-});
-
-router.post("/support-ticket", async (req, res) => {
-  if (req.body._method === "DELETE") {
-    const { ticketId } = req.body;
-    await removeTicket(ticketId);
-    return res.redirect("/admin/support-ticket"); // Redirect after deletion
-  }
-});
-
-router.get("/settings", async (req, res) => {
-  const user = await getUserById(req.user.id);
-  delete user.password;
-  delete user.userId;
-  delete user.role;
-  res.render("settings", { role: admrole, user });
-});
+router.get("/settings", getSettingsAdmin);
 
 export default router;
