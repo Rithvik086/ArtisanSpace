@@ -15,6 +15,7 @@ import { bookWorkshop } from "../services/workshopServices.js";
 import upload from "../middleware/multer.js";
 import cloudinary from "../config/cloudinary.js";
 import { addRequest } from "../services/requestServices.js";
+import { placeOrder } from "../services/orderServices.js";
 
 const router = express.Router();
 const custrole = "customer";
@@ -224,7 +225,27 @@ router.get("/checkout", async (req, res) => {
     console.error("Error loading checkout page:", error);
     res
       .status(500)
-      .send({ success: false, message: "Failed to load checkout page" });
+      .json({ success: false, message: "Failed to load checkout page" });
+  }
+});
+
+router.post("/place-order", async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { money } = req.body;
+
+    const response = await placeOrder(userId, money);
+
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res
+        .status(500)
+        .json({ success: false, message: "Failed to place Order!" });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ success: false, message: "Failed to place Order!" });
   }
 });
 
