@@ -191,15 +191,24 @@ export async function removeCompleteItem(userId, productId) {
   }
 }
 
-export async function removeCart(userId) {
+export async function removeCart(userId, session = null) {
   try {
-    await Cart.findOneAndDelete({ userId });
+    let result;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid userId format");
+    }
+
+    if (session) {
+      result = await Cart.findOneAndDelete({ userId }, { session });
+    } else {
+      result = await Cart.findOneAndDelete({ userId });
+    }
     if (!result) {
       throw new Error("Cart not found for the given userId.");
     }
     return { success: true, message: "Cart removed successfully." };
   } catch (error) {
-    throw new Error("Error removing cart " + error.message);
+    throw new Error("Error removing cart: " + error.message);
   }
 }
 

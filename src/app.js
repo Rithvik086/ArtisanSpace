@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-dbConnect();
+await dbConnect();
 
 const app = express();
 const port = 3000;
@@ -51,7 +51,7 @@ app.all("*", (req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({
+  res.status(500).send({
     success: false,
     message: err.message || "Internal Server Error",
   });

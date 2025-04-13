@@ -9,6 +9,17 @@
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
   <link rel="stylesheet" href="/artisan/artisandashboard.css" />
+  <style>
+    .error-input {
+      border: 1px solid red !important;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin: 5px 0 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -67,6 +78,7 @@
               </span>
             </td>
             <td>
+              <button class="btn btn-edit" onclick="openEditModal('<%= product._id.toString() %>', '<%= product.name %>', '<%= product.oldPrice %>', '<%= product.newPrice %>', '<%= product.quantity %>','<%= product.description %>')">Edit</button>
               <button class="btn btn-delete" onclick="confirmDelete('<%= product._id.toString() %>')">Delete</button>
             </td>
           </tr>
@@ -80,6 +92,49 @@
 
       </table>
     </section>
+  </div>
+
+  <!-- Edit Product Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">Edit Product</h3>
+      <form id="editProductForm">
+        <label for="editProductName">Name:</label>
+        <input type="text" id="editProductName" name="name" required />
+        <p id="editProductNameError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          Product name must only contain letters, numbers, spaces, and hyphens, and be between 3 and 30 characters long.
+        </p>
+
+        <label for="editProductOldPrice">Original Price:</label>
+        <input type="text" id="editProductOldPrice" name="oldPrice" required />
+        <p id="editProductOldPriceError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          Price must be a valid number with up to two decimal places
+        </p>
+
+        <label for="editProductNewPrice">Website Price:</label>
+        <input type="text" id="editProductNewPrice" name="newPrice" required />
+        <p id="editProductNewPriceError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          Price must be a valid number with up to two decimal places and less than Original Price
+        </p>
+
+        <label for="editProductQuantity">Stock:</label>
+        <input type="number" id="editProductQuantity" name="quantity" required />
+        <p id="editProductQuantityError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          Quantity must be a positive integer greater than 0
+        </p>
+
+        <label for="editProductDescription">Description:</label>
+        <input type="text" id="editProductDescription" name="description" required />
+        <p id="editProductDescriptionError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+          Description must be between 10 and 500 characters and only contain letters, numbers, spaces, and basic punctuation.
+        </p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-cancel" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" class="btn btn-confirm">Save</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- Delete Confirmation Modal -->

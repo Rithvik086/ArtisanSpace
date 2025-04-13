@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import Product from "../models/productmodel.js";
-import { flushCompileCache } from "module";
-import { stat } from "fs";
 
 //TODO: need to change the type of product to category
 
@@ -68,6 +66,18 @@ export async function deleteProduct(productId) {
   }
 }
 
+export async function getProduct(productId) {
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    return product;
+  } catch (e) {
+    throw new Error("Error getting product: " + e.message);
+  }
+}
+
 export async function getProducts(artisanId = null, approved = false) {
   try {
     let products;
@@ -92,18 +102,23 @@ export async function getProducts(artisanId = null, approved = false) {
 
 export async function productCount(productId, session = null) {
   try {
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      throw new Error("Invalid product ID");
+    }
+
     let product;
-    if (session)
+    if (session && session.inTransaction()) {
       product = await Product.findOne({
         status: "approved",
         _id: productId,
       }).session(session);
-    else {
+    } else {
       product = await Product.findOne({
         status: "approved",
         _id: productId,
       });
     }
+
     return product ? product.quantity : 0;
   } catch (e) {
     throw new Error("Error getting product count: " + e.message);
@@ -228,5 +243,99 @@ export async function getProductsCount() {
     return counts;
   } catch (e) {
     throw new Error("Error getting products count: " + e.message);
+  }
+}
+
+export async function decreaseProductQuantity(
+  productId,
+  quantity,
+  session = null
+) {
+  let newSession = false;
+
+  if (!session) {
+    session = await mongoose.startSession();
+    session.startTransaction();
+    newSession = true;
+  }
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      throw new Error("Invalid product ID");
+    }
+
+    const count = await productCount(productId, session);
+
+    if (count < quantity) {
+      throw new Error("Not enough stock");
+    }
+    if (quantity < 0) {
+      throw new Error("Quantity cannot be negative");
+    }
+    if (quantity === 0) {
+      throw new Error("Quantity cannot be zero");
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { quantity },
+      { new: true, runValidators: true, session }
+    );
+
+    if (!updatedProduct) {
+      throw new Error("Product not found");
+    } else {
+      if (newSession) {
+        await session.commitTransaction();
+      }
+      return {
+        success: true,
+        message: "Product quantity updated successfully!",
+      };
+    }
+  } catch (e) {
+    if (newSession) {
+      await session.abortTransaction();
+    }
+    throw new Error("Error decreasing product quantity: " + e.message);
+  } finally {
+    if (newSession) {
+      session.endSession();
+    }
+  }
+}
+
+export async function updateProduct(
+  productId,
+  name,
+  oldPrice,
+  newPrice,
+  quantity,
+  description
+) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      throw new Error("Invalid product ID");
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { name, oldPrice, newPrice, quantity, description },
+      { new: true, runValidators: true, session }
+    );
+
+    if (!updatedProduct) {
+      throw new Error("Product not found");
+    } else {
+      await session.commitTransaction();
+      return { success: true, message: "Product updated successfully!" };
+    }
+  } catch (e) {
+    await session.abortTransaction();
+    throw new Error("Error updating product: " + e.message);
+  } finally {
+    session.endSession();
   }
 }
