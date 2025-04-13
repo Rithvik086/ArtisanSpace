@@ -88,15 +88,17 @@ export async function getProducts(artisanId = null, approved = false) {
         products = await Product.find({
           userId: artisanId,
           status: "approved",
-        });
+        }).populate("userId");
       } else {
-        products = await Product.find({ userId: artisanId });
+        products = await Product.find({ userId: artisanId }).populate("userId");
       }
     } else {
       if (approved) {
-        products = await Product.find({ status: "approved" });
+        products = await Product.find({ status: "approved" }).populate(
+          "userId"
+        );
       } else {
-        products = await Product.find();
+        products = await Product.find().populate("userId");
       }
     }
     return products;
