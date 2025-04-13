@@ -22,6 +22,30 @@ export const getManagerDashboard = async (req, res) => {
   res.render("manager/managerdashboard", { role: mngrole, userlist, products });
 };
 
+export const deleteUserHandler = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID is required" });
+    }
+    const response = await removeUser(userId);
+
+    if (response.success) {
+      res
+        .status(200)
+        .json({ success: true, message: "User deleted successfully" });
+    } else {
+      res
+        .status(500)
+        .json({ success: false, message: "Failed to delete user" });
+    }
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+};
+
 export const getAndHandleContentModeration = async (req, res) => {
   try {
     if (req.headers["x-requested-with"] === "XMLHttpRequest") {
