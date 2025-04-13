@@ -3,10 +3,18 @@ import { Types } from "mongoose";
 import Cart from "./cartmodel.js";
 
 const productSchema = new mongoose.Schema({
-  artisanId: {
+  userId: {
     type: Types.ObjectId,
     required: true,
     ref: "User",
+  },
+  uploadedBy: {
+    type: String,
+    required: true,
+    enum: {
+      values: ["artisan", "manager"],
+      message: "{VALUE} is not allowed to upload products.",
+    },
   },
   name: {
     type: String,

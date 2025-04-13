@@ -93,6 +93,20 @@ export async function getUsers() {
   }
 }
 
+export async function getUsersByRole(role) {
+  try {
+    if (role === "manager") {
+      return await User.find({
+        $or: [{ role: "customer" }, { role: "artisan" }],
+      });
+    } else if (role === "admin") {
+      return await User.find();
+    }
+  } catch (e) {
+    throw new Error("Error failed to get users by role: " + e.message);
+  }
+}
+
 export async function removeUser(userId) {
   const session = await mongoose.startSession();
   session.startTransaction();

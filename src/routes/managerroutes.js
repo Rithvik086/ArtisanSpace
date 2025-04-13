@@ -7,40 +7,76 @@ import {
   getApprovedProducts,
   getDisapprovedProducts,
   getPendingProducts,
+  getProductsByRole,
   getProductsCount,
 } from "../services/productServices.js";
-import { getUserById, getUsers } from "../services/userServices.js";
+import {
+  getUserById,
+  getUsersByRole,
+  removeUser,
+} from "../services/userServices.js";
 const router = express.Router();
 const mngrole = "manager";
 
 router.use(authorizerole("admin", "manager"));
 
 router.get("/", async (req, res) => {
-  const userlist = await getUsers();
-  res.render("manager/managerdashboard", { role: mngrole, userlist });
+  const userlist = await getUsersByRole("manager");
+  const products = await getProductsByRole(req.user.role);
+  res.render("manager/managerdashboard", { role: mngrole, userlist, products });
+});
+
+router.delete("/delete-user/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID is required" });
+    }
+    const response = await removeUser(userId);
+
+    if (response.success) {
+      res
+        .status(200)
+        .json({ success: true, message: "User deleted successfully" });
+    } else {
+      res
+        .status(500)
+        .json({ success: false, message: "Failed to delete user" });
+    }
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
 });
 
 router.get("/content-moderation", async (req, res) => {
-  if (req.headers["x-requested-with"] === "XMLHttpRequest") {
-    const { action, productId } = req.query;
-    let msg = { success: false };
+  try {
+    if (req.headers["x-requested-with"] === "XMLHttpRequest") {
+      const { action, productId } = req.query;
+      let msg = { success: false };
 
-    if (action === "approve") {
-      msg = await approveProduct(productId);
-    } else if (action === "disapprove") {
-      msg = await disapproveProduct(productId);
-    } else if (action === "remove") {
-      msg = await deleteProduct(productId);
+      if (action === "approve") {
+        msg = await approveProduct(productId);
+      } else if (action === "disapprove") {
+        msg = await disapproveProduct(productId);
+      } else if (action === "remove") {
+        msg = await deleteProduct(productId);
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid action" });
+      }
+      if (msg.success) {
+        res.status(200).json({ success: true });
+      } else {
+        res.status(500).json({ success: false });
+      }
     } else {
-      return res.status(400).json({ success: false, error: "Invalid action" });
+      res.render("manager/managerContentModeration", { role: mngrole });
     }
-    if (msg.success) {
-      res.status(200).json({ success: true });
-    } else {
-      res.status(500).json({ success: false });
-    }
-  } else {
-    res.render("manager/managerContentModeration", { role: mngrole });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
   }
 });
 

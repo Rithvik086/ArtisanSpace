@@ -95,6 +95,7 @@ router.post("/listings", upload.single("image"), async (req, res) => {
 
     await addProduct(
       req.user.id,
+      req.user.role,
       productName,
       type,
       result.secure_url,
