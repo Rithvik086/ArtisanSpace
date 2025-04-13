@@ -91,7 +91,7 @@ export const postListingsController = async (req, res) => {
 
     await addProduct(
       req.user.id,
-      productName,
+      req.user.role,
       type,
       result.secure_url,
       price,

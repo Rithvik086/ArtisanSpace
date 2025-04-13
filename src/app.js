@@ -16,7 +16,7 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 await dbConnect();
 
 const app = express();
-const port = 3000;
+const port = 3000 || process.env.PORT;
 
 // Middleware that parses incoming requests with JSON payloads(send through postman)
 app.use(express.json());
