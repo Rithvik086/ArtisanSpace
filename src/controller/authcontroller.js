@@ -100,8 +100,10 @@ const forgotPasswordEmail = async (req, res) => {
         .json({ success: false, message: "user not found" });
     }
 
-    const id = crypto.randomUUID();
-    const otp = await generateOtp(id, user._id.toString());
+    const id1 = crypto.randomUUID();
+    const id2 = crypto.randomUUID();
+
+    const otp = await generateOtp(id1, id2, user._id.toString());
 
     if (
       !(await sendMail(
@@ -112,7 +114,7 @@ const forgotPasswordEmail = async (req, res) => {
     ) {
       return res.status(500).json({ success: false, message: "Server Error!" });
     }
-    return res.status(200).json({ success: true, id });
+    return res.status(200).json({ success: true, id: id1 });
   } catch (e) {
     throw new Error("Error in forgotPasswordEmail controller: " + e.message);
   }
@@ -123,9 +125,11 @@ const forgotPasswordOtp = async (req, res) => {
     const receivedOtp = parseInt(req.body.otp);
     const id = req.body.id;
 
+    console.log(id, receivedOtp);
     if (!(id === undefined || receivedOtp === undefined)) {
-      if (await verifyOtp(id, receivedOtp)) {
-        return res.status(200).json({ success: true });
+      const response = await verifyOtp(id, receivedOtp);
+      if (response) {
+        return res.status(200).json({ success: true, id: response });
       }
     }
     res
@@ -141,7 +145,7 @@ const forgotPasswordNewPassword = async (req, res) => {
     const { id, password } = req.body;
 
     const userId = await verifyOtpExistence(id);
-    if (!userId) {
+    if (!(userId && randomId)) {
       return res.status(400).json({
         success: false,
         message: "Invalid request! trying to become smart ass X",
@@ -156,10 +160,11 @@ const forgotPasswordNewPassword = async (req, res) => {
 
     const hashpass = await bcrypt.hash(password, 9);
     if (await updateUserPassword(userId, hashpass)) {
-      res.status(200).json({ success: true, message: "Password updated" });
-    } else {
-      res.status(400).json({ success: false, message: "Password not updated" });
+      return res
+        .status(200)
+        .json({ success: true, message: "Password updated" });
     }
+    res.status(400).json({ success: false, message: "Password not updated" });
   } catch (e) {
     throw new Error(
       "Error in forgotPasswordNewPassword controller: " + e.message
