@@ -1,5 +1,5 @@
 import { addTicket } from "../services/ticketServices.js";
-import { removeUser, updateUser } from "../services/userServices.js";
+import { removeUser, updateUser,getUsers } from "../services/userServices.js";
 import { getProducts } from "../services/productServices.js";
 
 export const renderAboutUs = (req, res) => {
@@ -98,4 +98,11 @@ export const productPage = async (req, res) => {
   } catch (err) {
     console.error("failed to get project", err);
   }
+};
+export const getCustomerChart = async (req, res) => {
+  const customers = await getUsers()
+  const formatted = customers.map((c)=>({
+    registeredAt : c._id.getTimestamp(),
+  }));
+  res.json(formatted)
 };
