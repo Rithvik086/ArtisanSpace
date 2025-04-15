@@ -125,7 +125,6 @@ const forgotPasswordOtp = async (req, res) => {
     const receivedOtp = parseInt(req.body.otp);
     const id = req.body.id;
 
-    console.log(id, receivedOtp);
     if (!(id === undefined || receivedOtp === undefined)) {
       const response = await verifyOtp(id, receivedOtp);
       if (response) {
@@ -145,7 +144,7 @@ const forgotPasswordNewPassword = async (req, res) => {
     const { id, password } = req.body;
 
     const userId = await verifyOtpExistence(id);
-    if (!(userId && randomId)) {
+    if (!userId) {
       return res.status(400).json({
         success: false,
         message: "Invalid request! trying to become smart ass X",
