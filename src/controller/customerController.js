@@ -18,7 +18,7 @@ import { placeOrder } from "../services/orderServices.js";
 const custrole = "customer";
 
 export const getHomePage = async (req, res) => {
-  const products = await getProducts();
+  const products = await getProducts(null, true);
   const pro = products.slice(0, 10);
   res.render("customer/customerhome", { role: custrole, products: pro });
 };

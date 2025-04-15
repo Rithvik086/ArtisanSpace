@@ -11,7 +11,7 @@ export async function addProduct(
   image,
   oldPrice,
   quantity,
-  description
+  description,
 ) {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -95,7 +95,7 @@ export async function getProducts(artisanId = null, approved = false) {
     } else {
       if (approved) {
         products = await Product.find({ status: "approved" }).populate(
-          "userId"
+          "userId",
         );
       } else {
         products = await Product.find().populate("userId");
@@ -152,7 +152,7 @@ export async function approveProduct(productId) {
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       { status: "approved" },
-      { new: true, runValidators: true, session }
+      { new: true, runValidators: true, session },
     );
 
     if (!updatedProduct) {
@@ -180,7 +180,7 @@ export async function disapproveProduct(productId) {
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       { status: "disapproved" },
-      { new: true, runValidators: true, session }
+      { new: true, runValidators: true, session },
     );
 
     if (!updatedProduct) {
@@ -206,7 +206,7 @@ export async function getApprovedProducts(category = null) {
       if (!Array.isArray(category)) {
         //checking if category is not a array
         return await Product.find({ status: "approved", category }).populate(
-          "userId"
+          "userId",
         );
       } else {
         return await Product.find({
@@ -267,7 +267,7 @@ export async function getProductsCount() {
 export async function decreaseProductQuantity(
   productId,
   quantity,
-  session = null
+  session = null,
 ) {
   let newSession = false;
 
@@ -297,7 +297,7 @@ export async function decreaseProductQuantity(
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       { quantity },
-      { new: true, runValidators: true, session }
+      { new: true, runValidators: true, session },
     );
 
     if (!updatedProduct) {
@@ -329,7 +329,7 @@ export async function updateProduct(
   oldPrice,
   newPrice,
   quantity,
-  description
+  description,
 ) {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -341,7 +341,7 @@ export async function updateProduct(
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       { name, oldPrice, newPrice, quantity, description },
-      { new: true, runValidators: true, session }
+      { new: true, runValidators: true, session },
     );
 
     if (!updatedProduct) {

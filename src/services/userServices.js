@@ -72,6 +72,19 @@ export async function findUserByName(username) {
   }
 }
 
+export async function findUserByEmail(email) {
+  try {
+    const user = await User.findOne({ email });
+
+    if (!email) {
+      return null;
+    }
+    return user;
+  } catch (e) {
+    throw new Error("Error finding user by email: " + e.message);
+  }
+}
+
 export async function getUserById(userId) {
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -160,6 +173,34 @@ export async function updateUser(userId, name, mobile_no, address) {
   } catch (e) {
     await session.abortTransaction();
     throw new Error("Error updating user: " + e.message);
+  } finally {
+    session.endSession();
+  }
+}
+
+export async function updateUserPassword(userId, password) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid user ID.");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { password: password },
+      { new: true, runValidators: true, session }
+    );
+
+    if (!updatedUser) {
+      throw new Error("User not found.");
+    } else {
+      await session.commitTransaction();
+      return true;
+    }
+  } catch (e) {
+    await session.abortTransaction();
+    throw new Error("Error updating user password: " + e.message);
   } finally {
     session.endSession();
   }
