@@ -1,6 +1,8 @@
 import { addTicket } from "../services/ticketServices.js";
 import { removeUser, updateUser,getUsers } from "../services/userServices.js";
 import { getProducts } from "../services/productServices.js";
+import { totalOrders } from "../services/orderServices.js";
+
 
 export const renderAboutUs = (req, res) => {
   res.render("Aboutus", { role: req.user.role });
@@ -114,3 +116,12 @@ export const getCustomerChart = async (req, res) => {
     });
   }
 };
+
+export const getOrderDetails = async (req, res) => {
+  const value = req.params.value;
+  let orders  = await totalOrders();
+  if(value === "totalsales"){
+    
+    
+  }
+}

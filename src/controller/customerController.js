@@ -10,17 +10,23 @@ import {
   removeCompleteItem,
 } from "../services/cartServices.js";
 import { getUserById } from "../services/userServices.js";
-import { bookWorkshop } from "../services/workshopServices.js";
+import { bookWorkshop, getWorkshopByUserId } from "../services/workshopServices.js";
 
 import cloudinary from "../config/cloudinary.js";
-import { addRequest } from "../services/requestServices.js";
-import { placeOrder } from "../services/orderServices.js";
+import { addRequest, getRequestById } from "../services/requestServices.js";
+import { getOrdersById, placeOrder } from "../services/orderServices.js";
+import { get } from "mongoose";
 const custrole = "customer";
 
 export const getHomePage = async (req, res) => {
   const products = await getProducts(null, true);
   const pro = products.slice(0, 10);
-  res.render("customer/customerhome", { role: custrole, products: pro });
+  const userId = req.user.id;
+  const customerOrders = await getOrdersById(userId);
+  // Debug log removed: console.log(customerOrders, userId);
+const customerRequests = await getRequestById(userId);
+const customerWorkshops =  await getWorkshopByUserId(userId);
+  res.render("customer/customerhome", { role: custrole, products: pro,requests: customerRequests , orders : customerOrders,workshops: customerWorkshops, userId });
 };
 
 export const getStorePage = async (req, res) => {
