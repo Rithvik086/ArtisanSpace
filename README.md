@@ -20,6 +20,6 @@ Make sure you have the following installed on your system:
 4. Add a .env file (which will be provided to each team member separately)
 5. **Run the express server**
    ```sh
-      node app.js
+      npm start
 6.  change the routes accordingly to view routes 
       

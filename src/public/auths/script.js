@@ -111,14 +111,17 @@ document
     } else {
       emailError.style.display = "none";
     }
-let mobileregex = /^[0-9]+$/;
-    if (!mobileregex.test(mobile_no.value) || mobile_no.value.length < 10 || mobile_no.value.length > 10) {
+    let mobileregex = /^[0-9]+$/;
+    if (
+      !mobileregex.test(mobile_no.value) ||
+      mobile_no.value.length < 10 ||
+      mobile_no.value.length > 10
+    ) {
       event.preventDefault();
       mobile_noError.style.display = "block";
     } else {
       mobile_noError.style.display = "none";
     }
-
 
     //password validation
 

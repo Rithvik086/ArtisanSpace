@@ -31,10 +31,17 @@ export const getAdminDashboard = async (req, res) => {
 
 export const addUserHandler = async (req, res) => {
   // console.log("Received data:", req.body);
-  const { name, email, role, pass } = req.body;
+  const { name, username, mobile_no, email, role, pass } = req.body;
   const hashpass = await bcrypt.hash(pass, 9);
   try {
-    const result = await addUser(name, email, hashpass, role); // Assuming addUser returns a success status
+    const result = await addUser(
+      username,
+      name,
+      email,
+      hashpass,
+      mobile_no,
+      role
+    ); // Assuming addUser returns a success status
 
     if (result.success) {
       res.status(200).json({

@@ -42,7 +42,6 @@ export async function getCartProductQuantity(
         { "products.$": 1, _id: 0 }
       );
     }
-    console.log(cart);
 
     if (!cart || !cart.products || cart.products.length === 0) {
       return 0; // Product not found in cart
@@ -61,12 +60,7 @@ export async function addItem(userId, productId) {
     let cartQuantity = 0;
 
     cartQuantity = await getCartProductQuantity(userId, productId, session);
-    console.log(
-      "productQuantity",
-      productQuantity,
-      "cartQuantity",
-      cartQuantity
-    );
+
     if (productQuantity > cartQuantity) {
       if (cartQuantity > 0) {
         // Update the quantity of the existing product in the cart

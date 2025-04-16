@@ -91,6 +91,7 @@ export const postListingsController = async (req, res) => {
 
     await addProduct(
       req.user.id,
+      req.user.role,
       productName,
       type,
       result.secure_url,
@@ -129,24 +130,26 @@ export const handleWorksopAction = async (req, res) => {
         sendMail(
           customerUser.userId.email,
           "Workshop Accepted - ArtisanSpace",
-          `Dear ${customerUser.userId.username},
-          
-          We are excited to inform you that your workshop request, **"${
+          `Hello ${customerUser.userId.username},<br><br>
+
+          Great news! Your workshop request, <b>"${
             customerUser.workshopTitle
-          }"**, has been accepted by **${
+          }"</b>, has been accepted by <b>${
             artisanUser.username
-          }** on **${new Date(customerUser.acceptedAt).toLocaleString()}**.
-          
-          You can now connect with the artisan to finalize the details.
-          
-          **Artisan Contact Information:**
-          📧 Email: ${artisanUser.email}  
-          📞 Mobile: ${artisanUser.mobile_no}  
-          
-          If you have any questions, feel free to reach out. We hope this workshop is a great success!
-          
-          Best regards,  
-          **The ArtisanSpace Team**`
+          }</b> on <b>${new Date(
+            customerUser.acceptedAt
+          ).toLocaleString()}</b>.<br><br>
+
+          You can now connect with the artisan to finalize the details and make your workshop a success.<br><br>
+
+          <b>Artisan Contact Information:</b><br>
+          - 📧 Email: ${artisanUser.email}<br>
+          - 📞 Mobile: ${artisanUser.mobile_no}<br><br>
+
+          If you have any questions or need assistance, feel free to reach out to us. We're here to help!<br><br>
+
+          Best regards,<br>  
+          <b>The ArtisanSpace Team</b>`
         );
 
         res.status(200).json({ success: true });
