@@ -8,7 +8,7 @@ export async function getCart(userId, session = null) {
     let cart;
     if (session) {
       cart = await Cart.findOne({ userId }, { products: 1, _id: 0 })
-        .populate("products.$.productId")
+        .populate("products.productId")
         .session(session);
     } else {
       cart = await Cart.findOne({ userId }, { products: 1, _id: 0 }).populate(

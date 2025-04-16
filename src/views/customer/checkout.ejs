@@ -157,7 +157,6 @@
           const shippingInfo = '<%= user.address %>';
 
           const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-          const money = parseFloat('<%= amount %>') + parseFloat('<%= shipping %>') + parseFloat('<%= tax %>');
           const response = await fetch('/customer/place-order', {
             method: 'POST',
             headers: {
@@ -165,8 +164,7 @@
             },
             body: JSON.stringify({
               shippingInfo,
-              paymentMethod,
-              money
+              paymentMethod
             })
           });
 

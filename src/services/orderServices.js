@@ -33,18 +33,19 @@ export async function addOrder(userId, money) {
   }
 }
 
-export async function placeOrder(userId, money) {
+export async function placeOrder(userId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    let cart = await Cart.findOne({ userId });
+    let cart = await getCart(userId, session);
+    let amount = 0;
 
     if (!cart || cart.length === 0) {
       throw new Error("Cart is empty!");
     }
 
     // Checking if user have products in cart as well as reducing them from inventory
-    for (const item of cart.products) {
+    for (const item of cart) {
       const count = await productCount(item.productId._id, session);
 
       if (count) {
@@ -55,6 +56,9 @@ export async function placeOrder(userId, money) {
         }
         let response;
 
+        amount += item.productId.newPrice * item.quantity;
+
+        // Decreasing the product quantity
         response = await decreaseProductQuantity(
           item.productId._id,
           newStock,
@@ -69,11 +73,15 @@ export async function placeOrder(userId, money) {
       }
     }
 
+    amount = (amount + Math.round(amount * 0.05 * 100) / 100 + 50).toFixed(2); // 5% tax and 50 shipping
+
+    cart = await Cart.findOne({ userId });
+
     const cartObj = cart.toObject();
 
     //adding money and status and timestamp to the order
     delete cartObj._id;
-    cartObj.money = money;
+    cartObj.money = amount;
     cartObj.purchasedAt = new Date();
     cartObj.status = "pending";
 

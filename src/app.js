@@ -50,7 +50,7 @@ app.all("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error(err);
   res.status(500).send({
     success: false,
     message: err.message || "Internal Server Error",
