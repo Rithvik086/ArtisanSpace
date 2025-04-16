@@ -67,7 +67,7 @@ export const addToCart = async (req, res) => {
 
 //Orders
 
-export const getOrders = async (req, res) => {
+export const getCartController = async (req, res) => {
   const userId = req.user.id;
   const cart = await getCart(userId);
 
@@ -79,7 +79,7 @@ export const getOrders = async (req, res) => {
   if (req.headers["x-requested-with"] === "XMLHttpRequest") {
     res.render("partials/cart", { cart, userId, amount });
   } else {
-    res.render("customer/customerorders", {
+    res.render("customer/customerCart", {
       role: custrole,
       cart,
       userId,

@@ -62,7 +62,7 @@ export async function placeOrder(userId) {
         response = await decreaseProductQuantity(
           item.productId._id,
           newStock,
-          session
+          session,
         );
 
         if (!response.success) {

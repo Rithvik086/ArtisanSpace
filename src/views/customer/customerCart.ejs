@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>orders</title>
+  <title>Cart</title>
   <link rel="stylesheet" href="/navbar2.css" />
-  <link rel="stylesheet" href="/customer/customerOrders.css" />
+  <link rel="stylesheet" href="/customer/customerCart.css" />
   <link rel="stylesheet" href="/footer.css" />
 </head>
 
@@ -27,7 +27,7 @@
     async function updateCart(userId, productId, action, amount) {
       try {
         const response = await fetch(
-          `/customer/orders?userId=${userId}&productId=${productId}&action=${action}&amount=${amount}`, {
+          `/customer/cart?userId=${userId}&productId=${productId}&action=${action}&amount=${amount}`, {
             method: "POST",
           }
         );
@@ -48,7 +48,7 @@
 
     async function refreshCart() {
       try {
-        const response = await fetch("/customer/orders", {
+        const response = await fetch("/customer/cart", {
           headers: {
             "X-Requested-With": "XMLHttpRequest",
           },
@@ -79,7 +79,7 @@
     }
 
 
-    
+
     function attachQuantityListeners() {
       document.querySelectorAll(".quantity-input").forEach(input => {
         input.addEventListener("change", async function() {

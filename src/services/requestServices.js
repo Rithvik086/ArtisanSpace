@@ -8,7 +8,7 @@ export async function addRequest(
   image,
   description,
   budget,
-  requiredBy
+  requiredBy,
 ) {
   try {
     const request = new Request({
@@ -75,7 +75,7 @@ export async function approveRequest(requestId, artisanId) {
     const request = await Request.findByIdAndUpdate(
       requestId,
       { artisanId, isAccepted: true },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!request) {
