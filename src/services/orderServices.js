@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Order from "../models/ordersModel.js";
+import Cart from "../models/cartmodel.js";
 import { getCart, removeCart } from "./cartServices.js";
 import { decreaseProductQuantity, productCount } from "./productServices.js";
 
@@ -36,14 +37,14 @@ export async function placeOrder(userId, money) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    let cart = await getCart(userId, session);
+    let cart = await Cart.findOne({ userId });
 
     if (!cart || cart.length === 0) {
       throw new Error("Cart is empty!");
     }
 
     // Checking if user have products in cart as well as reducing them from inventory
-    for (const item of cart) {
+    for (const item of cart.products) {
       const count = await productCount(item.productId._id, session);
 
       if (count) {
@@ -68,14 +69,16 @@ export async function placeOrder(userId, money) {
       }
     }
 
+    const cartObj = cart.toObject();
+
     //adding money and status and timestamp to the order
-    delete cart._id;
-    cart.money = money;
-    cart.purchasedAt = new Date();
-    cart.status = "pending";
+    delete cartObj._id;
+    cartObj.money = money;
+    cartObj.purchasedAt = new Date();
+    cartObj.status = "pending";
 
     // Adding order to the order collection
-    await Order.insertOne(cart, {
+    await Order.insertOne(cartObj, {
       new: true,
       runValidators: true,
       upsert: true,
@@ -83,7 +86,7 @@ export async function placeOrder(userId, money) {
     });
 
     //removeing the cart from the cart collection
-    response = await removeCart(userId, session);
+    const response = await removeCart(userId, session);
 
     if (!response.success) {
       throw new Error("Error removeCart failed: ");
