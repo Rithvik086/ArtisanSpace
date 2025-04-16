@@ -6,7 +6,7 @@ import {
   getHomePage,
   getStorePage,
   addToCart,
-  getOrders,
+  getCartController,
   editCart,
   getWorkshopPage,
   bookWorkshopPage,
@@ -24,8 +24,8 @@ router.use(authorizerole("admin", "manager", "artisan", "customer"));
 router.get("/", getHomePage);
 router.get("/store", getStorePage);
 router.post("/store", addToCart);
-router.get("/orders", getOrders);
-router.post("/orders", editCart);
+router.get("/cart", getCartController);
+router.post("/cart", editCart);
 router.get("/workshop", getWorkshopPage);
 router.post("/requestWorkshop", bookWorkshopPage);
 router.get("/customorder", getCustomOrderPage);
