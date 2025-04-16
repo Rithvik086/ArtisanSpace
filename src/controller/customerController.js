@@ -23,7 +23,7 @@ export const getHomePage = async (req, res) => {
   const pro = products.slice(0, 10);
   const userId = req.user.id;
   const customerOrders = await getOrdersById(userId);
-  console.log(customerOrders,userId);
+  // Debug log removed: console.log(customerOrders, userId);
 const customerRequests = await getRequestById(userId);
 const customerWorkshops =  await getWorkshopByUserId(userId);
   res.render("customer/customerhome", { role: custrole, products: pro,requests: customerRequests , orders : customerOrders,workshops: customerWorkshops, userId });
