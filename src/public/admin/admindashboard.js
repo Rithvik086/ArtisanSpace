@@ -228,19 +228,121 @@ const productsData = {
   ],
 };
 
-const customersData = {
-  labels: labels,
-  datasets: [
-    {
-      label: "Customers",
-      data: [200, 220, 210, 250, 240, 270],
-      borderColor: "purple",
-      backgroundColor: "rgba(128, 0, 128, 0.1)",
-      fill: true,
-      tension: 0.3,
-    },
-  ],
-};
+// const customersData = {
+//   labels: labels,
+//   datasets: [
+//     {
+//       label: "Customers",
+//       data: [200, 220, 210, 250, 240, 270],
+//       borderColor: "purple",
+//       backgroundColor: "rgba(128, 0, 128, 0.1)",
+//       fill: true,
+//       tension: 0.3,
+//     },
+//   ],
+// };
+
+// Replace your current customer chart code with this
+fetch("/api/customer_chart")
+  .then((res) => res.json())
+  .then((data) => {
+    console.log("Raw customer data:", data); // Debug the raw data
+
+    // Check if data exists and has the expected format
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      console.error("Invalid customer data received:", data);
+      return;
+    }
+
+    // Make sure registeredAt is a valid date string
+    const validData = data.filter(item => item && item.registeredAt);
+    console.log("Valid customer data items:", validData.length);
+
+    const grouped = groupBy2DayInterval(validData);
+    console.log("Grouped data:", grouped);
+
+    const labels = Object.keys(grouped).sort();
+    const values = labels.map(label => grouped[label]);
+
+    const customerData = {
+      labels: labels.map(format5DayLabel), // Format labels for better display
+      datasets: [
+        {
+          label: "Total Users",
+          data: values,
+          borderColor: "purple",
+          backgroundColor: "rgba(128, 0, 128, 0.5)",
+          fill: true,
+          tension: 0.3,
+        },
+      ],
+    };
+
+    // Create the chart only if we have data
+    if (labels.length > 0) {
+      new Chart(document.getElementById("customersChart"), {
+        type: "line",
+        data: customerData,
+        options: commonOptions,
+      });
+    } else {
+      console.error("No customer data available for chart");
+      // Display a message in the chart area
+      document.getElementById("customersChart").innerHTML = 
+        '<div style="text-align:center;padding:20px;">No customer data available</div>';
+    }
+  })
+  .catch((err) => {
+    console.error("Error loading customer chart:", err);
+    document.getElementById("customersChart").innerHTML = 
+      '<div style="text-align:center;padding:20px;">Error loading customer data</div>';
+  });
+
+// Improved groupByMonth function
+function groupBy2DayInterval(data) {
+  const counts = {};
+
+  data.forEach((item) => {
+    try {
+      const date = new Date(item.registeredAt);
+
+      if (isNaN(date.getTime())) {
+        console.warn("Invalid date:", item.registeredAt);
+        return;
+      }
+
+      // Get start of interval
+      const day = date.getDate();
+      const startDay = Math.floor((day - 1) / 2) * 2 + 1;
+
+      const intervalStart = new Date(date.getFullYear(), date.getMonth(), startDay);
+      const key = intervalStart.toISOString().split("T")[0]; // format YYYY-MM-DD
+
+      counts[key] = (counts[key] || 0) + 1;
+    } catch (e) {
+      console.error("Error processing date:", e, item);
+    }
+  });
+
+  const sortedKeys = Object.keys(counts).sort();
+  let cumulativecount =0;
+  const cumulativecounts = {};
+
+  sortedKeys.forEach((key) => {
+    cumulativecount += counts[key];
+    cumulativecounts[key] = cumulativecount;
+  })
+
+  return cumulativecounts;
+}
+
+// Format month labels for better display
+function format5DayLabel(dateStr) {
+  const date = new Date(dateStr);
+  const day = String(date.getDate()).padStart(2, '0');
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${day} ${monthNames[date.getMonth()]}`;
+}
 
 const commonOptions = {
   responsive: true,
@@ -274,11 +376,7 @@ new Chart(document.getElementById("productsChart"), {
   options: commonOptions,
 });
 
-new Chart(document.getElementById("customersChart"), {
-  type: "line",
-  data: customersData,
-  options: commonOptions,
-});
+
 
 function showNotification(message, type) {
   console.log("Showing notification:", message, type);

@@ -1,5 +1,5 @@
 import { addTicket } from "../services/ticketServices.js";
-import { removeUser, updateUser } from "../services/userServices.js";
+import { removeUser, updateUser,getUsers } from "../services/userServices.js";
 import { getProducts } from "../services/productServices.js";
 
 export const renderAboutUs = (req, res) => {
@@ -97,5 +97,20 @@ export const productPage = async (req, res) => {
     });
   } catch (err) {
     console.error("failed to get project", err);
+  }
+};
+export const getCustomerChart = async (req, res) => {
+  try {
+    const customers = await getUsers();
+    const formatted = customers.map((c) => ({
+      registeredAt: c._id.getTimestamp(),
+    }));
+    res.json(formatted);
+  } catch (error) {
+    console.error("Error fetching customer chart data:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve customer chart data. Please try again later.",
+    });
   }
 };
