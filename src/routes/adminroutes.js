@@ -9,6 +9,7 @@ import {
   getSupportTickets,
   deleteTicket,
   getSettingsAdmin,
+  getAndHandleContentModerationAdmin,
 } from "../controller/adminController.js";
 
 const router = express.Router();
@@ -19,6 +20,7 @@ router.get("/", getAdminDashboard);
 
 router.post("/add-user", addUserHandler);
 router.delete("/delete-user/:userID", deletUser);
+router.get("/content-moderation", getAndHandleContentModerationAdmin);
 router.get("/support-ticket", getSupportTickets);
 router.post("/support-ticket", deleteTicket);
 

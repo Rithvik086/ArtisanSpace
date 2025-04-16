@@ -22,7 +22,6 @@ export async function bookWorkshop(
   }
 }
 
-//FIXME: This gives data in different foramt
 export async function getWorkshops(isAccepted = null) {
   try {
     let query = Workshop.find().populate("userId");
@@ -38,7 +37,6 @@ export async function getWorkshops(isAccepted = null) {
   }
 }
 
-//FIXME: This gives data in different foramt
 export async function getWorkshopById(workshopId) {
   try {
     const workshop = await Workshop.findById(workshopId).populate("userId");

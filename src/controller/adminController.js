@@ -1,7 +1,12 @@
 import bcrypt from "bcryptjs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { getProducts } from "../services/productServices.js";
+import {
+  approveProduct,
+  deleteProduct,
+  disapproveProduct,
+  getProducts,
+} from "../services/productServices.js";
 import {
   addUser,
   getUserById,
@@ -89,6 +94,36 @@ export const deletUser = async (req, res) => {
     });
   }
   // return res.redirect("/admin/")
+};
+
+export const getAndHandleContentModerationAdmin = async (req, res) => {
+  try {
+    if (req.headers["x-requested-with"] === "XMLHttpRequest") {
+      const { action, productId } = req.query;
+      let msg = { success: false };
+
+      if (action === "approve") {
+        msg = await approveProduct(productId);
+      } else if (action === "disapprove") {
+        msg = await disapproveProduct(productId);
+      } else if (action === "remove") {
+        msg = await deleteProduct(productId);
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid action" });
+      }
+      if (msg.success) {
+        res.status(200).json({ success: true });
+      } else {
+        res.status(500).json({ success: false });
+      }
+    } else {
+      res.render("manager/managerContentModeration", { role: admrole });
+    }
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
 };
 
 export const getSupportTickets = async (req, res) => {

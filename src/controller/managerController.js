@@ -46,7 +46,7 @@ export const deleteUserHandler = async (req, res) => {
   }
 };
 
-export const getAndHandleContentModeration = async (req, res) => {
+export const getAndHandleContentModerationManager = async (req, res) => {
   try {
     if (req.headers["x-requested-with"] === "XMLHttpRequest") {
       const { action, productId } = req.query;

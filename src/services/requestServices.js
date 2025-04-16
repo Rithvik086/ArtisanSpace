@@ -1,5 +1,4 @@
 import Request from "../models/customRequestModel.js";
-//FIXME: Complete service data output is different and need work on that
 
 export async function addRequest(
   userId,
@@ -8,7 +7,7 @@ export async function addRequest(
   image,
   description,
   budget,
-  requiredBy,
+  requiredBy
 ) {
   try {
     const request = new Request({
@@ -61,7 +60,7 @@ export async function approveRequest(requestId, artisanId) {
     const request = await Request.findByIdAndUpdate(
       requestId,
       { artisanId, isAccepted: true },
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     );
 
     if (!request) {
