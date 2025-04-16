@@ -14,7 +14,6 @@ import {
   updatProfile,
   getCustomerChart
 } from "../controller/userController.js";
-import { get } from "http";
 const router = express.Router();
 
 router.use(verifytoken);

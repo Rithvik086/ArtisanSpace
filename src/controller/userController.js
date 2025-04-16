@@ -100,9 +100,17 @@ export const productPage = async (req, res) => {
   }
 };
 export const getCustomerChart = async (req, res) => {
-  const customers = await getUsers()
-  const formatted = customers.map((c)=>({
-    registeredAt : c._id.getTimestamp(),
-  }));
-  res.json(formatted)
+  try {
+    const customers = await getUsers();
+    const formatted = customers.map((c) => ({
+      registeredAt: c._id.getTimestamp(),
+    }));
+    res.json(formatted);
+  } catch (error) {
+    console.error("Error fetching customer chart data:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve customer chart data. Please try again later.",
+    });
+  }
 };
