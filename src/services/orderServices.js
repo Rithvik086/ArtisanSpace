@@ -108,3 +108,32 @@ export async function placeOrder(userId) {
     session.endSession();
   }
 }
+
+export async function getOrdersById(userId) {
+  try{
+    const orders = await Order.find({userId}).populate("products.productId");
+    if (!orders) {
+      throw new Error("Orders not found!");
+    }
+    console.log(orders);
+    return orders;
+
+  }catch(err){
+    throw new Error("Error in getting order by ID: " + err.message);
+  }
+}
+
+export async function totalOrders(){
+  try{
+    const allOrders = await Order.find()
+    if(allOrders && allOrders.length >0){
+    return allOrders 
+    }else{
+      return []
+    }
+
+  }catch(e){
+    throw new Error("Error getting total orders: " + e.message);
+  }
+}
+ 

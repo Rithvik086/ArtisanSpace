@@ -30,4 +30,5 @@ router.post("/update-profile", updatProfile);
 router.get("/delete-account", deleteAccount);
 router.get("/products/:productId", productPage);
 router.get("/api/customer_chart",getCustomerChart);
+// router.get("/api/orders/:value", getOrderDetails);
 export default router;

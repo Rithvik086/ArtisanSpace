@@ -100,3 +100,17 @@ export async function getAcceptedWorkshops(artisanId = null) {
     throw new Error("Error getting accepted workshops: " + e.message);
   }
 }
+
+export async function getWorkshopByUserId(userId) {
+  try {
+    const workshops = await Workshop.find({ userId })
+    if (!workshops) {
+      throw new Error("Workshops not found");
+    }
+   
+
+    return workshops;
+  } catch (e) {
+    throw new Error("Error getting workshop by user ID: " + e.message);
+  }
+}
