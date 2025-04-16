@@ -15,7 +15,6 @@ export async function addTicket(userId, subject, category, description) {
   }
 }
 
-//FIXME: provedes different form of data than sql
 export async function getTickets() {
   try {
     const tickets = await Ticket.find().populate(
