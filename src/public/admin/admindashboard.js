@@ -258,7 +258,7 @@ fetch("/api/customer_chart")
     const validData = data.filter(item => item && item.registeredAt);
     console.log("Valid customer data items:", validData.length);
 
-    const grouped = groupBy5DayInterval(validData);
+    const grouped = groupBy2DayInterval(validData);
     console.log("Grouped data:", grouped);
 
     const labels = Object.keys(grouped).sort();
@@ -299,7 +299,7 @@ fetch("/api/customer_chart")
   });
 
 // Improved groupByMonth function
-function groupBy5DayInterval(data) {
+function groupBy2DayInterval(data) {
   const counts = {};
 
   data.forEach((item) => {
