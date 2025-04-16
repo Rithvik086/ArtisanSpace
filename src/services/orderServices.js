@@ -36,12 +36,13 @@ export async function placeOrder(userId, money) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const cart = await getCart(userId, session);
+    let cart = await getCart(userId, session);
 
     if (!cart || cart.length === 0) {
       throw new Error("Cart is empty!");
     }
 
+    // Checking if user have products in cart as well as reducing them from inventory
     for (const item of cart) {
       const count = await productCount(item.productId._id, session);
 
@@ -62,30 +63,30 @@ export async function placeOrder(userId, money) {
         if (!response.success) {
           throw new Error("Error changePtoductQuantity failed: ");
         }
-        await Order.findOneAndUpdate(
-          { userId },
-          {
-            $addToSet: {
-              products: {
-                productId: item.productId._id,
-                quantity: item.quantity,
-              },
-              money,
-              purchasedAt: Date.now(),
-              status: "pending",
-            },
-          },
-          { new: true, runValidators: true, upsert: true, session }
-        );
-
-        response = await removeCart(userId, session);
-
-        if (!response.success) {
-          throw new Error("Error removeCart failed: ");
-        }
       } else {
         throw new Error("Product not found");
       }
+    }
+
+    //adding money and status and timestamp to the order
+    delete cart._id;
+    cart.money = money;
+    cart.purchasedAt = new Date();
+    cart.status = "pending";
+
+    // Adding order to the order collection
+    await Order.insertOne(cart, {
+      new: true,
+      runValidators: true,
+      upsert: true,
+      session,
+    });
+
+    //removeing the cart from the cart collection
+    response = await removeCart(userId, session);
+
+    if (!response.success) {
+      throw new Error("Error removeCart failed: ");
     }
     await session.commitTransaction();
     return { success: true, message: "Order placed successfully!" };
