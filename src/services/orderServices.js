@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Order from "../models/ordersModel.js";
+import Cart from "../models/cartmodel.js";
 import { getCart, removeCart } from "./cartServices.js";
 import { decreaseProductQuantity, productCount } from "./productServices.js";
 
@@ -32,16 +33,18 @@ export async function addOrder(userId, money) {
   }
 }
 
-export async function placeOrder(userId, money) {
+export async function placeOrder(userId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const cart = await getCart(userId, session);
+    let cart = await getCart(userId, session);
+    let amount = 0;
 
     if (!cart || cart.length === 0) {
       throw new Error("Cart is empty!");
     }
 
+    // Checking if user have products in cart as well as reducing them from inventory
     for (const item of cart) {
       const count = await productCount(item.productId._id, session);
 
@@ -53,6 +56,9 @@ export async function placeOrder(userId, money) {
         }
         let response;
 
+        amount += item.productId.newPrice * item.quantity;
+
+        // Decreasing the product quantity
         response = await decreaseProductQuantity(
           item.productId._id,
           newStock,
@@ -62,30 +68,36 @@ export async function placeOrder(userId, money) {
         if (!response.success) {
           throw new Error("Error changePtoductQuantity failed: ");
         }
-        await Order.findOneAndUpdate(
-          { userId },
-          {
-            $addToSet: {
-              products: {
-                productId: item.productId._id,
-                quantity: item.quantity,
-              },
-              money,
-              purchasedAt: Date.now(),
-              status: "pending",
-            },
-          },
-          { new: true, runValidators: true, upsert: true, session }
-        );
-
-        response = await removeCart(userId, session);
-
-        if (!response.success) {
-          throw new Error("Error removeCart failed: ");
-        }
       } else {
         throw new Error("Product not found");
       }
+    }
+
+    amount = (amount + Math.round(amount * 0.05 * 100) / 100 + 50).toFixed(2); // 5% tax and 50 shipping
+
+    cart = await Cart.findOne({ userId });
+
+    const cartObj = cart.toObject();
+
+    //adding money and status and timestamp to the order
+    delete cartObj._id;
+    cartObj.money = amount;
+    cartObj.purchasedAt = new Date();
+    cartObj.status = "pending";
+
+    // Adding order to the order collection
+    await Order.insertOne(cartObj, {
+      new: true,
+      runValidators: true,
+      upsert: true,
+      session,
+    });
+
+    //removeing the cart from the cart collection
+    const response = await removeCart(userId, session);
+
+    if (!response.success) {
+      throw new Error("Error removeCart failed: ");
     }
     await session.commitTransaction();
     return { success: true, message: "Order placed successfully!" };
