@@ -233,9 +233,8 @@ export const checkout = async (req, res) => {
 export const placeOrderController = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { money } = req.body;
 
-    const response = await placeOrder(userId, money);
+    const response = await placeOrder(userId);
 
     if (response.success) {
       res.status(200).json(response);
