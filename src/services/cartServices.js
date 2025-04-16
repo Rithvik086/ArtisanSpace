@@ -1,8 +1,7 @@
-import mongoose, { get } from "mongoose";
+import mongoose from "mongoose";
 import Cart from "../models/cartmodel.js";
 import { productCount } from "./productServices.js";
 
-//NOTE: this function now outputs a array of objects containing the productId and quantity
 export async function getCart(userId, session = null) {
   try {
     let cart;
