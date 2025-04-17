@@ -12,7 +12,7 @@ import {
   renderSupportTicket,
   submitSuppotTicket,
   updatProfile,
-  getCustomerChart
+  getCustomerChart,
 } from "../controller/userController.js";
 const router = express.Router();
 
@@ -29,6 +29,6 @@ router.post("/submit-ticket", submitSuppotTicket);
 router.post("/update-profile", updatProfile);
 router.get("/delete-account", deleteAccount);
 router.get("/products/:productId", productPage);
-router.get("/api/customer_chart",getCustomerChart);
+router.get("/api/customer_chart", getCustomerChart);
 // router.get("/api/orders/:value", getOrderDetails);
 export default router;

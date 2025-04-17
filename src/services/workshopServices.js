@@ -101,11 +101,10 @@ export async function getAcceptedWorkshops(artisanId = null) {
 
 export async function getWorkshopByUserId(userId) {
   try {
-    const workshops = await Workshop.find({ userId })
+    const workshops = await Workshop.find({ userId });
     if (!workshops) {
       throw new Error("Workshops not found");
     }
-   
 
     return workshops;
   } catch (e) {

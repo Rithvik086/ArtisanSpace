@@ -255,7 +255,7 @@ fetch("/api/customer_chart")
     }
 
     // Make sure registeredAt is a valid date string
-    const validData = data.filter(item => item && item.registeredAt);
+    const validData = data.filter((item) => item && item.registeredAt);
     console.log("Valid customer data items:", validData.length);
 
     // Group the data by 2-day intervals and calculate cumulative counts
@@ -263,7 +263,7 @@ fetch("/api/customer_chart")
     console.log("Grouped data:", grouped);
 
     const labels = Object.keys(grouped).sort();
-    const values = labels.map(label => grouped[label]);
+    const values = labels.map((label) => grouped[label]);
 
     const customerData = {
       labels: labels.map(formatDateLabel),
@@ -288,13 +288,13 @@ fetch("/api/customer_chart")
       });
     } else {
       console.error("No customer data available for chart");
-      document.getElementById("customersChart").innerHTML = 
+      document.getElementById("customersChart").innerHTML =
         '<div style="text-align:center;padding:20px;">No customer data available</div>';
     }
   })
   .catch((err) => {
     console.error("Error loading customer chart:", err);
-    document.getElementById("customersChart").innerHTML = 
+    document.getElementById("customersChart").innerHTML =
       '<div style="text-align:center;padding:20px;">Error loading customer data</div>';
   });
 
@@ -305,51 +305,52 @@ function groupByTwoDayIntervals(data) {
 
   // Convert all registration dates to Date objects and count them by date
   const dateCountMap = {};
-  
-  data.forEach(item => {
+
+  data.forEach((item) => {
     if (!item || !item.registeredAt) return;
-    
+
     const date = new Date(item.registeredAt);
     if (isNaN(date.getTime())) return;
-    
+
     // Convert to YYYY-MM-DD format
-    const dateKey = date.toISOString().split('T')[0];
-    
+    const dateKey = date.toISOString().split("T")[0];
+
     // Initialize or increment the count
     dateCountMap[dateKey] = (dateCountMap[dateKey] || 0) + 1;
   });
-  
+
   // Get all unique dates and find min/max
   const uniqueDates = Object.keys(dateCountMap).sort();
   if (uniqueDates.length === 0) return {};
-  
+
   const minDate = new Date(uniqueDates[0]);
   const maxDate = new Date(uniqueDates[uniqueDates.length - 1]);
-  
+
   // Create two-day intervals from min date to max date
   const intervals = {};
-  
+
   // Start from the exact date of first registration
   // No need to normalize to odd days
-  for (let current = new Date(minDate); 
-       current <= maxDate; 
-       current.setDate(current.getDate() + 2)) {
-    
-    const key = current.toISOString().split('T')[0];
+  for (
+    let current = new Date(minDate);
+    current <= maxDate;
+    current.setDate(current.getDate() + 2)
+  ) {
+    const key = current.toISOString().split("T")[0];
     intervals[key] = 0;
   }
-  
+
   // For each actual date with registrations, find its interval
-  Object.keys(dateCountMap).forEach(dateStr => {
+  Object.keys(dateCountMap).forEach((dateStr) => {
     const regDate = new Date(dateStr);
-    
+
     // Find which interval this date belongs to
     let intervalFound = false;
     for (const intervalKey of Object.keys(intervals)) {
       const intervalDate = new Date(intervalKey);
       const nextIntervalDate = new Date(intervalDate);
       nextIntervalDate.setDate(nextIntervalDate.getDate() + 2);
-      
+
       // If registration date falls in this interval
       if (regDate >= intervalDate && regDate < nextIntervalDate) {
         intervals[intervalKey] += dateCountMap[dateStr];
@@ -357,32 +358,46 @@ function groupByTwoDayIntervals(data) {
         break;
       }
     }
-    
+
     // If no interval found (edge case), create one
     if (!intervalFound) {
       const key = dateStr;
       intervals[key] = dateCountMap[dateStr];
     }
   });
-  
+
   // Calculate cumulative totals
   let cumulative = 0;
   const result = {};
-  
-  Object.keys(intervals).sort().forEach(key => {
-    cumulative += intervals[key];
-    result[key] = cumulative;
-  });
-  
+
+  Object.keys(intervals)
+    .sort()
+    .forEach((key) => {
+      cumulative += intervals[key];
+      result[key] = cumulative;
+    });
+
   return result;
 }
-
 
 // Format date label for display
 function formatDateLabel(dateStr) {
   const date = new Date(dateStr);
   const day = date.getDate();
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   return `${day} ${monthNames[date.getMonth()]}`;
 }
 
@@ -417,8 +432,6 @@ new Chart(document.getElementById("productsChart"), {
   data: productsData,
   options: commonOptions,
 });
-
-
 
 function showNotification(message, type) {
   console.log("Showing notification:", message, type);
