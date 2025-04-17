@@ -60,4 +60,3 @@ productSchema.pre(
 );
 
 export default mongoose.model("Product", productSchema);
-

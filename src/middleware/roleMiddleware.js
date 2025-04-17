@@ -8,4 +8,3 @@ const authorizerole = (...allowedRoles) => {
 };
 
 export default authorizerole;
-

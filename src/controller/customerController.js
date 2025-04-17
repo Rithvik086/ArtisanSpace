@@ -10,7 +10,10 @@ import {
   removeCompleteItem,
 } from "../services/cartServices.js";
 import { getUserById } from "../services/userServices.js";
-import { bookWorkshop, getWorkshopByUserId } from "../services/workshopServices.js";
+import {
+  bookWorkshop,
+  getWorkshopByUserId,
+} from "../services/workshopServices.js";
 
 import cloudinary from "../config/cloudinary.js";
 import { addRequest, getRequestById } from "../services/requestServices.js";
@@ -24,9 +27,16 @@ export const getHomePage = async (req, res) => {
   const userId = req.user.id;
   const customerOrders = await getOrdersById(userId);
   // Debug log removed: console.log(customerOrders, userId);
-const customerRequests = await getRequestById(userId);
-const customerWorkshops =  await getWorkshopByUserId(userId);
-  res.render("customer/customerhome", { role: custrole, products: pro,requests: customerRequests , orders : customerOrders,workshops: customerWorkshops, userId });
+  const customerRequests = await getRequestById(userId);
+  const customerWorkshops = await getWorkshopByUserId(userId);
+  res.render("customer/customerhome", {
+    role: custrole,
+    products: pro,
+    requests: customerRequests,
+    orders: customerOrders,
+    workshops: customerWorkshops,
+    userId,
+  });
 };
 
 export const getStorePage = async (req, res) => {

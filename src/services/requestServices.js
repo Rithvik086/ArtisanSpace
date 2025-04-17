@@ -27,15 +27,14 @@ export async function addRequest(
 }
 
 export async function getRequestById(userId) {
-  try{
-    const request = await Request.find({ userId })
+  try {
+    const request = await Request.find({ userId });
     if (!request) {
       throw new Error("Request not found!");
     }
-   
-    return request;
 
-  }catch(err){
+    return request;
+  } catch (err) {
     throw new Error("Error in getting request by ID: " + err.message);
   }
 }
