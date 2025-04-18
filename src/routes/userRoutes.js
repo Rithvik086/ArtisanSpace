@@ -13,6 +13,7 @@ import {
   submitSuppotTicket,
   updatProfile,
   getCustomerChart,
+  getProductsApi,
 } from "../controller/userController.js";
 const router = express.Router();
 
@@ -31,4 +32,5 @@ router.get("/delete-account", deleteAccount);
 router.get("/products/:productId", productPage);
 router.get("/api/customer_chart", getCustomerChart);
 // router.get("/api/orders/:value", getOrderDetails);
+router.get("/api/getProducts",getProductsApi)
 export default router;
