@@ -81,7 +81,8 @@ export const getListingsController = (req, res) => {
 
 export const postListingsController = async (req, res) => {
   try {
-    const { productName, type, price, description, quantity } = req.body;
+    const { productName, type, material, price, description, quantity } =
+      req.body;
 
     if (!req.file) {
       return res.status(400).json({ error: "No image uploaded" });
@@ -94,6 +95,7 @@ export const postListingsController = async (req, res) => {
       req.user.role,
       productName,
       type,
+      material,
       result.secure_url,
       price,
       quantity,

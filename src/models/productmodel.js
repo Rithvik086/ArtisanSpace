@@ -24,6 +24,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  material: {
+    type: String,
+    required: true,
+  },
   image: { type: String, required: true },
   oldPrice: { type: Number, required: true },
   newPrice: { type: Number, required: true },
