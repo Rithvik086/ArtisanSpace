@@ -42,31 +42,30 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre(
-  "deleteOne",
-  { document: true, query: true },
-  async function (next) {
-    try {
-      await Promise.all([
-        Product.deleteMany({ artisanId: this._id }),
-        Cart.deleteMany({ userId: this._id }),
-        Ticket.deleteMany({ userId: this._id }),
-        Workshop.deleteMany({ userId: this._id }),
-        Workshop.updateMany(
-          { artisanId: this._id },
-          { $set: { artisanId: null, status: 0 } }
-        ),
-        Request.deleteMany({ userId: this._id }),
-        Request.updateMany(
-          { artisanId: this._id },
-          { $set: { artisanId: null, isAccepted: false } }
-        ),
-      ]);
-      next();
-    } catch (error) {
-      next(error);
-    }
+userSchema.post("deleteOne", { query: true }, async function (_, next) {
+  const userId = this.getFilter()._id;
+  if (!userId) return next();
+
+  try {
+    await Promise.all([
+      Product.deleteMany({ userId }),
+      Cart.deleteMany({ userId }),
+      Ticket.deleteMany({ userId }),
+      Workshop.deleteMany({ userId }),
+      Workshop.updateMany(
+        { artisanId: userId },
+        { $set: { artisanId: null, status: 0 } }
+      ),
+      Request.deleteMany({ userId }),
+      Request.updateMany(
+        { artisanId: userId },
+        { $set: { artisanId: null, isAccepted: false } }
+      ),
+    ]);
+    next();
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 export default mongoose.model("User", userSchema);
