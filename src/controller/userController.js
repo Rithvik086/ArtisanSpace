@@ -1,6 +1,7 @@
 import { addTicket } from "../services/ticketServices.js";
-import { removeUser, updateUser,getUsers } from "../services/userServices.js";
+import { removeUser, updateUser, getUsers } from "../services/userServices.js";
 import { getProducts } from "../services/productServices.js";
+import { totalOrders } from "../services/orderServices.js";
 
 export const renderAboutUs = (req, res) => {
   res.render("Aboutus", { role: req.user.role });
@@ -110,7 +111,15 @@ export const getCustomerChart = async (req, res) => {
     console.error("Error fetching customer chart data:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to retrieve customer chart data. Please try again later.",
+      message:
+        "Failed to retrieve customer chart data. Please try again later.",
     });
+  }
+};
+
+export const getOrderDetails = async (req, res) => {
+  const value = req.params.value;
+  let orders = await totalOrders();
+  if (value === "totalsales") {
   }
 };

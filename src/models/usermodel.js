@@ -70,4 +70,3 @@ userSchema.pre(
 );
 
 export default mongoose.model("User", userSchema);
-

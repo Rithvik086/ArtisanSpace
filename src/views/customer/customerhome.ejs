@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/customer/customerHome.css">
   <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="/customer/homePageStatusTab.css">
+  <!-- // new style -->
+
+  </style>
 </head>
 
 <body>
@@ -35,7 +39,7 @@
           distribution of letters, as opposed to using 'Content here, content
           here', making it look like readable English. Many desktop publishing
           packages and web page editors now use Lorem Ipsum as their default
-          model text, and a search for 'lorem ipsum' will uncover
+          model text, and a search for 'lorem ipsum' will uncover.
         </p>
       </div>
     </div>
@@ -47,6 +51,124 @@
         </a>
         <%}) %>
       </div>
+    </div>
+    <!-- // new tabs -->
+
+    <div class="statusTab">
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="orders">Orders</button>
+        <button class="tab-btn" data-tab="requests">Custom Requests</button>
+        <button class="tab-btn" data-tab="workshops">Workshops</button>
+      </div>
+
+      <div class="tab-content active" id="orders">
+        <h2>Your Orders</h2>
+        <div class="cards-container">
+          <% if (orders && orders.length > 0) { %>
+          <% orders.forEach(order => { %>
+          <div class="card">
+            <div class="card-header">
+              <h3>Order #<%= order._id.toString().slice(-6) %></h3>
+              <span class="status <%= order.status %>"><%= order.status %></span>
+            </div>
+            <div class="card-body">
+              <p><strong>Products:</strong></p>
+              <ul>
+                <% order.products.forEach(product => { %>
+                <li><%= product.productId.name || 'Product' %> x<%= product.quantity %></li>
+                <% }) %>
+              </ul>
+              <p><strong>Total:</strong> $<%= order.money.toFixed(2) %></p>
+              <p><strong>Purchased:</strong> <%= new Date(order.purchasedAt).toLocaleDateString() %></p>
+            </div>
+            <div class="card-footer">
+
+            </div>
+          </div>
+          <% }) %>
+          <% } else { %>
+          <div class="empty-state">
+            <p>You don't have any orders yet.</p>
+            <a href="/customer/store"><button class="btn primary ">Shop Now</button></a>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="tab-content" id="requests">
+        <h2>Your Custom Requests</h2>
+        <div class="cards-container">
+          <% if (requests && requests.length > 0) { %>
+          <% requests.forEach(request => { %>
+          <div class="card">
+            <div class="card-header">
+              <h3><%= request.title %></h3>
+              <span class="status <%= request.isAccepted ? 'accepted' : 'pending' %>">
+                <%= request.isAccepted ? 'Accepted' : 'Pending' %>
+              </span>
+            </div>
+            <% if (request.image) { %>
+            <div class="card-image">
+              <img src="<%= request.image %>" alt="<%= request.title %>">
+            </div>
+            <% } %>
+            <div class="card-body">
+              <p><strong>Type:</strong> <%= request.type %></p>
+              <p><strong>Description:</strong> <%= request.description %></p>
+              <p><strong>Budget:</strong> <%= request.budget %></p>
+              <p><strong>Required By:</strong> <%= request.requiredBy %></p>
+            </div>
+            <div class="card-footer">
+
+
+            </div>
+          </div>
+          <% }) %>
+          <% } else { %>
+          <div class="empty-state">
+            <p>You don't have any custom requests yet.</p>
+
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="tab-content" id="workshops">
+        <h2>Your Workshops</h2>
+        <div class="cards-container">
+          <% if (workshops && workshops.length > 0) { %>
+          <% workshops.forEach(workshop => { %>
+          <div class="card">
+            <div class="card-header">
+              <h3><%= workshop.workshopTitle %></h3>
+              <span class="status <%= workshop.status === 1 ? 'accepted' : 'pending' %>">
+                <%= workshop.status === 1 ? 'Accepted' : 'Pending' %>
+              </span>
+            </div>
+            <div class="card-body">
+              <p><strong>Description:</strong> <%= workshop.workshopDescription %></p>
+              <p><strong>Date:</strong> <%= workshop.date %></p>
+              <p><strong>Time:</strong> <%= workshop.time %></p>
+              <% if (workshop.status === 1 && workshop.acceptedAt) { %>
+              <p><strong>Accepted On:</strong> <%= workshop.acceptedAt %></p>
+              <% } %>
+            </div>
+            <div class="card-footer">
+
+
+            </div>
+          </div>
+          <% }) %>
+          <% } else { %>
+          <div class="empty-state">
+            <p>You don't have any workshops yet.</p>
+
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
     </div>
   </main>
   <%- include("../partials/footer") %>
@@ -69,6 +191,31 @@
       }
 
       setInterval(moveSlider, 4000);
+    });
+  </script>
+
+  <!-- // new script  -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tab switching functionality
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons and contents
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+
+          // Add active class to clicked button and corresponding content
+          button.classList.add('active');
+          const tabId = button.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
+        });
+      });
+
+
+
     });
   </script>
 </body>

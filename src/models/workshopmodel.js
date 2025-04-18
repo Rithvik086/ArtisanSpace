@@ -38,5 +38,3 @@ const workshopSchema = new mongoose.Schema({
 });
 
 export default mongoose.model("Workshop", workshopSchema);
-
-
