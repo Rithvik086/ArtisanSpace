@@ -1,6 +1,9 @@
 import { addTicket } from "../services/ticketServices.js";
 import { removeUser, updateUser, getUsers } from "../services/userServices.js";
-import { getProducts } from "../services/productServices.js";
+import {
+  getApprovedProducts,
+  getProduct,
+} from "../services/productServices.js";
 import { totalOrders } from "../services/orderServices.js";
 
 export const renderAboutUs = (req, res) => {
@@ -88,8 +91,7 @@ export const deleteAccount = async (req, res) => {
 export const productPage = async (req, res) => {
   try {
     const productId = req.params.productId;
-    let products = await getProducts();
-    const product = await products.find((p) => p.productId == productId);
+    let product = await getProduct(productId);
 
     res.render("productPage", {
       product,
@@ -121,5 +123,18 @@ export const getOrderDetails = async (req, res) => {
   const value = req.params.value;
   let orders = await totalOrders();
   if (value === "totalsales") {
+  }
+};
+
+export const getProductsApi = async (req, res) => {
+  try {
+    const products = await getApprovedProducts();
+
+    return res.json(products);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch products" });
   }
 };
