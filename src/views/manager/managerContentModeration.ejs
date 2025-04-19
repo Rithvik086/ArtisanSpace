@@ -13,28 +13,30 @@
 
 <body>
   <%- include('../partials/navbar2', { role }) %>
-  <div class="container">
-    <h2>Manage Products</h2>
+  <div class="wrapper">
+    <div class="container">
+      <h2>Manage Products</h2>
 
-    <div class="tabs">
-      <div class="tab" id="tab-approved">Approved Products <span class="count approved-count"></span></div>
-      <div class="tab active" id="tab-pending">Pending Products <span class="count pending-count"></span></div>
-      <div class="tab" id="tab-disapproved">Disapproved Products <span class="count disapproved-count"></span></div>
-    </div>
-    <!-- Approved Products -->
-    <div id="approved-section" class="hidden">
-    </div>
-    <!-- Pending Products -->
-    <div id="pending-section">
-    </div>
-    <!-- Disapproved Products -->
-    <div id="disapproved-section" class="hidden">
+      <div class="tabs">
+        <div class="tab" id="tab-approved">Approved Products <span class="count approved-count"></span></div>
+        <div class="tab active" id="tab-pending">Pending Products <span class="count pending-count"></span></div>
+        <div class="tab" id="tab-disapproved">Disapproved Products <span class="count disapproved-count"></span></div>
+      </div>
+      <!-- Approved Products -->
+      <div id="approved-section" class="hidden">
+      </div>
+      <!-- Pending Products -->
+      <div id="pending-section">
+      </div>
+      <!-- Disapproved Products -->
+      <div id="disapproved-section" class="hidden">
+      </div>
     </div>
   </div>
 
 
   <%- include("../partials/footer") %>
-  <script  src="/manager/managerContentModeration.js"></script>
+  <script src="/manager/managerContentModeration.js"></script>
 
 </body>
 

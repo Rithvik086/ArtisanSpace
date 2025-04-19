@@ -42,6 +42,8 @@
               <select name="role" required>
                 <option value="customer">Customer</option>
                 <option value="artisan">Artisan</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
               </select>
               <button type="submit">Sign Up</button>
             </form>
@@ -96,12 +98,14 @@
             <div class="signup-text">
               Don't have an account? <a href="#" onclick="flipCard('signup')">SignUp here</a>
             </div>
+            <div class="forgot-password signup-text">
+              <a href="/password/reset">Forgot Password?</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <script src="/auths/script.js"></script>
+    <script src="/auths/script.js"></script>
 </body>
 
 </html>

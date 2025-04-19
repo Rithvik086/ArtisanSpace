@@ -34,7 +34,7 @@
           <p class="stat-value"></p>
         </div>
         <div class="stat-card">
-          <h3>Customers</h3>
+          <h3>Total Users</h3>
           <canvas id="customersChart"></canvas>
           <p class="stat-value"></p>
         </div>
@@ -59,7 +59,6 @@
           <table class="users-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -70,14 +69,13 @@
               <% userlist.forEach(user=> {%>
 
               <tr>
-                <td><%=user.userId %></td>
                 <td><%=user.username %></td>
                 <td><%=user.email %></td>
                 <td><%=user.role %></td>
 
                 <td class="actions">
-                  
-                  <button class="delete-btn" data-id="<%=user.userId %>">Delete</button>
+
+                  <button class="delete-btn" data-id="<%=user._id.toString() %>">Delete</button>
                 </td>
               </tr>
               <% }); %>
@@ -86,38 +84,42 @@
         </div>
       </div>
 
+      <!-- Products Tab Content -->
+
       <div class="tab-content" id="products-content">
         <div class="action-bar">
           <h3>Manage Products</h3>
-          <button id="add-product-btn" class="primary-btn">Add New Product</button>
         </div>
         <div class="products-table-container">
           <table class="products-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Image</th>
                 <th>Name</th>
-
-                <th>Original Price</th>
-                <th>Website Price</th>
-                <th>Stock</th>
+                <th>UploadedBy</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Type</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="products-table-body">
               <% if (products && products.length > 0) { %>
               <% products.forEach(product => { %>
-              <tr data-id="<%= product.productId %>">
-                <td><%= product.productId %></td>
+              <tr data-id="<%= product._id.toString() %>">
                 <td>
                   <div class="product-image">
                     <img src="<%= product.image %>" alt="<%= product.name %>">
                   </div>
                 </td>
-                <td><%= product.name %></td>
-                <td>₹<%= product.oldPrice %></td>
-                <td>₹<%= product.newPrice %></td>
+                <td class="product-name"><%= product.name %></td>
+                <td><%= product.userId.name %> (<%= product.uploadedBy %>)</td>
                 <td><%= product.quantity %></td>
+                <td><s>₹<%= product.oldPrice %></s> <br><span class="price">₹<%= product.newPrice %></span></td>
+                <td><%= product.category %></td>
+                <td>
+                  <button class="btn delete-btn" onclick="confirmDelete('<%= product._id.toString() %>')">Delete</button>
+                </td>
               </tr>
               <% }); %>
               <% } else { %>
@@ -208,24 +210,16 @@
     </div>
   </div>
 
-  <!-- Delete Product Confirmation Modal -->
-  <div id="delete-product-modal" class="modal">
-    <div class="modal-content">
-      <h2>Confirm Product Deletion</h2>
-      <p>Are you sure you want to delete this product? This action cannot be undone.</p>
-      <div class="form-actions">
-        <button type="button" class="cancel-btn">Cancel</button>
-        <button type="button" class="delete-product-confirm-btn">Delete</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Add User Modal -->
   <div id="add-user-modal" class="modal">
     <div class="modal-content">
-      <span class="close-modal">&times;</span>
+      <span id="close-modal" class="close-modal">&times;</span>
       <h2>Add New User</h2>
       <form id="add-user-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
         <div class="form-group">
           <label for="name">Name</label>
           <input type="text" id="name" name="name" required>
@@ -233,6 +227,10 @@
         <div class="form-group">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="mobile_no">Mobile No</label>
+          <input type="text" id="mobile_no" name="mobile_no" required>
         </div>
         <div class="form-group">
           <label for="role">Role</label>
@@ -259,12 +257,9 @@
   <!-- Delete Confirmation Modal -->
   <div id="delete-modal" class="modal">
     <div class="modal-content">
-      <h2>Confirm Deletion</h2>
-      <p>Are you sure you want to delete this user? This action cannot be undone.</p>
-      <div class="form-actions">
-        <button type="button" class="cancel-btn">Cancel</button>
-        <button type="button" class="delete-confirm-btn">Delete</button>
-      </div>
+      <p>Are you sure you want to delete this user?</p>
+      <button class="delete-confirm-btn">Yes, Delete</button>
+      <button class="cancel-btn">Cancel</button>
     </div>
   </div>
 

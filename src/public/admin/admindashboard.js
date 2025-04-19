@@ -16,69 +16,91 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove("active");
+  }
+
+  window.onclick = function (event) {
+    const modals = document.querySelectorAll(".modal");
+    modals.forEach((modal) => {
+      if (event.target === modal) {
+        closeModal(modal.id);
+      }
+    });
+  };
+
+  window.deleteProduct = async function deleteProduct(productId) {
+    try {
+      const response = await fetch(`/artisan/delete-product/${productId}`, {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        showNotification(
+          "Product deleted successfully. Refreshing the page...",
+          "success"
+        );
+        window.location.reload();
+      } else {
+        console.error("Failed to delete product");
+        showNotification(
+          "Failed to delete product. Please try again.",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    closeModal("delete-modal");
+  };
+
+  window.confirmDelete = function confirmDelete(productId) {
+    const modal = document.getElementById("delete-modal");
+    const deleteConfirmBtn = document.querySelector(".delete-confirm-btn");
+
+    deleteConfirmBtn.onclick = () => deleteProduct(productId);
+
+    modal.classList.add("active");
+  };
+
   // Modal Handling
   const addUserBtn = document.getElementById("add-user-btn");
   const addUserModal = document.getElementById("add-user-modal");
   const deleteModal = document.getElementById("delete-modal");
-  const closeModalBtn = document.querySelector(".close-modal");
+  const closeModalBtns = document.querySelectorAll(".close-modal");
   const cancelBtns = document.querySelectorAll(".cancel-btn");
 
   // Open Add User Modal
-  addUserBtn.addEventListener("click", () => {
-    addUserModal.classList.add("active");
-  });
-
-  // Close Modal on X click
-  if (closeModalBtn) {
-    closeModalBtn.addEventListener("click", () => {
-      addUserModal.classList.remove("active");
+  if (addUserBtn) {
+    addUserBtn.addEventListener("click", () => {
+      addUserModal.classList.add("active");
     });
   }
+
+  // Close Modal on X click
+  closeModalBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      closeModal(btn.closest(".modal").id);
+    });
+  });
 
   // Close Modals on Cancel button click
   cancelBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      addUserModal.classList.remove("active");
-      deleteModal.classList.remove("active");
+      closeModal(btn.closest(".modal").id);
     });
   });
 
   // Close Modal on outside click
   window.addEventListener("click", (e) => {
     if (e.target === addUserModal) {
-      addUserModal.classList.remove("active");
+      closeModal("add-user-modal");
     }
     if (e.target === deleteModal) {
-      deleteModal.classList.remove("active");
+      closeModal("delete-modal");
     }
   });
-
-  // Handle Add User Form Submission
-  // const addUserForm = document.getElementById("add-user-form")
-  // if (addUserForm) {
-  //   addUserForm.addEventListener("submit", (e) => {
-  //     e.preventDefault()
-
-  //     // Get form data
-  //     const formData = new FormData(addUserForm)
-  //     const userData = {
-  //       name: formData.get("name"),
-  //       email: formData.get("email"),
-  //       role: formData.get("role"),
-  //       status: formData.get("status"),
-  //     }
-
-  //     // Here you would typically send this data to your server
-  //     console.log("Adding new user:", userData)
-
-  //     // For demo purposes, let's add the user to the table
-  //     addUserToTable(userData)
-
-  //     // Reset form and close modal
-  //     addUserForm.reset()
-  //     addUserModal.classList.remove("active")
-  //   })
-  // }
 
   const addUserForm = document.getElementById("add-user-form");
 
@@ -87,15 +109,14 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       // Get form data
-      const formData = new FormData(addUserForm);
       const userData = {
         name: document.getElementById("name").value,
+        username: document.getElementById("username").value,
         email: document.getElementById("email").value,
+        mobile_no: document.getElementById("mobile_no").value,
         role: document.getElementById("role").value,
         pass: document.getElementById("pass").value,
       };
-
-      console.log("Form data:", userData);
 
       try {
         // Send data to backend API
@@ -111,9 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (result.success) {
           console.log("User added successfully:", userData);
-          addUserToTable(userData); // Update table in UI
-          addUserForm.reset(); // Clear the form
-          addUserModal.classList.remove("active"); // Close modal if applicable
+          window.location.reload();
         } else {
           alert("Error adding user: " + result.message);
         }
@@ -132,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       userIdToDelete = btn.getAttribute("data-id");
       deleteModal.classList.add("active");
-      console.log("test", userIdToDelete);
     });
   });
 
@@ -154,18 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (result.success) {
             console.log("User deleted successfully:", userIdToDelete);
-
-            // Remove the row from the table
-            const row = document.querySelector(
-              `tr[data-id="${userIdToDelete}"]`
-            );
-            if (row) {
-              row.remove();
-            }
-
-            // Close modal and reset userIdToDelete
-            deleteModal.classList.remove("active");
-            userIdToDelete = null;
+            window.location.reload();
           } else {
             alert("Error deleting user: " + result.message);
           }
@@ -174,42 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
           alert("Failed to delete user. Try again!");
         }
       }
-    });
-  }
-
-  // Function to add a new user to the table
-  function addUserToTable(userData) {
-    const tableBody = document.getElementById("users-table-body");
-    if (!tableBody) return;
-
-    // Generate a random ID for demo purposes
-    const userId = Math.floor(Math.random() * 1000);
-
-    // Create new row
-    const newRow = document.createElement("tr");
-    newRow.setAttribute("data-id", userId);
-
-    // Set row HTML
-    newRow.innerHTML = `
-              <td>${userId}</td>
-              <td>${userData.name}</td>
-              <td>${userData.email}</td>
-              <td>${userData.role}</td>
-        
-              <td class="actions">
-                  <button class="edit-btn" data-id="${userId}">Edit</button>
-                  <button class="delete-btn" data-id="${userId}">Delete</button>
-              </td>
-          `;
-
-    // Add row to table
-    tableBody.appendChild(newRow);
-
-    // Add event listener to the new delete button
-    const newDeleteBtn = newRow.querySelector(".delete-btn");
-    newDeleteBtn.addEventListener("click", () => {
-      userIdToDelete = userId;
-      deleteModal.classList.add("active");
     });
   }
 });
@@ -257,19 +228,178 @@ const productsData = {
   ],
 };
 
-const customersData = {
-  labels: labels,
-  datasets: [
-    {
-      label: "Customers",
-      data: [200, 220, 210, 250, 240, 270],
-      borderColor: "purple",
-      backgroundColor: "rgba(128, 0, 128, 0.1)",
-      fill: true,
-      tension: 0.3,
-    },
-  ],
-};
+// const customersData = {
+//   labels: labels,
+//   datasets: [
+//     {
+//       label: "Customers",
+//       data: [200, 220, 210, 250, 240, 270],
+//       borderColor: "purple",
+//       backgroundColor: "rgba(128, 0, 128, 0.1)",
+//       fill: true,
+//       tension: 0.3,
+//     },
+//   ],
+// };
+
+// Replace your current customer chart code with this
+fetch("/api/customer_chart")
+  .then((res) => res.json())
+  .then((data) => {
+    console.log("Raw customer data:", data);
+
+    // Check if data exists and has the expected format
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      console.error("Invalid customer data received:", data);
+      return;
+    }
+
+    // Make sure registeredAt is a valid date string
+    const validData = data.filter((item) => item && item.registeredAt);
+    console.log("Valid customer data items:", validData.length);
+
+    // Group the data by 2-day intervals and calculate cumulative counts
+    const grouped = groupByTwoDayIntervals(validData);
+    console.log("Grouped data:", grouped);
+
+    const labels = Object.keys(grouped).sort();
+    const values = labels.map((label) => grouped[label]);
+
+    const customerData = {
+      labels: labels.map(formatDateLabel),
+      datasets: [
+        {
+          label: "Total Users",
+          data: values,
+          borderColor: "purple",
+          backgroundColor: "rgba(128, 0, 128, 0.5)",
+          fill: true,
+          tension: 0.3,
+        },
+      ],
+    };
+
+    // Create the chart only if we have data
+    if (labels.length > 0) {
+      new Chart(document.getElementById("customersChart"), {
+        type: "line",
+        data: customerData,
+        options: commonOptions,
+      });
+    } else {
+      console.error("No customer data available for chart");
+      document.getElementById("customersChart").innerHTML =
+        '<div style="text-align:center;padding:20px;">No customer data available</div>';
+    }
+  })
+  .catch((err) => {
+    console.error("Error loading customer chart:", err);
+    document.getElementById("customersChart").innerHTML =
+      '<div style="text-align:center;padding:20px;">Error loading customer data</div>';
+  });
+
+// Improved function to group data by 2-day intervals
+function groupByTwoDayIntervals(data) {
+  // Return empty object if no data
+  if (!data || data.length === 0) return {};
+
+  // Convert all registration dates to Date objects and count them by date
+  const dateCountMap = {};
+
+  data.forEach((item) => {
+    if (!item || !item.registeredAt) return;
+
+    const date = new Date(item.registeredAt);
+    if (isNaN(date.getTime())) return;
+
+    // Convert to YYYY-MM-DD format
+    const dateKey = date.toISOString().split("T")[0];
+
+    // Initialize or increment the count
+    dateCountMap[dateKey] = (dateCountMap[dateKey] || 0) + 1;
+  });
+
+  // Get all unique dates and find min/max
+  const uniqueDates = Object.keys(dateCountMap).sort();
+  if (uniqueDates.length === 0) return {};
+
+  const minDate = new Date(uniqueDates[0]);
+  const maxDate = new Date(uniqueDates[uniqueDates.length - 1]);
+
+  // Create two-day intervals from min date to max date
+  const intervals = {};
+
+  // Start from the exact date of first registration
+  // No need to normalize to odd days
+  for (
+    let current = new Date(minDate);
+    current <= maxDate;
+    current.setDate(current.getDate() + 2)
+  ) {
+    const key = current.toISOString().split("T")[0];
+    intervals[key] = 0;
+  }
+
+  // For each actual date with registrations, find its interval
+  Object.keys(dateCountMap).forEach((dateStr) => {
+    const regDate = new Date(dateStr);
+
+    // Find which interval this date belongs to
+    let intervalFound = false;
+    for (const intervalKey of Object.keys(intervals)) {
+      const intervalDate = new Date(intervalKey);
+      const nextIntervalDate = new Date(intervalDate);
+      nextIntervalDate.setDate(nextIntervalDate.getDate() + 2);
+
+      // If registration date falls in this interval
+      if (regDate >= intervalDate && regDate < nextIntervalDate) {
+        intervals[intervalKey] += dateCountMap[dateStr];
+        intervalFound = true;
+        break;
+      }
+    }
+
+    // If no interval found (edge case), create one
+    if (!intervalFound) {
+      const key = dateStr;
+      intervals[key] = dateCountMap[dateStr];
+    }
+  });
+
+  // Calculate cumulative totals
+  let cumulative = 0;
+  const result = {};
+
+  Object.keys(intervals)
+    .sort()
+    .forEach((key) => {
+      cumulative += intervals[key];
+      result[key] = cumulative;
+    });
+
+  return result;
+}
+
+// Format date label for display
+function formatDateLabel(dateStr) {
+  const date = new Date(dateStr);
+  const day = date.getDate();
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  return `${day} ${monthNames[date.getMonth()]}`;
+}
 
 const commonOptions = {
   responsive: true,
@@ -303,8 +433,79 @@ new Chart(document.getElementById("productsChart"), {
   options: commonOptions,
 });
 
-new Chart(document.getElementById("customersChart"), {
-  type: "line",
-  data: customersData,
-  options: commonOptions,
-});
+function showNotification(message, type) {
+  console.log("Showing notification:", message, type);
+  let notificationContainer = document.querySelector(".notification-container");
+
+  if (!notificationContainer) {
+    notificationContainer = document.createElement("div");
+    notificationContainer.className = "notification-container";
+    document.body.appendChild(notificationContainer);
+  }
+
+  // Avoid duplicate notifications of the same message
+  if (
+    [...notificationContainer.children].some((n) => n.textContent === message)
+  ) {
+    return;
+  }
+
+  const notification = document.createElement("div");
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+
+  notificationContainer.appendChild(notification);
+
+  setTimeout(() => {
+    notification.classList.add("fade-out");
+    setTimeout(() => {
+      notification.remove();
+    }, 500);
+  }, 3000);
+}
+
+// Add styles for notifications only if not already added
+if (!document.querySelector("#notification-style")) {
+  const style = document.createElement("style");
+  style.id = "notification-style";
+  style.textContent = `
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 40px;
+  z-index: 1000;
+}
+
+.notification {
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  animation: slide-in 0.3s ease-out forwards;
+}
+
+.notification.success {
+  background-color: #28a745;
+}
+
+.notification.error {
+  background-color: #dc3545;
+}
+
+.notification.fade-out {
+  animation: fade-out 0.5s ease-out forwards;
+}
+
+@keyframes slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+`;
+  document.head.appendChild(style);
+}

@@ -1,73 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= product.name %> - Handcrafted Beauty</title>
-    <link rel="stylesheet" href="/navbar2.css" />
-    <link rel="stylesheet" href="/footer.css" />
-    <link rel="stylesheet" href="/productPage.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= product.name %> - Handcrafted Beauty</title>
+  <link rel="stylesheet" href="/navbar2.css" />
+  <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="/productPage.css">
 </head>
+
 <body>
-    <%- include ('partials/navbar2'), {role} %>
-    <main>
-        <div class="container">
-            <!-- Product Info -->
-            <div class="product-flex">
-                <!-- Left: Product Images -->
-                <div class="product-image-container">
-                    <img src="<%= product.image%>" alt="<%= product.name %>" class="product-image">
-                </div>
-                
-                <!-- Right: Product Details -->
-                <div class="product-details">
-                    <h1 class="product-title handmade-title"><%= product.name %></h1>
-                    
-                    <!-- Artisan & Material Details -->
-                    <div class="product-info">
-                        <p><b>Type:</b> <%= product.type %></p>
-                    </div>
-                    
-                    <!-- Pricing -->
-                    <div class="product-price">
-                        <p class="current-price">₹<%= product.newPrice %></p>
-                        <p class="old-price">₹<%= product.oldPrice %></p>
-                    </div>
-
-                    <!-- Rating Summary -->
-                    <div class="review-header">
-                        <div class="rating-stars">★★★★☆</div>
-                        <span class="rating-number">4.2</span>
-                        <span class="rating-count">(128 ratings)</span>
-                    </div>
-
-                    <!-- Availability & Shipping -->
-                    <div class="availability">
-                        <p>Handcrafted with love ❤️ </p>
-                        <p>Free delivery by <b>April 4</b></p>
-                        <p class="stock-info">Left in stock: <%= product.quantity %></p>
-                    </div>
-                    
-                    <!-- Buttons -->
-                    <div class="buttons">
-                        <button id="add-to-cart" onclick="updateCart('<%= userId %>', '<%= product.productId %>')" class="add-to-cart">
-                            Add to Cart
-                        </button>
-                    </div>
-                    
-                    <!-- Product Description -->
-                    <div class="product-description">
-                        <h3>Description</h3>
-                        <p><%= product.description %>full description</p>
-                    </div>
-                </div>
-            </div>
+  <%- include ('partials/navbar2'), {role} %>
+  <main>
+    <div class="container">
+      <!-- Product Info -->
+      <div class="product-flex">
+        <!-- Left: Product Images -->
+        <div class="product-image-container">
+          <img src="<%= product.image%>" alt="<%= product.name %>" class="product-image">
         </div>
-    </main>
-    <%- include ('partials/footer'), {role} %>
-    
-    <script>
-       async function updateCart(userId, productId) {
+
+        <!-- Right: Product Details -->
+        <div class="product-details">
+          <h1 class="product-title handmade-title"><%= product.name %></h1>
+
+          <!-- Artisan & Material Details -->
+          <div class="product-info">
+            <p><b>Type:</b> <%= product.category %></p>
+          </div>
+
+          <!-- Pricing -->
+          <div class="product-price">
+            <p class="current-price">₹<%= product.newPrice %></p>
+            <p class="old-price">₹<%= product.oldPrice %></p>
+          </div>
+
+          <!-- Rating Summary -->
+          <div class="review-header">
+            <div class="rating-stars">★★★★☆</div>
+            <span class="rating-number">4.2</span>
+            <span class="rating-count">(128 ratings)</span>
+          </div>
+
+          <!-- Availability & Shipping -->
+          <div class="availability">
+            <p>Handcrafted with love ❤️ </p>
+            <p>Free delivery by <b>April 4</b></p>
+            <p class="stock-info">Left in stock: <%= product.quantity %></p>
+          </div>
+
+          <!-- Buttons -->
+          <div class="buttons">
+            <button id="add-to-cart" onclick="updateCart('<%= userId %>', '<%= product._id.toString() %>')" class="add-to-cart">
+              Add to Cart
+            </button>
+          </div>
+
+          <!-- Product Description -->
+          <div class="product-description">
+            <h3>Description</h3>
+            <p><%= product.description %>full description</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <%- include ('partials/footer'), {role} %>
+
+  <script>
+    async function updateCart(userId, productId) {
       try {
         console.log("Adding to cart:", userId, productId); // Debugging line
         const response = await fetch(`/customer/store?userId=${userId}&productId=${productId}`, {
@@ -163,6 +165,7 @@
   `
       document.head.appendChild(style)
     }
-    </script>
+  </script>
 </body>
+
 </html>

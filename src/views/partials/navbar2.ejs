@@ -6,7 +6,7 @@
         <% if(role == "customer"){ %>
         <li><a href="/customer">Home</a></li>
         <li><a href="/customer/store">Store</a></li>
-        <li><a href="/customer/orders">Orders</a></li>
+        <li><a href="/customer/cart">Cart</a></li>
         <li><a href="/customer/workshop">Workshops</a></li>
         <li><a href="/customer/customorder">Custom Order</a></li>
         <li class="dropdown">
@@ -26,6 +26,7 @@
 
         <% } else if (role === "admin") { %>
         <li><a href="/admin">Dashboard</a></li>
+        <li><a href="/admin/content-moderation">Content Moderation</a></li>
         <li><a href="/admin/support-ticket">Support-ticket</a></li>
         <li class="dropdown">
           <i class="fa-solid fa-bars fa-lg"></i>

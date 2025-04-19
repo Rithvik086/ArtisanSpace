@@ -137,6 +137,13 @@ tbody tr:hover {
   transition: background-color 0.2s;
 }
 
+.btn-edit {
+  background-color: #3498db;
+}
+.btn-edit:hover {
+  background-color: #2980b9;
+}
+
 .btn-delete {
   background-color: #e74c3c;
 }
@@ -197,6 +204,119 @@ tbody tr:hover {
 
 .btn-confirm {
   background-color: #e74c3c;
+}
+
+/* Edit Modal Styles */
+#editModal {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#editModal .modal-content {
+  background-color: #fefefe;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  text-align: left;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#editModal .modal-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+}
+
+#editModal form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #34495e;
+}
+
+#editModal form input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+
+#editModal form input:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 4px rgba(52, 152, 219, 0.4);
+}
+
+#editModal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+#editModal .btn-cancel,
+#editModal .btn-confirm {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#editModal .btn-cancel {
+  background-color: #bdc3c7;
+  color: #fff;
+}
+
+#editModal .btn-cancel:hover {
+  background-color: #95a5a6;
+}
+
+#editModal .btn-confirm {
+  background-color: #3498db;
+  color: #fff;
+}
+
+#editModal .btn-confirm:hover {
+  background-color: #2980b9;
 }
 
 /* Responsive styles */

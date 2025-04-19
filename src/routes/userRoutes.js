@@ -1,14 +1,20 @@
 import express from "express";
-
 import { verifytoken } from "../middleware/authMiddleware.js";
 import adminroutes from "../routes/adminroutes.js";
 import managerroutes from "../routes/managerroutes.js";
 import customerroutes from "../routes/customerroutes.js";
 import artisanroutes from "../routes/artisanroutes.js";
-import { addTicket } from "../models/supportticketmodel.js";
-import { removeUser, updateUser } from "../models/usermodel.js";
-import { getHashes } from "crypto";
-import { getProducts } from "../models/productmodel.js";
+import {
+  deleteAccount,
+  productPage,
+  renderAboutUs,
+  renderContactUs,
+  renderSupportTicket,
+  submitSuppotTicket,
+  updatProfile,
+  getCustomerChart,
+  getProductsApi,
+} from "../controller/userController.js";
 const router = express.Router();
 
 router.use(verifytoken);
@@ -17,97 +23,14 @@ router.use("/admin", adminroutes);
 router.use("/artisan", artisanroutes);
 router.use("/customer", customerroutes);
 router.use("/manager", managerroutes);
-
-router.get("/aboutus", (req, res) => {
-  res.render("Aboutus", { role: req.user.role });
-});
-router.get("/contactus", (req, res) => {
-  res.render("customercontactus", { role: req.user.role });
-});
-
-router.get("/supportTicket", (req, res) => {
-  res.render("supportTicket", { role: req.user.role });
-  console.log(req.user.userId);
-});
-
-router.post("/submit-ticket", async (req, res) => {
-  const { subject, category, description } = req.body;
-  if (!subject || !description) {
-    return res
-      .status(400)
-      .json({ success: false, message: "All required fields must be filled!" });
-  }
-
-  try {
-    const newTicket = await addTicket(
-      req.user.id,
-      subject,
-      category,
-      description
-    );
-    res.json({
-      success: true,
-      message: "Ticket submitted successfully!",
-      ticket: newTicket,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to submit ticket. Please try again later.",
-    });
-  }
-});
-
-router.post("/update-profile", async (req, res) => {
-  try {
-    const { name, mobile_no, address } = req.body;
-    if (address) {
-      address.toLowerCase();
-    }
-    const result = await updateUser(
-      req.user.id,
-      name.toLowerCase(),
-      mobile_no,
-      address
-    );
-
-    if (result.success) {
-      res.status(200).json({ success: true });
-    } else {
-      res.status(500).json({ success: false });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false });
-  }
-});
-
-router.get("/delete-account", async (req, res) => {
-  try {
-    const result = await removeUser(req.user.id);
-
-    if (result.success) {
-      res.status(200).json({ success: true });
-    } else {
-      res.status(500).json({ success: false });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false });
-  }
-});
- router.get("/products/:productId", async(req, res)=>{
-
-  try{
-    const productId =  req.params.productId;
-    let products = await getProducts()
-    const product = await products.find(p => p.productId == productId);
-
-    res.render("productPage",{product,role:"customer",userId:req.user.id});
-
-  }catch(err){
-    console.error("failed to get project",err)
-  }
- })
+router.get("/aboutus", renderAboutUs);
+router.get("/contactus", renderContactUs);
+router.get("/supportTicket", renderSupportTicket);
+router.post("/submit-ticket", submitSuppotTicket);
+router.post("/update-profile", updatProfile);
+router.get("/delete-account", deleteAccount);
+router.get("/products/:productId", productPage);
+router.get("/api/customer_chart", getCustomerChart);
+// router.get("/api/orders/:value", getOrderDetails);
+router.get("/api/getProducts",getProductsApi)
 export default router;

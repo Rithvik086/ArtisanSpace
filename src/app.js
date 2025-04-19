@@ -13,14 +13,19 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-dbConnect();
+await dbConnect();
 
 const app = express();
-const port = 3000;
-const hostname = "0.0.0.0";
+const port = 3000 || process.env.PORT;
+
+// Middleware that parses incoming requests with JSON payloads(send through postman)
 app.use(express.json());
-app.use(cookieParser());
+
+// Middleware that parses incoming requests with urlencoded payloads(sent through forms)
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware that parses incoming requests with cookies (just to p)
+app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -41,8 +46,15 @@ app.use("/", authroutes);
 app.use("/", useroutes);
 
 app.all("*", (req, res) => {
-  // res.send("This route is accessible");
   res.status(404).render("accessdenied");
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send({
+    success: false,
+    message: "Internal Server Error",
+  });
 });
 
 // Starts an Express server locally on port 3000
