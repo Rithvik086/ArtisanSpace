@@ -7,71 +7,356 @@
   <title>WorkShops</title>
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
-  <link rel="stylesheet" href="/artisan/workshop.css">
+  <style>
+    :root {
+      --primary-color: #3a6ea5;
+      --secondary-color: #ff6b6b;
+      --background-color: #f8f9fa;
+      --card-background: #ffffff;
+      --text-color: #333333;
+      --border-color: #e0e0e0;
+      --success-color: #28a745;
+      --header-bg: #f2f6fa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .workshops-section {
+      margin-bottom: 40px;
+    }
+
+    .workshops-section h2 {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-color);
+      color: black;
+    }
+
+    .workshops-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--card-background);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+
+    .workshops-table th {
+      background-color: var(--header-bg);
+      color: var(--primary-color);
+      font-weight: bold;
+      text-align: left;
+      padding: 15px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .workshops-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    .workshops-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .workshops-table tr:hover {
+      background-color: rgba(58, 110, 165, 0.05);
+    }
+
+    .workshop-description {
+      max-width: 250px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #666;
+    }
+
+    .accept-btn {
+      background-color: green;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .remove-btn {
+      background-color: rgb(96, 186, 96);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .remove-btn:hover {
+      background-color: #2a5a8f;
+    }
+
+    .status-badge {
+      display: inline-block;
+      background-color: var(--success-color);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      background-color: var(--card-background);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .workshops-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .container {
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <%- include('../partials/navbar2', { role }) %>
-  <main>
+  <main class="container">
     <section class="workshops-section">
       <h2>Available Workshops</h2>
-      <div class="workshops-container" id="available-workshops">
-        <% if (availableWorkshops && availableWorkshops.length > 0) { %>
-        <% availableWorkshops.forEach(workshop => { %>
-        <div class="workshop-card" data-id="<%= workshop._id %>">
-          <h3><%= workshop.workshopTitle %></h3>
-          <p class="description"><%= workshop.workshopDescription %></p>
-          <div class="workshop-details">
-            <p><strong>Client:</strong> <%= workshop.userId.username %></p>
-            <p><strong>Scheduled Date:</strong> <%= workshop.date %></p>
-            <p><strong>Schedule Time:</strong> <%= workshop.time %></p>
-          </div>
-          <div class="workshop-actions">
-            <button class="accept-btn" data-id="<%= workshop._id %>">Accept Workshop</button>
-          </div>
-        </div>
-        <% }); %>
-        <% } else { %>
-        <div class="empty-state">
-          <p>No available workshops at the moment.</p>
-        </div>
-        <% } %>
+      <% if (availableWorkshops && availableWorkshops.length > 0) { %>
+      <table class="workshops-table">
+        <thead>
+          <tr>
+            <th>Workshop Title</th>
+            <th>Description</th>
+            <th>Client</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% availableWorkshops.forEach(workshop => { %>
+          <tr data-id="<%= workshop._id %>">
+            <td><strong><%= workshop.workshopTitle %></strong></td>
+            <td class="workshop-description" title="<%= workshop.workshopDescription %>">
+              <%= workshop.workshopDescription %>
+            </td>
+            <td><%= workshop.userId.username %></td>
+            <td><%= workshop.date %></td>
+            <td><%= workshop.time %></td>
+            <td>
+              <button class="accept-btn" data-id="<%= workshop._id %>">Accept Workshop</button>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <div class="empty-state">
+        <p>No available workshops at the moment.</p>
       </div>
+      <% } %>
     </section>
 
     <section class="workshops-section">
       <h2>Accepted Workshops</h2>
-      <div class="workshops-container" id="accepted-workshops">
-        <% if (acceptedWorkshops && acceptedWorkshops.length > 0) { %>
-        <% acceptedWorkshops.forEach(workshop => { %>
-        <div class="workshop-card accepted" data-id="<%= workshop._id %>">
-          <div class="accepted-badge">Accepted</div>
-          <h3><%= workshop.workshopTitle %></h3>
-          <p class="description"><%= workshop.workshopDescription %></p>
-          <div class="workshop-details">
-            <p><strong>Client:</strong> <%= workshop.userId.username %></p>
-            <p><strong>Contact:</strong> <%= workshop.userId.email %> | <%= workshop.userId.mobile_no %></p>
-            <p><strong>Date:</strong> <%= workshop.date %></p>
-            <p><strong>Time:</strong> <%= workshop.time %></p>
-            <p><strong>Accepted on:</strong> <%= new Date(workshop.acceptedAt).toLocaleDateString() %></p>
-          </div>
-          <div class="workshop-actions">
-            <button class="remove-btn" data-id="<%= workshop._id %>">Remove Workshop</button>
-          </div>
-        </div>
-        <% }); %>
-        <% } else { %>
-        <div class="empty-state">
-          <p>You haven't accepted any workshops yet.</p>
-        </div>
-        <% } %>
+      <% if (acceptedWorkshops && acceptedWorkshops.length > 0) { %>
+      <table class="workshops-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Workshop Title</th>
+            <th>Description</th>
+            <th>Client Info</th>
+            <th>Date & Time</th>
+            <th>Accepted On</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% acceptedWorkshops.forEach(workshop => { %>
+          <tr data-id="<%= workshop._id %>">
+            <td><span class="status-badge">Accepted</span></td>
+            <td><strong><%= workshop.workshopTitle %></strong></td>
+            <td class="workshop-description" title="<%= workshop.workshopDescription %>">
+              <%= workshop.workshopDescription %>
+            </td>
+            <td>
+              <div><%= workshop.userId.username %></div>
+              <div><small><%= workshop.userId.email %></small></div>
+              <div><small><%= workshop.userId.mobile_no %></small></div>
+            </td>
+            <td>
+              <div><%= workshop.date %></div>
+              <div><%= workshop.time %></div>
+            </td>
+            <td><%= new Date(workshop.acceptedAt).toLocaleDateString() %></td>
+            <td>
+              <button class="remove-btn" data-id="<%= workshop._id %>">Remove Workshop</button>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <div class="empty-state">
+        <p>You haven't accepted any workshops yet.</p>
       </div>
+      <% } %>
     </section>
-
-
   </main>
+
   <%- include("../partials/footer") %>
-  <script src="/artisan/workshop.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const acceptButtons = document.querySelectorAll(".accept-btn");
+      const removeButtons = document.querySelectorAll(".remove-btn");
+
+      acceptButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const workshopId = this.getAttribute("data-id");
+          acceptWorkshop(workshopId);
+        });
+      });
+
+      removeButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const workshopId = this.getAttribute("data-id");
+          removeWorkshop(workshopId);
+        });
+      });
+
+      async function acceptWorkshop(workshopId) {
+        try {
+          const response = await fetch(`/artisan/workshops/accept/${workshopId}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+          const data = await response.json();
+          if (data.success) {
+            showNotification("Workshop accepted successfully!", "success");
+            setTimeout(() => window.location.reload(), 500);
+          } else {
+            showNotification(data.message || "Failed to accept workshop", "error");
+          }
+        } catch (error) {
+          showNotification("An error occurred. Please try again.", "error");
+        }
+      }
+
+      async function removeWorkshop(workshopId) {
+        try {
+          const response = await fetch(`/artisan/workshops/remove/${workshopId}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+          const data = await response.json();
+          if (data.success) {
+            showNotification("Workshop removed successfully!", "success");
+            setTimeout(() => window.location.reload(), 500);
+          } else {
+            showNotification(data.message || "Failed to remove workshop", "error");
+          }
+        } catch (error) {
+          showNotification("An error occurred. Please try again.", "error");
+        }
+      }
+
+      function showNotification(message, type) {
+        let notificationContainer = document.querySelector(".notification-container");
+        if (!notificationContainer) {
+          notificationContainer = document.createElement("div");
+          notificationContainer.className = "notification-container";
+          document.body.appendChild(notificationContainer);
+        }
+
+        const notification = document.createElement("div");
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notificationContainer.appendChild(notification);
+
+        setTimeout(() => {
+          notification.classList.add("fade-out");
+          setTimeout(() => notification.remove(), 500);
+        }, 3000);
+      }
+
+      const style = document.createElement("style");
+      style.textContent = `
+        .notification-container {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 1000;
+        }
+
+        .notification {
+          padding: 12px 20px;
+          margin-bottom: 10px;
+          border-radius: 4px;
+          color: white;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          animation: slide-in 0.3s ease-out forwards;
+        }
+
+        .notification.success { background-color: #28a745; }
+        .notification.error { background-color: #dc3545; }
+
+        .notification.fade-out {
+          animation: fade-out 0.5s ease-out forwards;
+        }
+
+        @keyframes slide-in {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fade-out {
+          from { opacity: 1; }
+          to { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  </script>
 </body>
 
 </html>
