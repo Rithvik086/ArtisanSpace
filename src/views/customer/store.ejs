@@ -12,11 +12,7 @@
 
 <body>
   <%- include("../partials/navbar2",{role}) %>
-  <div class="search-bar-container">
-    <input type="text" id="searchInput" placeholder="Search products..." />
-    <ul id="resultsList"></ul>
 
-  </div>
 
 
   <main>
@@ -57,6 +53,10 @@
     </div>
 
     <div class="right">
+      <div class="search-bar-container">
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <ul id="resultsList"></ul>
+      </div>
       <div class="content">
         <ul class="product-list">
           <% products.forEach(product=> { %>
