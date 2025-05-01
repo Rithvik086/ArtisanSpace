@@ -46,7 +46,7 @@ export async function placeOrder(userId) {
 
     amount = (amount + Math.round(amount * 0.05 * 100) / 100 + 50).toFixed(2); // 5% tax and 50 shipping
 
-    cart = await Cart.findOne({ userId }).populate("productId");
+    cart = await Cart.findOne({ userId }).populate("products.productId");
 
     const cartObj = cart.toObject();
 
