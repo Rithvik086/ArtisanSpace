@@ -69,28 +69,47 @@
           <% orders.forEach(order => { %>
           <div class="card">
             <div class="card-header">
-              <h3>Order #<%= order._id.toString().slice(-6) %></h3>
-              <span class="status <%= order.status %>"><%= order.status %></span>
+              <h3>Order #<%= order._id.toString().slice(-6).toUpperCase() %></h3>
+              <span class="status <%= order.status.toLowerCase() %>"><%= order.status %></span>
             </div>
             <div class="card-body">
               <p><strong>Products:</strong></p>
-              <ul>
+              <ul class="order-products-list">
                 <% order.products.forEach(product => { %>
-                <li><%= product.productId.name || 'Product' %> x<%= product.quantity %></li>
+                <li>
+                  <div class="product-item">
+                    <div class="product-image">
+                      <img src="<%= product.productId.image %>" alt="<%= product.productId.name %>">
+                    </div>
+                    <div class="product-details">
+                      <strong><%= product.productId.name %></strong>
+                      <span class="quantity">x<%= product.quantity %></span>
+                      <span class="price">₹<%= (product.productId.newPrice * product.quantity).toFixed(2) %></span>
+                    </div>
+                  </div>
+                </li>
                 <% }) %>
               </ul>
-              <p><strong>Total:</strong> $<%= order.money.toFixed(2) %></p>
-              <p><strong>Purchased:</strong> <%= new Date(order.purchasedAt).toLocaleDateString() %></p>
+              <div class="order-summary">
+                <p><strong>Total:</strong> ₹<%= order.money.toFixed(2) %></p>
+                <p><strong>Date:</strong> <%= new Date(order.purchasedAt).toLocaleDateString('en-IN') %></p>
+              </div>
             </div>
             <div class="card-footer">
-
+              <% if (order.status === 'delivered') { %>
+              <button class="btn primary review-btn" data-orderid="<%= order._id.toString() %>">Write Review</button>
+              <% } else if (order.status === 'pending' || order.status === 'processing') { %>
+              <div class="order-status-info">
+                <p>Status: <strong><%= order.status %></strong></p>
+              </div>
+              <% } %>
             </div>
           </div>
           <% }) %>
           <% } else { %>
           <div class="empty-state">
             <p>You don't have any orders yet.</p>
-            <a href="/customer/store"><button class="btn primary ">Shop Now</button></a>
+            <a href="/customer/store"><button class="btn primary">Shop Now</button></a>
           </div>
           <% } %>
         </div>

@@ -15,6 +15,12 @@ import {
 } from "../services/userServices.js";
 import { getTickets, removeTicket } from "../services/ticketServices.js";
 import { loadcustData, updateResponse } from "../models/customerresponse.js";
+import {
+  changeOrderStatus,
+  getOrderByOrderId,
+  getOrders,
+  getOrdersById,
+} from "../services/orderServices.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const custrespath = path.resolve(__dirname, "../../customerresponse.json");
@@ -26,12 +32,44 @@ export const getAdminDashboard = async (req, res) => {
   const responses = await loadcustData(custrespath);
   const userlist = await getUsers();
   const products = await getProducts();
+  const orders = await getOrders();
   res.render("admin/admindashboard", {
     role: admrole,
     responses,
     userlist,
     products,
+    orders,
   });
+};
+
+export const getOrdersPage = async (req, res) => {
+  const orderId = req.params.orderId;
+  const order = await getOrderByOrderId(orderId);
+
+  if (!order) {
+    return res.status(404).send("Order not found");
+  }
+  res.render("admin/orderDetails", { role: admrole, order });
+};
+
+export const changeStatus = async (req, res) => {
+  const orderId = req.params.orderId;
+  const { status } = req.body;
+  try {
+    const response = await changeOrderStatus(orderId, status);
+    if (response.success) {
+      return res
+        .status(200)
+        .json({ success: true, message: "Status updated successfully" });
+    }
+    res.status(400).json({
+      success: false,
+      message: res.message || "Failed to update status",
+    });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 };
 
 export const addUserHandler = async (req, res) => {
