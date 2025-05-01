@@ -605,3 +605,104 @@ canvas {
   font-family: inherit;
   resize: vertical;
 }
+
+/* Orders Table */
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.orders-table th {
+  background-color: var(--light-color);
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+
+.orders-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Order Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge.pending {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #856404;
+}
+
+.status-badge.processing {
+  background-color: rgba(23, 162, 184, 0.15);
+  color: var(--info-color);
+}
+
+.status-badge.shipped {
+  background-color: rgba(0, 123, 255, 0.15);
+  color: #0056b3;
+}
+
+.status-badge.delivered {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: var(--success-color);
+}
+
+.status-badge.cancelled {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: var(--danger-color);
+}
+
+/* Action buttons */
+.view-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: var(--transition);
+}
+
+.view-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.update-status-btn {
+  background-color: var(--info-color);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: var (--transition);
+}
+
+.update-status-btn:hover {
+  background-color: #138496;
+}
+
+/* Filter controls */
+.filter-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-controls select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+}

@@ -16,6 +16,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Orders table filter functionality
+  const orderStatusFilter = document.getElementById("order-status-filter");
+  if (orderStatusFilter) {
+    orderStatusFilter.addEventListener("change", function () {
+      const filterValue = this.value;
+      const orderRows = document.querySelectorAll("#orders-table-body tr");
+
+      orderRows.forEach((row) => {
+        const statusCell = row.querySelector("td:nth-child(6)");
+        if (!statusCell) return;
+
+        const statusBadge = statusCell.querySelector(".status-badge");
+        if (!statusBadge) return;
+
+        const status = statusBadge.textContent.toLowerCase();
+
+        if (filterValue === "all" || status === filterValue) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    });
+  }
+
+  // Order View button functionality
+  const viewOrderBtns = document.querySelectorAll(".view-btn");
+  viewOrderBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      window.location.href = `/admin/orders/${this.getAttribute("data-id")}`;
+    });
+  });
+
   function closeModal(modalId) {
     document.getElementById(modalId).classList.remove("active");
   }

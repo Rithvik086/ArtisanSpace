@@ -46,6 +46,7 @@
       <div class="tab-header">
         <button class="tab-btn active" data-tab="users">Users</button>
         <button class="tab-btn" data-tab="products">Products</button>
+        <button class="tab-btn" data-tab="orders">Orders</button>
         <button class="tab-btn" data-tab="feedback">Feedback</button>
       </div>
 
@@ -125,6 +126,59 @@
               <% } else { %>
               <tr>
                 <td colspan="8" class="text-center">No products found</td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Orders Tab Content -->
+      <div class="tab-content" id="orders-content">
+        <div class="action-bar">
+          <h3>Manage Orders</h3>
+          <div class="filter-controls">
+            <select id="order-status-filter">
+              <option value="all">All Orders</option>
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="orders-table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <% if (orders && orders.length > 0) { %>
+              <% orders.forEach(order => { %>
+              <tr>
+                <td>#<%= order._id.toString().slice(-6).toUpperCase() %></td>
+                <td><%= order.userId.username || 'Unknown' %></td>
+                <td><%= new Date(order.purchasedAt).toLocaleDateString('en-IN') %></td>
+                <td><%= order.products.length %> item<%= order.products.length > 1 ? 's' : '' %></td>
+                <td>₹<%= order.money.toFixed(2) %></td>
+                <td><span class="status-badge <%= order.status.toLowerCase() %>"><%= order.status %></span></td>
+                <td class="actions">
+                  <button class="view-btn" data-id="<%= order._id.toString() %>">View</button>
+                </td>
+              </tr>
+              <% }); %>
+              <% } else { %>
+              <tr>
+                <td colspan="7" class="text-center">No orders found</td>
               </tr>
               <% } %>
             </tbody>

@@ -80,16 +80,53 @@ export async function placeOrder(userId) {
   }
 }
 
+export async function getOrders() {
+  try {
+    const orders = await Order.find().populate("userId");
+    if (!orders || orders.length === 0) {
+      throw new Error("No orders found");
+    }
+    return orders;
+  } catch (err) {
+    throw new Error("Error in getting orders: " + err.message);
+  }
+}
+
 export async function getOrdersById(userId) {
   try {
-    const orders = await Order.find({ userId }).populate("products.productId");
+    const orders = await Order.find({ userId });
     if (!orders) {
       throw new Error("Orders not found!");
     }
-    console.log(orders);
     return orders;
   } catch (err) {
     throw new Error("Error in getting order by ID: " + err.message);
+  }
+}
+
+export async function getOrderByOrderId(orderId) {
+  try {
+    const order = await Order.findById(orderId).populate("userId");
+    if (!order) {
+      throw new Error("Order not found!");
+    }
+    return order;
+  } catch (err) {
+    throw new Error("Error in getting order by ID: " + err.message);
+  }
+}
+
+export async function changeOrderStatus(orderId, status) {
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      throw new Error("Order not found!");
+    }
+    order.status = status;
+    await order.save();
+    return { success: true, message: "Order status updated successfully!" };
+  } catch (err) {
+    throw new Error("Error in changing order status: " + err.message);
   }
 }
 
