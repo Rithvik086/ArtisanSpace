@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "node src/models/test.js"
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
