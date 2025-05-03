@@ -49,6 +49,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Order delete button functionality
+  const deleteOrderBtns = document.querySelectorAll(".delete-order-btn");
+  deleteOrderBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const orderId = this.getAttribute("data-id");
+
+      fetch(`/admin/orders/${orderId}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            showNotification(
+              "Order deleted successfully. Refreshing the page...",
+              "success"
+            );
+            window.location.reload();
+          } else {
+            console.error("Failed to delete order");
+            showNotification(
+              "Failed to delete order. Please try again.",
+              "error"
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+  });
+
   function closeModal(modalId) {
     document.getElementById(modalId).classList.remove("active");
   }
@@ -164,7 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
 
         if (result.success) {
-          console.log("User added successfully:", userData);
           window.location.reload();
         } else {
           alert("Error adding user: " + result.message);
@@ -204,7 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const result = await response.json();
 
           if (result.success) {
-            console.log("User deleted successfully:", userIdToDelete);
             window.location.reload();
           } else {
             alert("Error deleting user: " + result.message);
@@ -279,8 +307,6 @@ const productsData = {
 fetch("/api/customer_chart")
   .then((res) => res.json())
   .then((data) => {
-    console.log("Raw customer data:", data);
-
     // Check if data exists and has the expected format
     if (!data || !Array.isArray(data) || data.length === 0) {
       console.error("Invalid customer data received:", data);
@@ -289,11 +315,9 @@ fetch("/api/customer_chart")
 
     // Make sure registeredAt is a valid date string
     const validData = data.filter((item) => item && item.registeredAt);
-    console.log("Valid customer data items:", validData.length);
 
     // Group the data by 2-day intervals and calculate cumulative counts
     const grouped = groupByTwoDayIntervals(validData);
-    console.log("Grouped data:", grouped);
 
     const labels = Object.keys(grouped).sort();
     const values = labels.map((label) => grouped[label]);

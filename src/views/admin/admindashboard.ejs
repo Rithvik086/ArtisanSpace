@@ -173,6 +173,7 @@
                 <td><span class="status-badge <%= order.status.toLowerCase() %>"><%= order.status %></span></td>
                 <td class="actions">
                   <button class="view-btn" data-id="<%= order._id.toString() %>">View</button>
+                  <button class="delete-order-btn" data-id="<%= order._id.toString() %>">Delete</button>
                 </td>
               </tr>
               <% }); %>

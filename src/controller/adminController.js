@@ -17,9 +17,9 @@ import { getTickets, removeTicket } from "../services/ticketServices.js";
 import { loadcustData, updateResponse } from "../models/customerresponse.js";
 import {
   changeOrderStatus,
+  deleteOrderById,
   getOrderByOrderId,
   getOrders,
-  getOrdersById,
 } from "../services/orderServices.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,6 +50,25 @@ export const getOrdersPage = async (req, res) => {
     return res.status(404).send("Order not found");
   }
   res.render("admin/orderDetails", { role: admrole, order });
+};
+export const deleteOrder = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+
+    const response = await deleteOrderById(orderId);
+    if (response.success) {
+      return res
+        .status(200)
+        .json({ success: true, message: "Order deleted successfully" });
+    }
+    res.status(400).json({
+      success: false,
+      message: response.message || "Failed to delete order",
+    });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 };
 
 export const changeStatus = async (req, res) => {
