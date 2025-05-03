@@ -67,7 +67,7 @@
         <div class="cards-container">
           <% if (orders && orders.length > 0) { %>
           <% orders.forEach(order => { %>
-          <div class="card">
+          <div class="card" data-id="<%= order._id.toString() %>">
             <div class="card-header">
               <h3>Order #<%= order._id.toString().slice(-6).toUpperCase() %></h3>
               <span class="status <%= order.status.toLowerCase() %>"><%= order.status %></span>
@@ -193,6 +193,13 @@
   <%- include("../partials/footer") %>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+
+      document.querySelectorAll(".card").forEach((card) => {
+        card.addEventListener("click", () => {
+          const orderId = card.getAttribute("data-id");
+          window.location.href = `/customer/orders/${orderId}`;
+        });
+      });
       const slider = document.querySelector(".slider");
 
       function moveSlider() {

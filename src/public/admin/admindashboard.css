@@ -230,6 +230,21 @@ canvas {
   transition: var(--transition);
 }
 
+.delete-order-btn {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: var(--transition);
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.delete-product-btn:hover {
+  background-color: #c82333;
+}
+
 .edit-btn {
   background-color: var(--info-color);
   color: white;

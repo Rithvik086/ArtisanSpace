@@ -15,6 +15,7 @@ import {
   checkout,
   placeOrderController,
   getSettingsCustomer,
+  getOrdersPageCustomer,
 } from "../controller/customerController.js";
 
 const router = express.Router();
@@ -22,6 +23,7 @@ const router = express.Router();
 router.use(authorizerole("admin", "manager", "artisan", "customer"));
 
 router.get("/", getHomePage);
+router.get("/orders/:orderId", getOrdersPageCustomer);
 router.get("/store", getStorePage);
 router.post("/store", addToCart);
 router.get("/cart", getCartController);

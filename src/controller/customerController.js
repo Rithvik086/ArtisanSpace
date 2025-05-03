@@ -17,8 +17,11 @@ import {
 
 import cloudinary from "../config/cloudinary.js";
 import { addRequest, getRequestById } from "../services/requestServices.js";
-import { getOrdersById, placeOrder } from "../services/orderServices.js";
-import { get } from "mongoose";
+import {
+  getOrderByOrderId,
+  getOrdersById,
+  placeOrder,
+} from "../services/orderServices.js";
 const custrole = "customer";
 
 export const getHomePage = async (req, res) => {
@@ -36,6 +39,22 @@ export const getHomePage = async (req, res) => {
     orders: customerOrders,
     workshops: customerWorkshops,
     userId,
+  });
+};
+
+export const getOrdersPageCustomer = async (req, res) => {
+  const userId = req.user.id;
+  const orderId = req.params.orderId;
+
+  const order = await getOrderByOrderId(orderId);
+
+  if (!order) {
+    return res.status(404).send("Order not found");
+  }
+
+  res.render("customer/orderDetails", {
+    role: custrole,
+    order: order,
   });
 };
 

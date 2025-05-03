@@ -142,3 +142,16 @@ export async function totalOrders() {
     throw new Error("Error getting total orders: " + e.message);
   }
 }
+
+export async function deleteOrderById(orderId) {
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      throw new Error("Order not found!");
+    }
+    await Order.deleteOne({ _id: orderId });
+    return { success: true, message: "Order deleted successfully!" };
+  } catch (err) {
+    throw new Error("Error in deleting order: " + err.message);
+  }
+}

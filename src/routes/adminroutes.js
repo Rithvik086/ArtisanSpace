@@ -12,6 +12,7 @@ import {
   getSettingsAdmin,
   changeStatus,
   getAndHandleContentModerationAdmin,
+  deleteOrder,
 } from "../controller/adminController.js";
 
 const router = express.Router();
@@ -20,6 +21,7 @@ router.use(authorizerole("admin"));
 
 router.get("/", getAdminDashboard);
 router.get("/orders/:orderId", getOrdersPage);
+router.delete("/orders/:orderId", deleteOrder);
 router.put("/orders/:orderId/status", changeStatus);
 router.post("/add-user", addUserHandler);
 router.delete("/delete-user/:userID", deletUser);
