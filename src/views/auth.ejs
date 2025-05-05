@@ -42,8 +42,6 @@
               <select name="role" required>
                 <option value="customer">Customer</option>
                 <option value="artisan">Artisan</option>
-                <option value="manager">Manager</option>
-                <option value="admin">Admin</option>
               </select>
               <button type="submit">Sign Up</button>
             </form>
@@ -93,6 +91,10 @@
             <form action="/login" method="post" id="login-form">
               <input type="text" placeholder="username" required name="username">
               <input type="password" placeholder="Password" name="password">
+              <!-- Added error message container for login errors -->
+              <p id="loginError" style="color: red; font-size: 14px; margin: 5px 0 10px; display: none; text-align: center; width: 100%;">
+                Invalid username or password
+              </p>
               <button type="submit">Log in</button>
             </form>
             <div class="signup-text">

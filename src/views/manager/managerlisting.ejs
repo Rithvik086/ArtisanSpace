@@ -223,7 +223,7 @@
             <label for="product-name">Product Name</label>
             <input type="text" id="product-name" name="productName" placeholder="Enter product name" required />
             <p id="productNameError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
-              Password must only contain letters, numbers, -, and spaces within 3-30 characters</p>
+              Product name must only contain letters, numbers, spaces, and hyphens, and be between 3 and 30 characters long.
             </p>
           </div>
         </div>
@@ -234,6 +234,7 @@
             <option value="statue">Statue</option>
             <option value="painting">Painting</option>
             <option value="footware">Footware</option>
+            <option value="footware">Headware</option>
             <option value="pottery">Pottery</option>
             <option value="toys">Toys</option>
             <option value="other">Other</option>
@@ -299,7 +300,7 @@
       const productPhoto = document.getElementById('product-photo');
       const imagePreview = document.getElementById('image-preview');
 
-      const productNameregex = /^[a-zA-Z0-9\s-]+$/;
+      const productNameregex = /^[a-zA-Z0-9\s-&]+$/;
       const materialregex = /^[a-zA-Z\s,\-]+$/;
       const originalPriceregex = /^\d+(\.\d{1,2})?$/;
       const descriptionregex = /^[a-zA-Z0-9\s.,'"\-!?()]+$/;
@@ -336,7 +337,7 @@
         document.getElementById('quantityError').style.display = "none";
 
         // Validate product name
-        if (!productNameregex.test(productName.value) || productName.value.length < 3 || productName.value.length > 30) {
+        if (!productNameregex.test(productName.value) || productName.value.length < 3 || productName.value.length > 40) {
           document.getElementById('productNameError').style.display = "block";
           productName.classList.add('error-input');
           productName.scrollIntoView({

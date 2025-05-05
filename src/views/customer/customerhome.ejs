@@ -9,8 +9,213 @@
   <link rel="stylesheet" href="/customer/customerHome.css">
   <link rel="stylesheet" href="/footer.css" />
   <link rel="stylesheet" href="/customer/homePageStatusTab.css">
-  <!-- // new style -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .card {
+      position: relative;
+      cursor: pointer;
+      border-left: 4px solid #5c4033;
+    }
 
+    .order-products-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      max-height: 250px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .order-products-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .order-products-list::-webkit-scrollbar-thumb {
+      background-color: rgba(92, 64, 51, 0.3);
+      border-radius: 10px;
+    }
+
+    .product-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s;
+    }
+
+    .product-item:last-child {
+      border-bottom: none;
+    }
+
+    .product-item:hover {
+      background-color: #f9f7f5;
+    }
+
+    .product-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-right: 12px;
+      border: 1px solid #eee;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .product-details strong {
+      display: block;
+      font-size: 0.9rem;
+      color: #333;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+    .quantity {
+      font-size: 0.85rem;
+      color: #666;
+      padding: 2px 6px;
+      background-color: #f3f3f3;
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    .price {
+      font-weight: 600;
+      color: #5c4033;
+      margin-left: auto;
+      font-size: 0.95rem;
+    }
+
+    .order-summary {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #e0e0e0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .order-status-info {
+      background-color: #f8f5f2;
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .card-header {
+      background-color: #f8f5f2;
+    }
+
+    .card-header h3 {
+      font-size: 1.1rem;
+      color: #5c4033;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn.primary {
+      background-color: #5c4033;
+      border-color: #5c4033;
+    }
+
+    .btn.primary:hover {
+      background-color: #4a3328;
+    }
+
+    .btn.outline {
+      background-color: transparent;
+      border: 1px solid #5c4033;
+      color: #5c4033;
+    }
+
+    .btn.outline:hover {
+      background-color: #f8f5f2;
+    }
+
+    .status {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status.pending {
+      background-color: #fff3c4;
+      color: #92400e;
+    }
+
+    .status.accepted,
+    .status.delivered {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .status.processing {
+      background-color: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .status.shipped {
+      background-color: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .status.cancelled {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .order-date {
+      display: flex;
+      align-items: center;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .order-date i {
+      margin-right: 5px;
+      color: #5c4033;
+    }
+
+    .order-total {
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: #5c4033;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
 
@@ -57,23 +262,28 @@
     <div class="statusTab">
 
       <div class="tabs">
-        <button class="tab-btn active" data-tab="orders">Orders</button>
-        <button class="tab-btn" data-tab="requests">Custom Requests</button>
-        <button class="tab-btn" data-tab="workshops">Workshops</button>
+        <button class="tab-btn active" data-tab="orders"><i class="fas fa-box"></i> Orders</button>
+        <button class="tab-btn" data-tab="requests"><i class="fas fa-palette"></i> Custom Requests</button>
+        <button class="tab-btn" data-tab="workshops"><i class="fas fa-chalkboard-teacher"></i> Workshops</button>
       </div>
 
       <div class="tab-content active" id="orders">
-        <h2>Your Orders</h2>
+        <h2><i class="fas fa-shopping-bag"></i> Your Orders</h2>
         <div class="cards-container">
           <% if (orders && orders.length > 0) { %>
-          <% orders.forEach(order => { %>
+          <% orders.forEach((order, index) => { %>
           <div class="card" data-id="<%= order._id.toString() %>">
+            <% if (index === 0) { %>
+            <div class="card-badge">
+              <i class="fas fa-star"></i>
+            </div>
+            <% } %>
             <div class="card-header">
-              <h3>Order #<%= order._id.toString().slice(-6).toUpperCase() %></h3>
+              <h3><i class="fas fa-receipt"></i> Order #<%= order._id.toString().slice(-6).toUpperCase() %></h3>
               <span class="status <%= order.status.toLowerCase() %>"><%= order.status %></span>
             </div>
             <div class="card-body">
-              <p><strong>Products:</strong></p>
+              <p><strong><i class="fas fa-box-open"></i> Products:</strong></p>
               <ul class="order-products-list">
                 <% order.products.forEach(product => { %>
                 <li>
@@ -91,38 +301,55 @@
                 <% }) %>
               </ul>
               <div class="order-summary">
-                <p><strong>Total:</strong> ₹<%= order.money.toFixed(2) %></p>
-                <p><strong>Date:</strong> <%= new Date(order.purchasedAt).toLocaleDateString('en-IN') %></p>
+                <p class="order-date"><i class="far fa-calendar-alt"></i> <%= new Date(order.purchasedAt).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'}) %></p>
+                <p class="order-total"><i class="fas fa-rupee-sign"></i> <%= order.money.toFixed(2) %></p>
               </div>
             </div>
             <div class="card-footer">
               <% if (order.status === 'delivered') { %>
-              <button class="btn primary review-btn" data-orderid="<%= order._id.toString() %>">Write Review</button>
-              <% } else if (order.status === 'pending' || order.status === 'processing') { %>
-              <div class="order-status-info">
-                <p>Status: <strong><%= order.status %></strong></p>
+              <div class="order-actions">
+                <button class="btn primary review-btn" data-orderid="<%= order._id.toString() %>">
+                  <i class="far fa-star"></i> Write Review
+                </button>
+                <button class="btn outline" onclick="window.location.href='/customer/orders/<%= order._id.toString() %>'">
+                  <i class="fas fa-eye"></i> View Details
+                </button>
               </div>
+              <% } else { %>
+              <div class="order-status-info">
+                <% if (order.status === 'pending') { %>
+                <i class="fas fa-clock"></i> Your order is waiting to be processed
+                <% } else if (order.status === 'processing') { %>
+                <i class="fas fa-cog fa-spin"></i> Your order is being processed
+                <% } else if (order.status === 'shipped') { %>
+                <i class="fas fa-truck"></i> Your order is on the way
+                <% } %>
+              </div>
+              <button class="btn outline" onclick="window.location.href='/customer/orders/<%= order._id.toString() %>'">
+                <i class="fas fa-eye"></i> View Details
+              </button>
               <% } %>
             </div>
           </div>
           <% }) %>
           <% } else { %>
           <div class="empty-state">
+            <i class="fas fa-shopping-basket" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
             <p>You don't have any orders yet.</p>
-            <a href="/customer/store"><button class="btn primary">Shop Now</button></a>
+            <a href="/customer/store"><button class="btn primary"><i class="fas fa-store"></i> Shop Now</button></a>
           </div>
           <% } %>
         </div>
       </div>
 
       <div class="tab-content" id="requests">
-        <h2>Your Custom Requests</h2>
+        <h2><i class="fas fa-palette"></i> Your Custom Requests</h2>
         <div class="cards-container">
           <% if (requests && requests.length > 0) { %>
           <% requests.forEach(request => { %>
           <div class="card">
             <div class="card-header">
-              <h3><%= request.title %></h3>
+              <h3><i class="fas fa-paint-brush"></i> <%= request.title %></h3>
               <span class="status <%= request.isAccepted ? 'accepted' : 'pending' %>">
                 <%= request.isAccepted ? 'Accepted' : 'Pending' %>
               </span>
@@ -133,73 +360,85 @@
             </div>
             <% } %>
             <div class="card-body">
-              <p><strong>Type:</strong> <%= request.type %></p>
-              <p><strong>Description:</strong> <%= request.description %></p>
-              <p><strong>Budget:</strong> <%= request.budget %></p>
-              <p><strong>Required By:</strong> <%= request.requiredBy %></p>
+              <p><strong><i class="fas fa-tag"></i> Type:</strong> <%= request.type %></p>
+              <p><strong><i class="fas fa-align-left"></i> Description:</strong> <%= request.description %></p>
+              <p><strong><i class="fas fa-rupee-sign"></i> Budget:</strong> <%= request.budget %></p>
+              <p><strong><i class="fas fa-calendar-check"></i> Required By:</strong> <%= request.requiredBy %></p>
             </div>
             <div class="card-footer">
-
-
+              <!-- No actions currently defined -->
             </div>
           </div>
           <% }) %>
           <% } else { %>
           <div class="empty-state">
+            <i class="fas fa-paint-brush" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
             <p>You don't have any custom requests yet.</p>
-
+            <a href="/customer/customorder"><button class="btn primary"><i class="fas fa-plus-circle"></i> Create Request</button></a>
           </div>
           <% } %>
         </div>
       </div>
 
       <div class="tab-content" id="workshops">
-        <h2>Your Workshops</h2>
+        <h2><i class="fas fa-chalkboard-teacher"></i> Your Workshops</h2>
         <div class="cards-container">
           <% if (workshops && workshops.length > 0) { %>
           <% workshops.forEach(workshop => { %>
           <div class="card">
             <div class="card-header">
-              <h3><%= workshop.workshopTitle %></h3>
+              <h3><i class="fas fa-graduation-cap"></i> <%= workshop.workshopTitle %></h3>
               <span class="status <%= workshop.status === 1 ? 'accepted' : 'pending' %>">
                 <%= workshop.status === 1 ? 'Accepted' : 'Pending' %>
               </span>
             </div>
             <div class="card-body">
-              <p><strong>Description:</strong> <%= workshop.workshopDescription %></p>
-              <p><strong>Date:</strong> <%= workshop.date %></p>
-              <p><strong>Time:</strong> <%= workshop.time %></p>
+              <p><strong><i class="fas fa-align-left"></i> Description:</strong> <%= workshop.workshopDescription %></p>
+              <p><strong><i class="fas fa-calendar-day"></i> Date:</strong> <%= workshop.date %></p>
+              <p><strong><i class="fas fa-clock"></i> Time:</strong> <%= workshop.time %></p>
               <% if (workshop.status === 1 && workshop.acceptedAt) { %>
-              <p><strong>Accepted On:</strong> <%= workshop.acceptedAt %></p>
+              <p><strong><i class="fas fa-check-circle"></i> Accepted On:</strong> <%= workshop.acceptedAt %></p>
               <% } %>
             </div>
             <div class="card-footer">
-
-
+              <!-- No actions currently defined -->
             </div>
           </div>
           <% }) %>
           <% } else { %>
           <div class="empty-state">
+            <i class="fas fa-chalkboard" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
             <p>You don't have any workshops yet.</p>
-
+            <a href="/customer/workshop"><button class="btn primary"><i class="fas fa-plus-circle"></i> Book Workshop</button></a>
           </div>
           <% } %>
         </div>
       </div>
     </div>
-    </div>
   </main>
   <%- include("../partials/footer") %>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-
+      // Make cards clickable except when clicking on action buttons
       document.querySelectorAll(".card").forEach((card) => {
-        card.addEventListener("click", () => {
-          const orderId = card.getAttribute("data-id");
-          window.location.href = `/customer/orders/${orderId}`;
+        card.addEventListener("click", (event) => {
+          // Check if we clicked on a button
+          if (!event.target.closest('button')) {
+            const orderId = card.getAttribute("data-id");
+            if (orderId) {
+              window.location.href = `/customer/orders/${orderId}`;
+            }
+          }
         });
       });
+
+      // Prevent button clicks from navigating through card
+      document.querySelectorAll(".card button").forEach(button => {
+        button.addEventListener("click", (e) => {
+          e.stopPropagation();
+        });
+      });
+
       const slider = document.querySelector(".slider");
 
       function moveSlider() {
@@ -239,9 +478,6 @@
           document.getElementById(tabId).classList.add('active');
         });
       });
-
-
-
     });
   </script>
 </body>

@@ -144,8 +144,50 @@ document
 document
   .getElementById("login-form")
   .addEventListener("submit", function (event) {
+    event.preventDefault();
     const inputs = this.querySelectorAll("input");
-    inputs.forEach((input) => {
-      input.value = input.value.trim().toLowerCase();
+    const loginError = document.getElementById("loginError");
+    const formData = new FormData(this);
+
+    // Convert form data to JSON object
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value.trim().toLowerCase();
     });
+
+    // Send AJAX request
+    fetch("/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.redirected) {
+          // If successful, follow the redirect
+          window.location.href = response.url;
+        } else {
+          // If there's an error, parse the JSON response
+          return response.json();
+        }
+      })
+      .then((data) => {
+        if (data && data.message) {
+          // Show error message
+          loginError.textContent =
+            data.message === "user not found"
+              ? "Invalid username or password"
+              : data.message;
+          loginError.style.display = "block";
+
+          // Hide error message after 5 seconds
+          setTimeout(() => {
+            loginError.style.display = "none";
+          }, 5000);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   });
