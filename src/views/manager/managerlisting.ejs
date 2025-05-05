@@ -337,7 +337,7 @@
         document.getElementById('quantityError').style.display = "none";
 
         // Validate product name
-        if (!productNameregex.test(productName.value) || productName.value.length < 3 || productName.value.length > 30) {
+        if (!productNameregex.test(productName.value) || productName.value.length < 5 || productName.value.length > 30) {
           document.getElementById('productNameError').style.display = "block";
           productName.classList.add('error-input');
           productName.scrollIntoView({
