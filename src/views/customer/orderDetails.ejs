@@ -326,21 +326,30 @@
 
         <div class="order-summary">
           <h2 class="section-title">Order Summary</h2>
+          <% 
+            // Calculate subtotal, tax, and shipping
+            const subtotal = order.products.reduce((acc, product) => {
+              return acc + (product.productId.newPrice * product.quantity);
+            }, 0);
+            const shipping = 50; // Fixed shipping fee
+            const tax = Math.round(subtotal * 0.05 * 100) / 100; // 5% tax
+            const total = order.money; // Total from DB
+          %>
           <div class="summary-row">
             <span>Subtotal</span>
-            <span>₹<%= order.money.toFixed(2) %></span>
+            <span>₹<%= subtotal.toFixed(2) %></span>
           </div>
           <div class="summary-row">
             <span>Shipping</span>
-            <span>₹0.00</span>
+            <span>₹<%= shipping.toFixed(2) %></span>
           </div>
           <div class="summary-row">
-            <span>Tax</span>
-            <span>₹0.00</span>
+            <span>Tax (5%)</span>
+            <span>₹<%= tax.toFixed(2) %></span>
           </div>
           <div class="summary-row total">
             <span>Total</span>
-            <span>₹<%= order.money.toFixed(2) %></span>
+            <span>₹<%= total.toFixed(2) %></span>
           </div>
         </div>
       </div>

@@ -15,7 +15,7 @@ body {
 
 .container {
   width: 1000px;
-  height: 600px;
+  height: 700px;
   perspective: 2000px;
   overflow: visible;
 }

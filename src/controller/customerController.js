@@ -105,6 +105,15 @@ export const getCartController = async (req, res) => {
     amount += item.quantity * item.productId.newPrice;
   }
 
+  // Check if this is a summary-only request (for quantity updates)
+  if (
+    req.query.summary === "true" &&
+    req.headers["x-requested-with"] === "XMLHttpRequest"
+  ) {
+    return res.json({ success: true, amount });
+  }
+
+  // Regular AJAX or full page request
   if (req.headers["x-requested-with"] === "XMLHttpRequest") {
     res.render("partials/cart", { cart, userId, amount });
   } else {

@@ -103,25 +103,31 @@
     }
 
     .accept-btn {
-      background-color: green;
+      background-color: #28a745;
       color: white;
       border: none;
       padding: 8px 16px;
       border-radius: 4px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .accept-btn:hover {
+      background-color: #218838;
     }
 
     .remove-btn {
-      background-color: rgb(96, 186, 96);
+      background-color: #dc3545;
       color: white;
       border: none;
       padding: 8px 16px;
       border-radius: 4px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
 
     .remove-btn:hover {
-      background-color: #2a5a8f;
+      background-color: #c82333;
     }
 
     .status-badge {
@@ -333,12 +339,20 @@
           margin-bottom: 10px;
           border-radius: 4px;
           color: white;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
           animation: slide-in 0.3s ease-out forwards;
+          font-weight: 500;
         }
 
-        .notification.success { background-color: #28a745; }
-        .notification.error { background-color: #dc3545; }
+        .notification.success { 
+          background-color: #28a745; 
+          border-left: 4px solid #1e7e34;
+        }
+        
+        .notification.error { 
+          background-color: #dc3545; 
+          border-left: 4px solid #bd2130;
+        }
 
         .notification.fade-out {
           animation: fade-out 0.5s ease-out forwards;
@@ -350,8 +364,8 @@
         }
 
         @keyframes fade-out {
-          from { opacity: 1; }
-          to { opacity: 0; }
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(20px); opacity: 0; }
         }
       `;
       document.head.appendChild(style);

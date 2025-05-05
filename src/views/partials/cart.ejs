@@ -1,21 +1,33 @@
 <div id="cartBox" class="box">
-  <h3>Shopping Cart</h3>
-  <div class="products">
-    <% cart.forEach( item => { %>
-    <div class="cart-item">
-      <img src="<%= item.productId.image %>" alt="<%= item.productId.name %>" class="product-img">
-      <div class="product-details">
-        <h3><%= item.productId.name %></h3>
-        <p><%= "₹"+item.productId.newPrice %></p>
+
+  <% if (cart && cart.length > 0) { %>
+  <div class="cart-items">
+    <% cart.forEach(item => { %>
+    <div class="cart-item" data-id="<%= item.productId._id %>">
+      <img src="<%= item.productId.image %>" alt="<%= item.productId.name %>">
+
+      <div class="cart-item-details">
+        <h3 class="cart-item-name"><%= item.productId.name %></h3>
+        <p>Category: <%= item.productId.category %></p>
+        <p>Material: <%= item.productId.material %></p>
+        <p class="cart-item-price">₹<%= item.productId.newPrice %></p>
       </div>
+
       <div class="quantity-controls">
-        <button class="quantity-btn" onclick="updateCart('<%= userId %>', '<%= item.productId._id.toString() %>', 'del')">-</button>
-        <input type="number" class="quantity-input" name="quantity" id="<%= item.productId._id.toString() %>" value="<%=item.quantity%>">
-        <button class="quantity-btn" onclick="updateCart('<%= userId %>', '<%= item.productId._id.toString() %>', 'add')">+</button>
+        <button class="quantity-btn minus">-</button>
+        <input type="number" value="<%= item.quantity %>" min="1" class="quantity-input" id="<%= item.productId._id %>">
+        <button class="quantity-btn plus">+</button>
       </div>
-      <p class="remove" onclick="updateCart('<%= userId %>', '<%= item.productId._id.toString() %>', 'rem')">✖ REMOVE</p>
+
+      <button onclick="updateCart('<%= userId %>', '<%= item.productId._id %>', 'rem', 0)" class="remove-btn">Remove</button>
     </div>
     <% }) %>
   </div>
-  <div class="total">Total Amount: ₹ <%= amount %></div>
+  <% } else { %>
+  <div class="empty-cart">
+    <h2>Your cart is empty</h2>
+    <p>Looks like you haven't added any products to your cart yet</p>
+    <a href="/customer/store" class="shop-now-btn">Shop Now</a>
+  </div>
+  <% } %>
 </div>

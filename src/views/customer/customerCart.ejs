@@ -4,26 +4,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cart</title>
+  <title>Cart | ArtisanSpace</title>
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/customer/customerCart.css" />
   <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>
   <%- include('../partials/navbar2', { role }) %>
   <main>
-    <div class="button-box">
-      <button id="cartBtn">Cart</button>
-      <button id="historyBtn">Product History</button>
-    </div>
     <div id="contentBox">
+      <!-- Content will be loaded dynamically -->
+      <div class="loading-spinner">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <p>Loading your cart...</p>
+      </div>
     </div>
   </main>
   <%- include("../partials/footer") %>
+
   <script>
     document.addEventListener("DOMContentLoaded", refreshCart);
+    let isInitialLoad = true;
 
+    // Standard update cart function for non-quantity operations (remove, initial load)
     async function updateCart(userId, productId, action, amount) {
       try {
         const response = await fetch(
@@ -32,128 +37,185 @@
           }
         );
         const data = await response.json();
-        console.log(data.message);
+
         if (data.success) {
           showNotification(data.message, "success");
-
         } else {
-          showNotification(data.message || "Failed to Add. Try Again", "error")
+          showNotification(data.message || "Failed to update cart. Try Again", "error");
         }
 
         refreshCart();
       } catch (error) {
         console.error("Error updating cart:", error);
+        showNotification("Something went wrong updating your cart", "error");
       }
     }
 
+    // Optimized update for quantity changes (no spinner)
+    async function updateQuantity(userId, productId, action) {
+      try {
+        // Disable the buttons during update
+        const item = document.querySelector(`.cart-item[data-id="${productId}"]`);
+        const buttons = item.querySelectorAll('.quantity-btn');
+        const input = item.querySelector('.quantity-input');
+        const currentValue = parseInt(input.value);
+
+        // Disable controls during update
+        buttons.forEach(btn => btn.disabled = true);
+        input.disabled = true;
+
+        // Update UI immediately for responsiveness
+        if (action === 'add') {
+          input.value = currentValue + 1;
+        } else if (action === 'del' && currentValue > 1) {
+          input.value = currentValue - 1;
+        }
+
+        // Make the API request
+        const response = await fetch(
+          `/customer/cart?userId=${userId}&productId=${productId}&action=${action}&amount=0`, {
+            method: "POST",
+          }
+        );
+        const data = await response.json();
+
+        if (data.success) {
+          showNotification(data.message, "success");
+
+          // Update price totals without full reload
+          await updateCartSummary(userId);
+        } else {
+          // Reset to previous value if failed
+          input.value = currentValue;
+          showNotification(data.message || "Failed to update quantity. Try Again", "error");
+        }
+
+        // Re-enable the controls
+        buttons.forEach(btn => btn.disabled = false);
+        input.disabled = false;
+
+      } catch (error) {
+        console.error("Error updating quantity:", error);
+        showNotification("Something went wrong updating quantity", "error");
+      }
+    }
+
+
     async function refreshCart() {
       try {
+        // Show loading state only on initial load
+        if (isInitialLoad) {
+          document.getElementById("contentBox").innerHTML = `
+            <div class="loading-spinner">
+              <i class="fas fa-circle-notch fa-spin"></i>
+              <p>Loading your cart...</p>
+            </div>
+          `;
+          isInitialLoad = false;
+        }
+
         const response = await fetch("/customer/cart", {
           headers: {
             "X-Requested-With": "XMLHttpRequest",
-          },
+          }
         });
         const html = await response.text();
         document.getElementById("contentBox").innerHTML = html;
 
-        attachQuantityListeners();
-
-        const cartItems = document.querySelectorAll(".cart-item");
-        if (cartItems.length > 0) {
-          if (!document.getElementById("checkoutBtn")) {
-            const checkoutButton = document.createElement("button");
-            checkoutButton.textContent = "Proceed to Checkout";
-            checkoutButton.id = "checkoutBtn";
-            checkoutButton.className = "checkout-button"; // Add styling class
-            checkoutButton.addEventListener("click", () => {
-              window.location.href = "/customer/checkout";
-            });
-            document
-              .getElementById("contentBox")
-              .appendChild(checkoutButton);
-          }
-        }
+        attachEventListeners();
       } catch (error) {
         console.error("Error refreshing cart:", error);
+        document.getElementById("contentBox").innerHTML = `
+          <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Failed to load your cart. Please try again.</p>
+            <button onclick="refreshCart()" class="retry-btn">Retry</button>
+          </div>
+        `;
+      }
+    }
+
+    function attachEventListeners() {
+      // Attach quantity input listeners
+      document.querySelectorAll(".quantity-input").forEach(input => {
+        input.addEventListener("change", async function() {
+          let productId = this.id;
+          let newQuantity = parseInt(this.value);
+
+          if (isNaN(newQuantity) || newQuantity < 1) {
+            this.value = 1;
+            newQuantity = 1;
+          }
+
+          // Disable the input during update
+          this.disabled = true;
+
+          try {
+            const response = await fetch(
+              `/customer/cart?userId=<%= userId %>&productId=${productId}&action=none&amount=${newQuantity}`, {
+                method: "POST",
+              }
+            );
+            const data = await response.json();
+
+            if (data.success) {
+              showNotification(data.message, "success");
+              await updateCartSummary('<%= userId %>');
+            } else {
+              showNotification(data.message || "Failed to update quantity", "error");
+            }
+          } catch (error) {
+            console.error("Error updating quantity:", error);
+            showNotification("Something went wrong", "error");
+          } finally {
+            // Re-enable the input
+            this.disabled = false;
+          }
+        });
+      });
+
+      // Update quantity buttons to use the new optimized function
+      document.querySelectorAll(".quantity-btn.plus").forEach(button => {
+        button.addEventListener("click", function() {
+          const productId = this.parentElement.querySelector('.quantity-input').id;
+          updateQuantity('<%= userId %>', productId, 'add');
+        });
+        // Remove the inline onclick attribute
+        button.removeAttribute('onclick');
+      });
+
+      document.querySelectorAll(".quantity-btn.minus").forEach(button => {
+        button.addEventListener("click", function() {
+          const productId = this.parentElement.querySelector('.quantity-input').id;
+          updateQuantity('<%= userId %>', productId, 'del');
+        });
+        // Remove the inline onclick attribute
+        button.removeAttribute('onclick');
+      });
+
+      // Check for checkout button
+      const cartItems = document.querySelectorAll(".cart-item");
+      if (cartItems.length > 0 && !document.getElementById("checkoutBtn")) {
+        const checkoutButton = document.createElement("button");
+        checkoutButton.textContent = "Proceed to Checkout";
+        checkoutButton.id = "checkoutBtn";
+        checkoutButton.className = "checkout-button";
+        checkoutButton.addEventListener("click", () => {
+          window.location.href = "/customer/checkout";
+        });
+        document.querySelector(".cart-items").appendChild(checkoutButton);
       }
     }
 
 
 
-    function attachQuantityListeners() {
-      document.querySelectorAll(".quantity-input").forEach(input => {
-        input.addEventListener("change", async function() {
-
-          let productId = this.id;
-          let newQuantity = this.value;
-
-          if (newQuantity < 1) {
-            this.value = 1;
-            newQuantity = 1;
-          }
-          await updateCart('<%= userId %>', productId, "none", newQuantity);
-
-        });
-      });
-    }
-
-
-
-    function loadHistory() {
-      document.getElementById("contentBox").innerHTML = `
-  <div id="historyBox" class="box">
-    <h3>Product History</h3>
-    <div class="products">
-      <div class="history-item">
-        <img src="/images/Aboutus/3.png" alt="Product 1" class="product-img">
-        <div class="product-details">
-          <h3>Product 1</h3>
-          <p>Order Date: 2024-03-01</p>
-          <p>Delivery Status: <b>Delivered</b></p>
-          <p>Last Modified: 2024-03-02</p>
-          <p>Address: 123 Street, City</p>
-        </div>
-      </div>
-
-      <div class="history-item">
-        <img src="/images/Aboutus/4.png" alt="Product 2" class="product-img">
-        <div class="product-details">
-          <h3>Product 2</h3>
-          <p>Order Date: 2024-02-28</p>
-          <p>Delivery Status: <b>In Transit</b></p>
-          <p>Last Modified: 2024-03-05</p>
-          <p>Address: 456 Avenue, City</p>
-        </div>
-      </div>
-
-      <div class="history-item">
-        <img src="/images/Aboutus/8.png" alt="Product 3" class="product-img">
-        <div class="product-details">
-          <h3>Product 3</h3>
-          <p>Order Date: 2024-02-25</p>
-          <p>Delivery Status: <b>Pending</b></p>
-          <p>Last Modified: Not Yet</p>
-          <p>Address: 789 Road, City</p>
-        </div>
-      </div>
-    </div>
-  </div>
-  `;
-    }
-
-    document.getElementById("cartBtn").addEventListener("click", refreshCart);
-    document
-      .getElementById("historyBtn")
-      .addEventListener("click", loadHistory);
-
     function showNotification(message, type) {
-      console.log("Showing notification:", message, type);
-      let notificationContainer = document.querySelector(".notification-container")
+      let notificationContainer = document.querySelector(".notification-container");
 
       if (!notificationContainer) {
-        notificationContainer = document.createElement("div")
-        notificationContainer.className = "notification-container"
-        document.body.appendChild(notificationContainer)
+        notificationContainer = document.createElement("div");
+        notificationContainer.className = "notification-container";
+        document.body.appendChild(notificationContainer);
       }
 
       // Avoid duplicate notifications of the same message
@@ -161,64 +223,139 @@
         return;
       }
 
-      const notification = document.createElement("div")
-      notification.className = `notification ${type}`
-      notification.textContent = message
+      const notification = document.createElement("div");
+      notification.className = `notification ${type}`;
 
-      notificationContainer.appendChild(notification)
+      // Add icons to notifications
+      const icon = type === "success" ? "check-circle" : "exclamation-circle";
+      notification.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+
+      notificationContainer.appendChild(notification);
 
       setTimeout(() => {
-        notification.classList.add("fade-out")
+        notification.classList.add("fade-out");
         setTimeout(() => {
-          notification.remove()
-        }, 500)
-      }, 3000)
+          notification.remove();
+        }, 500);
+      }, 3000);
     }
-
 
     if (!document.querySelector("#notification-style")) {
-      const style = document.createElement("style")
-      style.id = "notification-style"
+      const style = document.createElement("style");
+      style.id = "notification-style";
       style.textContent = `
-    .notification-container {
-      position: fixed;
-      top: 20px;
-      right: 40px;
-      z-index: 1000;
-    }
-    
-    .notification {
-      padding: 12px 20px;
-      margin-bottom: 10px;
-      border-radius: 4px;
-      color: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      animation: slide-in 0.3s ease-out forwards;
-    }
-    
-    .notification.success {
-      background-color: #28a745;
-    }
-    
-    .notification.error {
-      background-color: #dc3545;
-    }
-    
-    .notification.fade-out {
-      animation: fade-out 0.5s ease-out forwards;
-    }
-    
-    @keyframes slide-in {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes fade-out {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-  `
-      document.head.appendChild(style)
+        .notification-container {
+          position: fixed;
+          top: 20px;
+          right: 40px;
+          z-index: 1000;
+        }
+        
+        .notification {
+          display: flex;
+          align-items: center;
+          padding: 12px 20px;
+          margin-bottom: 10px;
+          border-radius: 4px;
+          color: white;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          animation: slide-in 0.3s ease-out forwards;
+          min-width: 280px;
+        }
+        
+        .notification i {
+          margin-right: 10px;
+          font-size: 1.2em;
+        }
+        
+        .notification.success {
+          background-color: #28a745;
+        }
+        
+        .notification.error {
+          background-color: #dc3545;
+        }
+        
+        .notification.fade-out {
+          animation: fade-out 0.5s ease-out forwards;
+        }
+        
+        .loading-spinner {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 3rem;
+          color: var(--primary-color);
+        }
+        
+        .loading-spinner i {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+        }
+        
+        .error-message {
+          text-align: center;
+          padding: 2rem;
+          color: #dc3545;
+        }
+        
+        .error-message i {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+        }
+        
+        .retry-btn {
+          background-color: var(--primary-color);
+          color: white;
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: var(--border-radius);
+          cursor: pointer;
+          margin-top: 1rem;
+        }
+        
+        .quantity-btn {
+          background-color: var(--light-grey);
+          border: none;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          font-size: 1rem;
+          font-weight: bold;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .quantity-btn:hover {
+          background-color: var(--accent-color);
+          color: white;
+        }
+        
+        /* Add disabled button style */
+        .quantity-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        
+        .quantity-input:disabled {
+          opacity: 0.7;
+          background-color: #f8f8f8;
+        }
+        
+        @keyframes slide-in {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fade-out {
+          from { opacity: 1; }
+          to { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
     }
   </script>
 </body>

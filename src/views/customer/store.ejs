@@ -13,8 +13,6 @@
 <body>
   <%- include("../partials/navbar2",{role}) %>
 
-
-
   <main>
     <div class="left">
       <form action="/customer/store" method="GET" id="filter-form">
@@ -54,7 +52,8 @@
 
     <div class="right">
       <div class="search-bar-container">
-        <input type="text" id="searchInput" placeholder="Search products..." />
+        <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products" />
+        <p class="search-validation-message" id="searchValidationMessage">Please enter a valid search term (only letters, numbers, spaces, and hyphens allowed)</p>
         <ul id="resultsList"></ul>
       </div>
       <div class="content">
@@ -83,7 +82,6 @@
     </div>
   </main>
   <div class="notification-container"></div>
-
 
   <%- include("../partials/footer") %>
   <script>
@@ -115,9 +113,6 @@
           }, 500); // Adjust timeout as needed (500ms = 0.5s)
         });
       });
-
-      // Search functionality
-
     });
 
     async function updateCart(userId, productId) {
@@ -218,7 +213,7 @@
     }
   </script>
 
-  <!-- Fallback script for search input (in case main script has issues) -->
+  <!-- Updated search script with input validation -->
   <script type="module">
     import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs'
 
@@ -238,62 +233,115 @@
         const fuse = new Fuse(products, options);
         const searchInput = document.getElementById('searchInput');
         const resultsList = document.getElementById('resultsList');
+        const validationMessage = document.getElementById('searchValidationMessage');
 
-        // Handle input in search box
+        // Regular expression patterns for validation
+        const searchPattern = /^[a-zA-Z0-9\s\-]{1,50}$/;
+
+        function validateSearch(query) {
+          if (query.length > 50) {
+            validationMessage.textContent = "Search term must not exceed 50 characters";
+            validationMessage.style.display = "block";
+            searchInput.classList.add('invalid-search');
+            return false;
+          }
+
+          if (!searchPattern.test(query)) {
+            validationMessage.textContent = "Please use only letters, numbers, spaces, and hyphens";
+            validationMessage.style.display = "block";
+            searchInput.classList.add('invalid-search');
+            return false;
+          }
+
+          // Valid input
+          validationMessage.style.display = "none";
+          searchInput.classList.remove('invalid-search');
+          return true;
+        }
+
+        // Handle input in search box with debounce
+        let debounceTimeout;
         searchInput.addEventListener('input', (event) => {
           const query = event.target.value.trim();
 
-          if (!query) {
+          // Clear previous timeout
+          clearTimeout(debounceTimeout);
+
+          // Hide validation message when user starts typing again
+          if (query.length === 0) {
+            validationMessage.style.display = "none";
+            searchInput.classList.remove('invalid-search');
             resultsList.innerHTML = '';
             resultsList.style.display = 'none';
             return;
           }
 
-          // Perform search
-          const results = fuse.search(query);
-          console.log("Search results:", results.length);
+          // Set a new timeout
+          debounceTimeout = setTimeout(() => {
+            // Validate the input
+            if (!validateSearch(query)) {
+              resultsList.innerHTML = '';
+              resultsList.style.display = 'none';
+              return;
+            }
 
-          // Display results below search bar
-          if (results.length > 0) {
-            resultsList.innerHTML = ''; // Clear previous results
+            // Sanitize the query to prevent any potential issues
+            const sanitizedQuery = query
+              .replace(/[^\w\s-]/g, '') // Remove special chars except spaces and hyphens
+              .trim();
 
-            results.forEach(result => {
-              const product = result.item;
+            if (sanitizedQuery.length === 0) {
+              resultsList.innerHTML = '';
+              resultsList.style.display = 'none';
+              return;
+            }
 
-              const item = document.createElement("li"); // Create <li> for each product result
+            // Perform search with sanitized query
+            const results = fuse.search(sanitizedQuery);
+            console.log("Search results:", results.length);
 
-              item.innerHTML = `
-      <a href="/products/${product._id || ''}" class="search-result-link">
-        <div class="search-result-item">
-          <img src="${product.image || '/images/product-placeholder.jpg'}" alt="${product.name}" class="search-result-image">
-          <div class="search-result-info">
-            <h4>${product.name}</h4>
-            <p class="category">${product.category || ''}</p>
-            <p class="price">₹${product.newPrice || product.price || ''}</p>
-          </div>
-        </div>
-      </a>
-    `;
+            // Display results below search bar
+            if (results.length > 0) {
+              resultsList.innerHTML = ''; // Clear previous results
 
-              resultsList.appendChild(item); // Append to the results list
-            });
+              results.forEach(result => {
+                const product = result.item;
 
-            resultsList.style.display = 'flex'; // Show results list
-          } else {
-            resultsList.innerHTML = '<li class="no-results">No products found</li>';
-            resultsList.style.display = 'flex';
-          }
+                const item = document.createElement("li");
 
-          // Event listeners for focus, keypress, and clicks remain the same
+                item.innerHTML = `
+                  <a href="/products/${product._id || ''}" class="search-result-link">
+                    <div class="search-result-item">
+                      <img src="${product.image || '/images/product-placeholder.jpg'}" alt="${product.name}" class="search-result-image">
+                      <div class="search-result-info">
+                        <h4>${product.name}</h4>
+                        <p class="category">${product.category || ''}</p>
+                        <p class="price">₹${product.newPrice || product.price || ''}</p>
+                      </div>
+                    </div>
+                  </a>
+                `;
 
+                resultsList.appendChild(item);
+              });
+
+              resultsList.style.display = 'block';
+            } else {
+              resultsList.innerHTML = '<li class="no-results">No products found</li>';
+              resultsList.style.display = 'block';
+            }
+          }, 300); // 300ms debounce delay
         });
 
         // Execute search when Enter key is pressed
         searchInput.addEventListener('keypress', (event) => {
           if (event.key === 'Enter') {
             const query = searchInput.value.trim();
-            if (query) {
-              // This will show results in the dropdown list
+            event.preventDefault(); // Prevent form submission
+
+            if (validateSearch(query)) {
+              // Trigger the search
+              clearTimeout(debounceTimeout);
               searchInput.dispatchEvent(new Event('input'));
             }
           }
@@ -314,12 +362,13 @@
 
         // Show results when search input receives focus
         searchInput.addEventListener('focus', () => {
-          if (searchInput.value.trim()) {
+          if (searchInput.value.trim() && validateSearch(searchInput.value.trim())) {
             resultsList.style.display = 'block';
           }
         });
       } catch (error) {
         console.error("Error fetching products:", error);
+        showNotification("Could not load search functionality", "error");
       }
     }
 
