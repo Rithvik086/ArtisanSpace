@@ -3,8 +3,9 @@ import { removeUser, updateUser, getUsers } from "../services/userServices.js";
 import {
   getApprovedProducts,
   getProduct,
+  getProducts,
 } from "../services/productServices.js";
-import { totalOrders } from "../services/orderServices.js";
+import { totalOrders, getOrders } from "../services/orderServices.js";
 
 export const renderAboutUs = (req, res) => {
   res.render("Aboutus", { role: req.user.role });
@@ -102,6 +103,7 @@ export const productPage = async (req, res) => {
     console.error("failed to get project", err);
   }
 };
+
 export const getCustomerChart = async (req, res) => {
   try {
     const customers = await getUsers();
@@ -115,6 +117,45 @@ export const getCustomerChart = async (req, res) => {
       success: false,
       message:
         "Failed to retrieve customer chart data. Please try again later.",
+    });
+  }
+};
+
+export const getOrdersChart = async (req, res) => {
+  try {
+    const orders = await getOrders();
+
+    const formatted = orders.map((order) => ({
+      purchasedAt: order.purchasedAt,
+      amount: order.money,
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    console.error("Error fetching orders chart data:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve orders chart data. Please try again later.",
+    });
+  }
+};
+
+export const getProductsChart = async (req, res) => {
+  try {
+    const products = await getProducts();
+
+    const formatted = products.map((product) => ({
+      createdAt: product._id.getTimestamp(),
+      name: product.name,
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    console.error("Error fetching products chart data:", error);
+    res.status(500).json({
+      success: false,
+      message:
+        "Failed to retrieve products chart data. Please try again later.",
     });
   }
 };
