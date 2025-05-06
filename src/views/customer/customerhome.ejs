@@ -308,9 +308,6 @@
             <div class="card-footer">
               <% if (order.status === 'delivered') { %>
               <div class="order-actions">
-                <button class="btn primary review-btn" data-orderid="<%= order._id.toString() %>">
-                  <i class="far fa-star"></i> Write Review
-                </button>
                 <button class="btn outline" onclick="window.location.href='/customer/orders/<%= order._id.toString() %>'">
                   <i class="fas fa-eye"></i> View Details
                 </button>

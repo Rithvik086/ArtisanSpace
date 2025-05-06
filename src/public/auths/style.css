@@ -74,7 +74,6 @@ body {
 .left-sidesign,
 .right-sidelog {
   background-color: #f8ead8;
-  overflow-y: scroll;
 }
 
 .form form {
