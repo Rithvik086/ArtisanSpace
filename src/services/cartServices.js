@@ -170,12 +170,25 @@ export async function removeCompleteItem(userId, productId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    await Cart.findOneAndDelete(
-      { userId, "products.productId": productId },
-      { new: true, runValidators: true, session }
-    );
-    await session.commitTransaction();
-    return { success: true, message: "Product removed from cart!" };
+    // First check if the cart has only this one product
+    const userCart = await getCart(userId, session);
+    const productCount = userCart.length;
+
+    if (productCount <= 1) {
+      // If this is the last product in the cart, remove the entire cart
+      await Cart.deleteOne({ userId }, { session });
+      await session.commitTransaction();
+      return { success: true, message: "Cart cleared!" };
+    } else {
+      // Just remove the specific product from the cart, not the entire cart
+      await Cart.findOneAndUpdate(
+        { userId },
+        { $pull: { products: { productId } } },
+        { new: true, runValidators: true, session }
+      );
+      await session.commitTransaction();
+      return { success: true, message: "Product removed from cart!" };
+    }
   } catch (error) {
     await session.abortTransaction();
     throw new Error("Error removing complete item from cart " + error.message);

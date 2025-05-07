@@ -51,6 +51,31 @@
       }
     }
 
+    // Function to update cart summary without refreshing the whole cart
+    async function updateCartSummary(userId) {
+      try {
+        // Fetch just the updated totals
+        const response = await fetch(`/customer/cart?summary=true`, {
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+          }
+        });
+        const data = await response.json();
+
+        // Update the total amount if shown on the page
+        const totalAmount = document.querySelector('.cart-summary .total-amount');
+        if (totalAmount && data.amount) {
+          totalAmount.textContent = `₹${parseFloat(data.amount).toFixed(2)}`;
+        }
+
+        return data;
+      } catch (error) {
+        console.error("Error updating cart summary:", error);
+        // Don't show notification for this error as it's just a UI update
+        return null;
+      }
+    }
+
     // Optimized update for quantity changes (no spinner)
     async function updateQuantity(userId, productId, action) {
       try {
@@ -81,7 +106,6 @@
 
         if (data.success) {
           showNotification(data.message, "success");
-
           // Update price totals without full reload
           await updateCartSummary(userId);
         } else {
@@ -89,14 +113,18 @@
           input.value = currentValue;
           showNotification(data.message || "Failed to update quantity. Try Again", "error");
         }
-
-        // Re-enable the controls
-        buttons.forEach(btn => btn.disabled = false);
-        input.disabled = false;
-
       } catch (error) {
         console.error("Error updating quantity:", error);
         showNotification("Something went wrong updating quantity", "error");
+      } finally {
+        // Re-enable the controls regardless of success or failure
+        const item = document.querySelector(`.cart-item[data-id="${productId}"]`);
+        if (item) {
+          const buttons = item.querySelectorAll('.quantity-btn');
+          const input = item.querySelector('.quantity-input');
+          buttons.forEach(btn => btn.disabled = false);
+          input.disabled = false;
+        }
       }
     }
 
@@ -138,6 +166,13 @@
     function attachEventListeners() {
       // Attach quantity input listeners
       document.querySelectorAll(".quantity-input").forEach(input => {
+        // Disable minus button if quantity is 1
+        const currentQuantity = parseInt(input.value);
+        if (currentQuantity === 1) {
+          const minusBtn = input.parentElement.querySelector('.quantity-btn.minus');
+          if (minusBtn) minusBtn.disabled = true;
+        }
+
         input.addEventListener("change", async function() {
           let productId = this.id;
           let newQuantity = parseInt(this.value);
@@ -145,6 +180,12 @@
           if (isNaN(newQuantity) || newQuantity < 1) {
             this.value = 1;
             newQuantity = 1;
+          }
+
+          // Also disable the minus button if the quantity is set to 1
+          const minusBtn = this.parentElement.querySelector('.quantity-btn.minus');
+          if (minusBtn) {
+            minusBtn.disabled = newQuantity <= 1;
           }
 
           // Disable the input during update
@@ -187,7 +228,13 @@
       document.querySelectorAll(".quantity-btn.minus").forEach(button => {
         button.addEventListener("click", function() {
           const productId = this.parentElement.querySelector('.quantity-input').id;
-          updateQuantity('<%= userId %>', productId, 'del');
+          const input = this.parentElement.querySelector('.quantity-input');
+          const currentQuantity = parseInt(input.value);
+
+          // Only enable the minus button action if quantity > 1
+          if (currentQuantity > 1) {
+            updateQuantity('<%= userId %>', productId, 'del');
+          }
         });
         // Remove the inline onclick attribute
         button.removeAttribute('onclick');
@@ -343,6 +390,18 @@
         .quantity-input:disabled {
           opacity: 0.7;
           background-color: #f8f8f8;
+        }
+        
+        /* Hide number input spinners (up/down arrows) */
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        
+        /* Firefox */
+        .quantity-input {
+          -moz-appearance: textfield;
         }
         
         @keyframes slide-in {
