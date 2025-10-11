@@ -1,9 +1,10 @@
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import authorizerole from "../middleware/roleMiddleware.js";
 
 import {
-  getAdminDashboard,
   getOrdersPage,
   addUserHandler,
   deletUser,
@@ -13,13 +14,27 @@ import {
   changeStatus,
   getAndHandleContentModerationAdmin,
   deleteOrder,
+  getAdminUsers,
+  getAdminOrders,
+  getAdminResponses,
 } from "../controller/adminController.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
 router.use(authorizerole("admin"));
 
-router.get("/", getAdminDashboard);
+// Serve the static admin dashboard HTML from the public folder.
+router.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/admin/admindashboard.html"));
+});
+
+// JSON endpoints used by the static dashboard
+router.get('/users', getAdminUsers);
+router.get('/orders', getAdminOrders);
+router.get('/responses', getAdminResponses);
 router.get("/orders/:orderId", getOrdersPage);
 router.delete("/orders/:orderId", deleteOrder);
 router.put("/orders/:orderId/status", changeStatus);

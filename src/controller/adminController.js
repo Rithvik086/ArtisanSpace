@@ -33,13 +33,8 @@ export const getAdminDashboard = async (req, res) => {
   const userlist = await getUsers();
   const products = await getProducts();
   const orders = await getOrders();
-  res.render("admin/admindashboard", {
-    role: admrole,
-    responses,
-    userlist,
-    products,
-    orders,
-  });
+  // Serve the static admin HTML. Client-side JS will fetch the data via JSON endpoints.
+  res.sendFile(path.join(__dirname, "../public/admin/admindashboard.html"));
 };
 
 export const getOrdersPage = async (req, res) => {
@@ -202,4 +197,45 @@ export const getSettingsAdmin = async (req, res) => {
   delete user.userId;
   delete user.role;
   res.render("settings", { role: admrole, user });
+};
+
+// JSON endpoints for the static admin dashboard (used by client-side rendering)
+export const getAdminUsers = async (req, res) => {
+  try {
+    const users = await getUsers();
+    // sanitize users before sending
+    const safe = users.map((u) => ({
+      _id: u._id,
+      username: u.username,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      mobile_no: u.mobile_no,
+    }));
+    res.json(safe);
+  } catch (e) {
+    console.error('Error fetching admin users:', e);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const getAdminOrders = async (req, res) => {
+  try {
+    const orders = await getOrders();
+    res.json(orders);
+  } catch (e) {
+    console.error('Error fetching orders:', e);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const getAdminResponses = async (req, res) => {
+  try {
+    await updateResponse(custrespath);
+    const responses = await loadcustData(custrespath);
+    res.json(responses);
+  } catch (e) {
+    console.error('Error fetching responses:', e);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 };
