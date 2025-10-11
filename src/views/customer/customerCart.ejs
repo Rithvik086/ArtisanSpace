@@ -489,7 +489,7 @@ main {
         const totalAmount = document.querySelector('.cart-summary .total-amount');
         if (totalAmount && data.amount) {
           totalAmount.textContent = `₹${parseFloat(data.amount).toFixed(2)}`;
-        }
+        }  
 
         return data;
       } catch (error) {
