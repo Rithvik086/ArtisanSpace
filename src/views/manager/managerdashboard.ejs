@@ -487,7 +487,7 @@ function groupByDayIntervals(data, intervalDays) {
       const intervalDate = new Date(intervalKey);
       const nextIntervalDate = new Date(intervalDate);
       nextIntervalDate.setDate(nextIntervalDate.getDate() + intervalDays);
-
+      // to get date now
       // If date falls in this interval
       if (itemDate >= intervalDate && itemDate < nextIntervalDate) {
         intervals[intervalKey].count += dateCountMap[dateStr].count;
