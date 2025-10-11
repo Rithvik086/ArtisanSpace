@@ -1,21 +1,21 @@
-  // Fetch and render products in the products table
-    console.log("Loading products data...");
-  fetch("/api/getProducts")
-    .then((res) => res.json())
-    .then((products) => {
-      const tbody = document.getElementById("products-table-body");
-      if (!tbody) return;
-      tbody.innerHTML = "";
-      if (!Array.isArray(products) || products.length === 0) {
-        tbody.innerHTML = `<tr><td colspan='8' class='text-center'>No products found</td></tr>`;
-        return;
-      }
+// Fetch and render products in the products table
+console.log("Loading products data...");
+fetch("/api/getProducts")
+  .then((res) => res.json())
+  .then((products) => {
+    const tbody = document.getElementById("products-table-body");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    if (!Array.isArray(products) || products.length === 0) {
+      tbody.innerHTML = `<tr><td colspan='8' class='text-center'>No products found</td></tr>`;
+      return;
+    }
 
-      console.log("Rendering products table");
-      
-      products.forEach((product) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
+    console.log("Rendering products table");
+
+    products.forEach((product) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
           <td><div class="product-image"><img src="${product.image}" alt="${product.name}"></div></td>
           <td class="product-name">${product.name}</td>
           <td>${(product.userId && product.userId.name) ? product.userId.name : ''} (${product.uploadedBy || ''})</td>
@@ -24,32 +24,32 @@
           <td>${product.category || ''}</td>
           <td><button class="btn delete-btn" onclick="confirmDelete('${product._id}')">Delete</button></td>
         `;
-        tbody.appendChild(tr);
-      });
-    })
-    .catch((err) => {
-      const tbody = document.getElementById("products-table-body");
-      if (tbody) tbody.innerHTML = `<tr><td colspan='8' class='text-center'>Error loading products</td></tr>`;
-      console.error("Error fetching products:", err);
+      tbody.appendChild(tr);
     });
+  })
+  .catch((err) => {
+    const tbody = document.getElementById("products-table-body");
+    if (tbody) tbody.innerHTML = `<tr><td colspan='8' class='text-center'>Error loading products</td></tr>`;
+    console.error("Error fetching products:", err);
+  });
 
-  // Fetch and render orders in the orders table
-  fetch("/admin/orders")
-    .then((res) => res.json())
-    .then((orders) => {
-       console.log("Loading orders data...");
-      const tbody = document.getElementById("orders-table-body");
-      if (!tbody) return;
-      tbody.innerHTML = "";
-      if (!Array.isArray(orders) || orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan='7' class='text-center'>No orders found</td></tr>`;
-        return;
-      }
-        console.log("Rendering orders table");
+// Fetch and render orders in the orders table
+fetch("/admin/orders")
+  .then((res) => res.json())
+  .then((orders) => {
+    console.log("Loading orders data...");
+    const tbody = document.getElementById("orders-table-body");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    if (!Array.isArray(orders) || orders.length === 0) {
+      tbody.innerHTML = `<tr><td colspan='7' class='text-center'>No orders found</td></tr>`;
+      return;
+    }
+    console.log("Rendering orders table");
 
-      orders.forEach((order) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
+    orders.forEach((order) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
           <td>#${(order._id || '').toString().slice(-6).toUpperCase()}</td>
           <td>${order.userId && order.userId.username ? order.userId.username : 'Unknown'}</td>
           <td>${order.purchasedAt ? new Date(order.purchasedAt).toLocaleDateString('en-IN') : ''}</td>
@@ -61,46 +61,46 @@
             <button class="delete-order-btn" data-id="${order._id}">Delete</button>
           </td>
         `;
-        tbody.appendChild(tr);
-      });
-      // Attach event listeners for view and delete buttons
-      document.querySelectorAll(".view-btn").forEach((btn) => {
-         btn.addEventListener("click", function () {
-          console.log("View order button clicked", this.getAttribute("data-id"));
-        });
-        btn.addEventListener("click", function () {
-          window.location.href = `/admin/orders/${this.getAttribute("data-id")}`;
-        });
-      });
-      document.querySelectorAll(".delete-order-btn").forEach((btn) => {
-
-        btn.addEventListener("click", function () {
-          console.log("Delete order button clicked", this.getAttribute("data-id"));
-        });
-        btn.addEventListener("click", function () {
-          const orderId = this.getAttribute("data-id");
-          fetch(`/admin/orders/${orderId}` , { method: "DELETE" })
-            .then((response) => {
-              if (response.ok) {
-                showNotification("Order deleted successfully. Refreshing the page...", "success");
-                window.location.reload();
-              } else {
-                showNotification("Failed to delete order. Please try again.", "error");
-              }
-            })
-            .catch((error) => {
-              showNotification("Error deleting order. Please try again.", "error");
-            });
-        });
-      });
-    })
-    .catch((err) => {
-      const tbody = document.getElementById("orders-table-body");
-      if (tbody) tbody.innerHTML = `<tr><td colspan='7' class='text-center'>Error loading orders</td></tr>`;
-      console.error("Error fetching orders:", err);
+      tbody.appendChild(tr);
     });
+    // Attach event listeners for view and delete buttons
+    document.querySelectorAll(".view-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        console.log("View order button clicked", this.getAttribute("data-id"));
+      });
+      btn.addEventListener("click", function () {
+        window.location.href = `/admin/orders/${this.getAttribute("data-id")}`;
+      });
+    });
+    document.querySelectorAll(".delete-order-btn").forEach((btn) => {
 
-      console.log("Loading users data...");
+      btn.addEventListener("click", function () {
+        console.log("Delete order button clicked", this.getAttribute("data-id"));
+      });
+      btn.addEventListener("click", function () {
+        const orderId = this.getAttribute("data-id");
+        fetch(`/admin/orders/${orderId}`, { method: "DELETE" })
+          .then((response) => {
+            if (response.ok) {
+              showNotification("Order deleted successfully. Refreshing the page...", "success");
+              window.location.reload();
+            } else {
+              showNotification("Failed to delete order. Please try again.", "error");
+            }
+          })
+          .catch((error) => {
+            showNotification("Error deleting order. Please try again.", "error");
+          });
+      });
+    });
+  })
+  .catch((err) => {
+    const tbody = document.getElementById("orders-table-body");
+    if (tbody) tbody.innerHTML = `<tr><td colspan='7' class='text-center'>Error loading orders</td></tr>`;
+    console.error("Error fetching orders:", err);
+  });
+
+console.log("Loading users data...");
 
 document.addEventListener("DOMContentLoaded", () => {
   // Fetch and render users in the users table
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
         tbody.innerHTML = `<tr><td colspan='4' class='text-center'>No users found</td></tr>`;
         return;
       }
-       console.log("Rendering users table");
+      console.log("Rendering users table");
       users.forEach((user) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -154,8 +154,8 @@ document.addEventListener("DOMContentLoaded", () => {
   tabButtons.forEach((button) => {
     button.addEventListener("click", () => {
       button.addEventListener("click", () => {
-      console.log(`Tab button clicked: ${button.getAttribute("data-tab")}`);
-    });
+        console.log(`Tab button clicked: ${button.getAttribute("data-tab")}`);
+      });
       // Remove active class from all buttons and contents
       tabButtons.forEach((btn) => btn.classList.remove("active"));
       tabContents.forEach((content) => content.classList.remove("active"));
@@ -322,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (addUserForm) {
     addUserForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-    console.log("Add User form submitted");
+      console.log("Add User form submitted");
       // Get form data
       const userData = {
         name: document.getElementById("name").value,
@@ -375,7 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (deleteConfirmBtn) {
     deleteConfirmBtn.addEventListener("click", async () => {
       if (userIdToDelete) {
-         console.log("Delete user confirmed", userIdToDelete);
+        console.log("Delete user confirmed", userIdToDelete);
         try {
           // Send delete request to backend API
           const response = await fetch(`/admin/delete-user/${userIdToDelete}`, {

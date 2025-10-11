@@ -47,11 +47,21 @@
         dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
         event.stopPropagation();
       });
-      document.addEventListener("click", () => { dropdownMenu.style.display = "none"; });
-      dropdownMenu.addEventListener("click", (event) => { event.stopPropagation(); });
+      document.addEventListener("click", () => {
+        dropdownMenu.style.display = "none";
+      });
+      dropdownMenu.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
     });
-    function openSettings() { window.location.href = "/settings"; }
-    function logout() { window.location.href = "/logout"; }
+
+    function openSettings() {
+      window.location.href = "/settings";
+    }
+
+    function logout() {
+      window.location.href = "/logout";
+    }
   </script>
 
   <main class="dashboard-container">
@@ -286,8 +296,8 @@
 
 
   <!-- Inline Footer  -->
-    <!-- <div id="footer-placeholder"></div> -->
-    
+  <!-- <div id="footer-placeholder"></div> -->
+
   <footer class="footer">
     <div class="topfooter">
       <div class="topfooter1">
@@ -319,25 +329,25 @@
     <div class="bottomfooter">
       Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
     </div>
-       
-      <script type="module" src="/admin/admindashboard.js"></script>
-      <script>
-        // Dynamically load feedback (responses) into the feedback-cards section
-        document.addEventListener("DOMContentLoaded", function() {
-          fetch("/admin/responses")
-            .then(res => res.json())
-            .then(responses => {
-              const container = document.getElementById("feedback-cards");
-              if (!container) return;
-              container.innerHTML = "";
-              if (!Array.isArray(responses) || responses.length === 0) {
-                container.innerHTML = '<div class="text-center">No feedback found</div>';
-                return;
-              }
-              responses.forEach(item => {
-                const card = document.createElement("div");
-                card.className = "feedback-card";
-                card.innerHTML = `
+
+    <script type="module" src="/admin/admindashboard.js"></script>
+    <script>
+      // Dynamically load feedback (responses) into the feedback-cards section
+      document.addEventListener("DOMContentLoaded", function() {
+        fetch("/admin/responses")
+          .then(res => res.json())
+          .then(responses => {
+            const container = document.getElementById("feedback-cards");
+            if (!container) return;
+            container.innerHTML = "";
+            if (!Array.isArray(responses) || responses.length === 0) {
+              container.innerHTML = '<div class="text-center">No feedback found</div>';
+              return;
+            }
+            responses.forEach(item => {
+              const card = document.createElement("div");
+              card.className = "feedback-card";
+              card.innerHTML = `
                   <div class="feedback-header">
                     <div class="user-info">
                       <div class="user-avatar">${item.fullName ? item.fullName.charAt(0) : '?'}</div>
@@ -348,16 +358,16 @@
                   </div>
                   <p class="feedback-text">${item.message || ''}</p>
                 `;
-                container.appendChild(card);
-              });
-            })
-            .catch(err => {
-              const container = document.getElementById("feedback-cards");
-              if (container) container.innerHTML = '<div class="text-center">Error loading feedback</div>';
+              container.appendChild(card);
             });
-        });
-      </script>
-  
+          })
+          .catch(err => {
+            const container = document.getElementById("feedback-cards");
+            if (container) container.innerHTML = '<div class="text-center">Error loading feedback</div>';
+          });
+      });
+    </script>
+
 </body>
 
 </html>
