@@ -16,7 +16,7 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 await dbConnect();
 
 const app = express();
-const port = 3000 || process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // Middleware that parses incoming requests with JSON payloads(send through postman)
 app.use(express.json());
@@ -35,11 +35,12 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.get("/signup", (req, res) => {
-  res.render("auth", { page: "signup" });
+  // Serve the static converted auth.html (DHTML) so client-side JS handles form submits
+  res.sendFile(path.join(__dirname, "public/auths", "auth.html"));
 });
 
 app.get("/login", (req, res) => {
-  res.render("auth", { page: "login" });
+  res.sendFile(path.join(__dirname, "public/auths", "auth.html"));
 });
 
 app.use("/", authroutes);
