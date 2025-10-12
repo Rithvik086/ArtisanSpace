@@ -48,9 +48,24 @@
         </div>
       </div>
 
+      <script>
+        // Log when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+          console.log('[AdminSupportTicket] Page loaded.');
+        });
+      </script>
+
       <% if (tickets && tickets.length > 0) { %>
+      <script>
+        // Log when tickets are being rendered
+        console.log('[AdminSupportTicket] Rendering <%= tickets.length %> support tickets.');
+      </script>
       <div class="row">
         <% tickets.forEach(ticket => { %>
+        <script>
+          // Log each ticket rendering
+          console.log('[AdminSupportTicket] Rendering ticket:');
+        </script>
         <div class="col-md-6 col-lg-4">
           <div class="card ticket-card">
             <div class="card-header bg-light">
@@ -107,6 +122,10 @@
         <% }); %>
       </div>
       <% } else { %>
+      <script>
+        // Log when no tickets are found
+        console.log('[AdminSupportTicket] No support tickets found.');
+      </script>
       <div class="alert alert-info">
         <p class="mb-0">No support tickets found. When tickets are created, they will appear here.</p>
       </div>
