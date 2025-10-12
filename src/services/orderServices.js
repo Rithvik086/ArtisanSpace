@@ -57,12 +57,7 @@ export async function placeOrder(userId) {
     cartObj.status = "pending";
 
     // Adding order to the order collection
-    await Order.insertOne(cartObj, {
-      new: true,
-      runValidators: true,
-      upsert: true,
-      session,
-    });
+    await Order.create(cartObj);
 
     //removeing the cart from the cart collection
     const response = await removeCart(userId, session);

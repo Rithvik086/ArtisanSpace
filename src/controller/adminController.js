@@ -39,12 +39,16 @@ export const getAdminDashboard = async (req, res) => {
 
 export const getOrdersPage = async (req, res) => {
   const orderId = req.params.orderId;
-  const order = await getOrderByOrderId(orderId);
+  try {
+    const order = await getOrderByOrderId(orderId);
 
-  if (!order) {
-    return res.status(404).send("Order not found");
+    if (!order) {
+      return res.status(404).send("Order not found");
+    }
+    res.render("admin/orderDetails", { role: admrole, order });
+  } catch (error) {
+    res.status(500).send(error.message);
   }
-  res.render("admin/orderDetails", { role: admrole, order });
 };
 export const deleteOrder = async (req, res) => {
   try {

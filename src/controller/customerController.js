@@ -82,7 +82,8 @@ export const getStorePage = async (req, res) => {
 };
 
 export const addToCart = async (req, res) => {
-  const { userId, productId } = req.query;
+  const { productId } = req.query;
+  const userId = req.user.id;
   try {
     res.json(await addItem(userId, productId));
   } catch (error) {
