@@ -25,12 +25,16 @@
   <%- include("../partials/footer") %>
 
   <script>
-    document.addEventListener("DOMContentLoaded", refreshCart);
+    document.addEventListener("DOMContentLoaded", function() {
+      console.log('[CustomerCart] Page loaded. Fetching cart data...');
+      refreshCart();
+    });
     let isInitialLoad = true;
 
     // Standard update cart function for non-quantity operations (remove, initial load)
     async function updateCart(userId, productId, action, amount) {
       try {
+        console.log('[CustomerCart] Updating cart:', { userId, productId, action, amount });
         const response = await fetch(
           `/customer/cart?userId=${userId}&productId=${productId}&action=${action}&amount=${amount}`, {
             method: "POST",
@@ -39,14 +43,16 @@
         const data = await response.json();
 
         if (data.success) {
+          console.log('[CustomerCart] Cart updated successfully:', data);
           showNotification(data.message, "success");
         } else {
+          console.warn('[CustomerCart] Failed to update cart:', data);
           showNotification(data.message || "Failed to update cart. Try Again", "error");
         }
 
         refreshCart();
       } catch (error) {
-        console.error("Error updating cart:", error);
+        console.error("[CustomerCart] Error updating cart:", error);
         showNotification("Something went wrong updating your cart", "error");
       }
     }
@@ -54,6 +60,7 @@
     // Function to update cart summary without refreshing the whole cart
     async function updateCartSummary(userId) {
       try {
+        console.log('[CustomerCart] Fetching cart summary for user');
         // Fetch just the updated totals
         const response = await fetch(`/customer/cart?summary=true`, {
           headers: {
@@ -68,9 +75,10 @@
           totalAmount.textContent = `₹${parseFloat(data.amount).toFixed(2)}`;
         }
 
+        console.log('[CustomerCart] Cart summary data:', data);
         return data;
       } catch (error) {
-        console.error("Error updating cart summary:", error);
+        console.error("[CustomerCart] Error updating cart summary:", error);
         // Don't show notification for this error as it's just a UI update
         return null;
       }
@@ -79,6 +87,7 @@
     // Optimized update for quantity changes (no spinner)
     async function updateQuantity(userId, productId, action) {
       try {
+        console.log('[CustomerCart] Updating quantity:');
         // Disable the buttons during update
         const item = document.querySelector(`.cart-item[data-id="${productId}"]`);
         const buttons = item.querySelectorAll('.quantity-btn');
@@ -105,16 +114,18 @@
         const data = await response.json();
 
         if (data.success) {
+          console.log('[CustomerCart] Quantity updated successfully:', data);
           showNotification(data.message, "success");
           // Update price totals without full reload
           await updateCartSummary(userId);
         } else {
           // Reset to previous value if failed
           input.value = currentValue;
+          console.warn('[CustomerCart] Failed to update quantity:', data);
           showNotification(data.message || "Failed to update quantity. Try Again", "error");
         }
       } catch (error) {
-        console.error("Error updating quantity:", error);
+        console.error("[CustomerCart] Error updating quantity:", error);
         showNotification("Something went wrong updating quantity", "error");
       } finally {
         // Re-enable the controls regardless of success or failure
@@ -133,6 +144,7 @@
       try {
         // Show loading state only on initial load
         if (isInitialLoad) {
+          console.log('[CustomerCart] Initial cart load: showing spinner.');
           document.getElementById("contentBox").innerHTML = `
             <div class="loading-spinner">
               <i class="fas fa-circle-notch fa-spin"></i>
@@ -142,6 +154,7 @@
           isInitialLoad = false;
         }
 
+        console.log('[CustomerCart] Fetching cart HTML from server...');
         const response = await fetch("/customer/cart", {
           headers: {
             "X-Requested-With": "XMLHttpRequest",
@@ -149,10 +162,12 @@
         });
         const html = await response.text();
         document.getElementById("contentBox").innerHTML = html;
+        console.log('[CustomerCart] Cart HTML rendered.');
 
         attachEventListeners();
+        console.log('[CustomerCart] Event listeners attached.');
       } catch (error) {
-        console.error("Error refreshing cart:", error);
+        console.error("[CustomerCart] Error refreshing cart:", error);
         document.getElementById("contentBox").innerHTML = `
           <div class="error-message">
             <i class="fas fa-exclamation-circle"></i>
@@ -164,6 +179,7 @@
     }
 
     function attachEventListeners() {
+      console.log('[CustomerCart] Attaching event listeners to cart items.');
       // Attach quantity input listeners
       document.querySelectorAll(".quantity-input").forEach(input => {
         // Disable minus button if quantity is 1

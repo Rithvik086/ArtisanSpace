@@ -229,6 +229,7 @@
   <script>
     document.getElementById('customOrderForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      console.log('[CustomOrder] Submit button clicked.');
 
       // Ensure all validations are called and respected
       const isTitleValid = validatetitle();
@@ -236,11 +237,12 @@
       const isDescriptionValid = validatedescription();
 
       if (!isTitleValid || !isBudgetValid || !isDescriptionValid) {
-        console.warn('Form submission prevented due to validation errors.');
+        console.warn('[CustomOrder] Form submission prevented due to validation errors.');
         return; // Stop submission if any validation fails
       }
 
       const formData = new FormData(this);
+      console.log('[CustomOrder] Submitting form data:', Object.fromEntries(formData.entries()));
 
       try {
         const response = await fetch('/customer/customorder', {
@@ -249,6 +251,7 @@
         });
 
         const result = await response.json();
+        console.log('[CustomOrder] Server response:', result);
         const statusMessage = document.getElementById('status-message');
         statusMessage.innerText = result.message;
         statusMessage.classList.add(result.success ? 'success' : 'error');
@@ -266,20 +269,19 @@
         }
 
       } catch (error) {
-        console.error('Error submitting Custom order:', error);
+        console.error('[CustomOrder] Error submitting Custom order:', error);
       }
     });
 
     function validateBudget() {
       const budgetInput = document.getElementById('budget');
       const budgetError = document.getElementById('budgetError');
-
-
       const budgetRegex = /^(?!0+$)([1-9]\d{0,5})$/;
-
-      if (!budgetRegex.test(budgetInput.value)) {
+      const valid = budgetRegex.test(budgetInput.value);
+      if (!valid) {
         budgetError.textContent = 'Invalid budget (1-100,000)';
         budgetError.style.display = 'block';
+        console.warn('[CustomOrder] Budget validation failed:', budgetInput.value);
         return false;
       } else {
         budgetError.style.display = 'none';
@@ -291,10 +293,11 @@
       const titleInput = document.getElementById('title');
       const titleError = document.getElementById('titleError');
       const titleRegex = /^[a-zA-Z0-9 ]+$/;
-
-      if (!titleRegex.test(titleInput.value)) {
+      const valid = titleRegex.test(titleInput.value);
+      if (!valid) {
         titleError.textContent = 'title is only alphanumeric';
         titleError.style.display = 'block';
+        console.warn('[CustomOrder] Title validation failed:', titleInput.value);
         return false;
       } else {
         titleError.style.display = 'none';
@@ -306,10 +309,11 @@
       const descriptionInput = document.getElementById('description');
       const descriptionError = document.getElementById('descError');
       const wordCount = descriptionInput.value.trim().split(/\s+/).length;
-
-      if (wordCount < 10 || wordCount > 300) {
+      const valid = wordCount >= 10 && wordCount <= 300;
+      if (!valid) {
         descriptionError.textContent = 'Description must be between 10 and 300 words';
         descriptionError.style.display = 'block';
+        console.warn('[CustomOrder] Description validation failed:', descriptionInput.value);
         return false;
       } else {
         descriptionError.style.display = 'none';
@@ -318,22 +322,24 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('[CustomOrder] Page loaded.');
       const customOrderForm = document.getElementById('customOrderForm');
       const statusMessage = document.getElementById('status-message');
       const imageInput = document.getElementById('image');
       const imagePreview = document.createElement('div');
-      const budgetInput = document.getElementById('budget'); // Add missing budgetInput declaration
+      const budgetInput = document.getElementById('budget');
 
       // Create a container for image preview
       imagePreview.style.marginTop = '10px';
       imagePreview.style.textAlign = 'center';
       imagePreview.style.maxWidth = '100%';
 
-
-      budgetInput.addEventListener('input', validateBudget);
+      budgetInput.addEventListener('input', function() {
+        console.log('[CustomOrder] Budget input changed:', budgetInput.value);
+        validateBudget();
+      });
 
       // Validate on form submission
-
       customOrderForm.addEventListener('submit', function(e) {
         if (!validateBudget() || !validatetitle() || !validatedescription()) {
           e.preventDefault(); // Prevent form submission if validation fails
@@ -344,9 +350,9 @@
 
       // Handle image preview
       imageInput.addEventListener('change', function(event) {
-
         const file = event.target.files[0];
         if (file) {
+          console.log('[CustomOrder] Image selected:', file.name, file.size, file.type);
           const reader = new FileReader();
           reader.onload = function(e) {
             imagePreview.innerHTML = `<img src="${e.target.result}" alt="Image Preview" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">`;
