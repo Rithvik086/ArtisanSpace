@@ -17,6 +17,10 @@ import crypto from "crypto";
 const signup = async (req, res) => {
   const { username, name, email, password, mobile_no, role } = req.body;
 
+  if (!username || !name || !email || !password || !mobile_no || !role) {
+    return res.status(400).send("All fields are required");
+  }
+
   // username = username.toLowerCase();
   // email = email.toLowerCase();
   // role = role.toLowerCase();
