@@ -6,10 +6,433 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cart | ArtisanSpace</title>
   <link rel="stylesheet" href="/navbar2.css" />
-  <link rel="stylesheet" href="/customer/customerCart.css" />
   <link rel="stylesheet" href="/footer.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
+<style>
+  /* Main Layout */
+:root {
+  --primary-color: #5c4033;
+  --secondary-color: #8b4513;
+  --accent-color: #deb887;
+  --background-color: #f8f8f8;
+  --text-color: #333;
+  --light-grey: #f8ead8;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem 4rem; /* Added bottom padding */
+  font-family: "Baloo Bhai 2";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+}
+
+/* Content Box Styles */
+#contentBox {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 2rem;
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 2rem; /* Added margin bottom */
+}
+
+.cart-items {
+  margin-bottom: 3rem; /* Add extra space at bottom of cart items */
+}
+
+/* Button Box */
+.button-box {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px;
+}
+
+.button-box button {
+  padding: 12px 24px;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.button-box button:hover {
+  opacity: 0.8;
+}
+
+#cartBtn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+#historyBtn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Cart Item Styles */
+.cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto auto;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform var(--transition-speed),
+    box-shadow var(--transition-speed);
+  border-left: 4px solid var(--primary-color);
+}
+
+.cart-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cart-item-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.cart-item-price {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Quantity Controls */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quantity-input {
+  width: 60px;
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px solid var(--light-grey);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+}
+
+.quantity-btn {
+  background-color: var(--light-grey);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-btn:hover {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.remove-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background var(--transition-speed);
+}
+
+.remove-btn:hover {
+  background: #c0392b;
+}
+
+/* Empty Cart Message */
+.empty-cart {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.empty-cart h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.empty-cart p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.shop-now-btn {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background var(--transition-speed);
+}
+
+.shop-now-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+/* Checkout Button */
+.checkout-button {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 2rem auto 0;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-speed),
+    transform var(--transition-speed);
+  text-align: center;
+}
+
+.checkout-button:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+}
+
+/* History Section */
+#historyBox {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: transform var(--transition-speed);
+  border-left: 4px solid var(--primary-color);
+}
+
+.history-item:hover {
+  transform: translateY(-3px);
+}
+
+.history-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+}
+
+.product-details h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: var(--text-color);
+}
+
+.product-details p {
+  margin: 0.25rem 0;
+  color: #666;
+}
+
+/* Navigation Tabs */
+.cart-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.cart-tab {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--light-grey);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background var(--transition-speed);
+  font-weight: bold;
+  min-width: 120px;
+  text-align: center;
+}
+
+.cart-tab.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.cart-tab:hover:not(.active) {
+  background-color: var(--accent-color);
+}
+
+/* Hide headings */
+.cart-items h1,
+#historyBox h1 {
+  display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cart-item {
+    grid-template-columns: 80px 1fr;
+    grid-template-rows: auto auto;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .cart-item img {
+    width: 80px;
+    height: 80px;
+    grid-row: span 2;
+  }
+
+  .quantity-controls {
+    grid-column: 2;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+
+  .remove-btn {
+    grid-column: 2;
+    justify-self: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  #contentBox {
+    padding: 1rem;
+  }
+
+  .cart-item {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-item img {
+    width: 100%;
+    height: 180px;
+    grid-row: 1;
+  }
+
+  .cart-item-details {
+    grid-row: 2;
+  }
+
+  .quantity-controls,
+  .remove-btn {
+    grid-row: 3;
+    grid-column: 1;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .remove-btn {
+    grid-row: 4;
+  }
+}
+
+/* Animation for added items */
+@keyframes highlightItem {
+  0% {
+    background-color: rgba(92, 64, 51, 0.2);
+  }
+  100% {
+    background-color: white;
+  }
+}
+
+.highlight {
+  animation: highlightItem 2s ease-out;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--primary-color);
+}
+
+.loading-spinner i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  color: #dc3545;
+}
+
+.error-message i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.retry-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+</style>
 
 <body>
   <%- include('../partials/navbar2', { role }) %>
@@ -73,7 +496,7 @@
         const totalAmount = document.querySelector('.cart-summary .total-amount');
         if (totalAmount && data.amount) {
           totalAmount.textContent = `₹${parseFloat(data.amount).toFixed(2)}`;
-        }
+        }  
 
         console.log('[CustomerCart] Cart summary data:', data);
         return data;
@@ -416,7 +839,7 @@
         }
         
         /* Firefox */
-        .quantity-input {
+        .quantity-input {  
           -moz-appearance: textfield;
         }
         
@@ -433,6 +856,7 @@
       document.head.appendChild(style);
     }
   </script>
+
 </body>
 
 </html>

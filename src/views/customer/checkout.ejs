@@ -5,216 +5,429 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout</title>
-  <link rel="stylesheet" href="/navbar2.css" />
-  <link rel="stylesheet" href="/customer/checkout.css" />
-  <link rel="stylesheet" href="/footer.css" />
-</head>
-
-<body>
-  <%- include('../partials/navbar2', { role }) %>
-  <main>
-    <div class="checkout-container">
-      <div class="checkout-left">
-        <div id="orderSummaryBox" class="box">
-          <h3>Order Summary</h3>
-          <div class="products">
-            <% cart.forEach( item => { %>
-            <div class="checkout-item">
-              <img src="<%= item.productId.image %>" alt="<%= item.productId.name %>" class="product-img">
-              <div class="product-details">
-                <h3><%= item.productId.name %></h3>
-                <p class="price"><%= "₹"+item.productId.newPrice %></p>
-                <p class="quantity">Quantity: <%= item.quantity %></p>
-                <p class="item-total">Item Total: ₹<%= (item.productId.newPrice * item.quantity).toFixed(2) %></p>
-              </div>
-            </div>
-            <% }) %>
-          </div>
-          <div class="summary">
-            <div class="summary-row">
-              <span>Subtotal:</span>
-              <span>₹<%= amount %></span>
-            </div>
-            <div class="summary-row">
-              <span>Shipping:</span>
-              <span>₹<%= shipping %></span>
-            </div>
-            <div class="summary-row">
-              <span>Tax:</span>
-              <span>₹<%= tax %></span>
-            </div>
-            <div class="summary-row total">
-              <span>Total Amount:</span>
-              <span>₹<%= (parseFloat(amount) + shipping + tax).toFixed(0) %></span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="checkout-right">
-        <div id="shippingBox" class="box">
-          <h3>Shipping Information</h3>
-          <div id="addressContainer"></div>
-        </div>
-
-        <button class="changeAddress-btn" onclick="window.location.href='/customer/settings'">Change Address</button>
-
-        <div id="paymentBox" class="box">
-          <h3>Payment Method</h3>
-          <div class="payment-options">
-            <div class="payment-option">
-              <input type="radio" id="cod" name="paymentMethod" value="cod" checked>
-              <label for="cod">Cash on Delivery</label>
-            </div>
-            <div class="payment-option">
-              <input type="radio" id="card" name="paymentMethod" value="card">
-              <label for="card">Credit/Debit Card</label>
-            </div>
-            <div class="payment-option">
-              <input type="radio" id="upi" name="paymentMethod" value="upi">
-              <label for="upi">UPI</label>
-            </div>
-          </div>
-
-          <div id="cardDetails" class="payment-details" style="display: none;">
-            <div class="form-group">
-              <label for="cardNumber">Card Number</label>
-              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="expiry">Expiry Date</label>
-                <input type="text" id="expiry" placeholder="MM/YY">
-              </div>
-              <div class="form-group">
-                <label for="cvv">CVV</label>
-                <input type="text" id="cvv" placeholder="123">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="nameOnCard">Name on Card</label>
-              <input type="text" id="nameOnCard">
-            </div>
-          </div>
-
-          <div id="upiDetails" class="payment-details" style="display: none;">
-            <div class="form-group">
-              <label for="upiId">UPI ID</label>
-              <input type="text" id="upiId" placeholder="example@upi">
-            </div>
-          </div>
-        </div>
-
-        <button id="placeOrderBtn" class="place-order-button">Place Order</button>
-      </div>
-    </div>
-  </main>
-  <%- include("../partials/footer") %>
-
-  <script>
-    let addressString = "<%= user.address %>";
-    let formattedAddress;
-    if (addressString === "") {
-      formattedAddress = "Address not provied, please go change the address from below button.";
-    } else {
-      const addressParts = addressString.split("|");
-      formattedAddress = `
-    <div>${addressParts[0]}, ${addressParts[1]}, ${addressParts[2]}</div>
-    <div>State : ${addressParts[3]}</div>
-    <div>Pincode : ${addressParts[4]}</div>
-    <div>${addressParts[5]}</div>
-`;
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&family=Kranky&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    document.getElementById("addressContainer").innerHTML = formattedAddress;
+    body {
+      font-family: "Baloo Bhai 2", sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      // Payment method toggle
-      const paymentMethods = document.getElementsByName('paymentMethod');
-      const cardDetails = document.getElementById('cardDetails');
-      const upiDetails = document.getElementById('upiDetails');
+    /* NAVBAR STYLES */
+    header {
+      background-color: #5c4033;
+      color: #f8ead8;
+      padding: 20px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-      paymentMethods.forEach(method => {
-        method.addEventListener('change', function() {
-          if (this.value === 'card') {
-            cardDetails.style.display = 'block';
-            upiDetails.style.display = 'none';
-          } else if (this.value === 'upi') {
-            cardDetails.style.display = 'none';
-            upiDetails.style.display = 'block';
-          } else {
-            cardDetails.style.display = 'none';
-            upiDetails.style.display = 'none';
-          }
-        });
-      });
+    .header-container2 {
+      height: 6vh;
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "Baloo Bhai 2", sans-serif;
+      font-size: 16px;
+    }
 
-      // Place Order button
-      const k = document.getElementById("placeOrderBtn").addEventListener('click', async function() {
-        // if (!validateForm()) return;
+    .logonav2 {
+      font-size: 28px;
+      font-weight: 800;
+    }
 
-        try {
-          const shippingInfo = '<%= user.address %>';
+    .nav2 {
+      display: flex;
+      align-items: center;
+    }
 
-          const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-          const response = await fetch('/customer/place-order', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              shippingInfo,
-              paymentMethod
-            })
-          });
+    .nav2ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+      align-items: center;
+    }
 
-          const result = await response.json();
+    .nav2ul li {
+      list-style: none;
+    }
 
-          if (result.success) {
-            showNotification(result.message || 'Order placed successfully!', 'success');
+    .nav2ul .dropdown {
+      margin-left: 10px;
+    }
 
-            setTimeout(() => {
-              window.location.href = '/customer/';
-            }, 1500);
-          } else {
-            showNotification(result.message || 'Failed to place order. Please try again.', 'error');
-          }
-        } catch (error) {
-          console.error('Error placing order:', error);
-          showNotification('An error occurred. Please try again.', 'error');
-        }
-      });
+    .nav2ul a {
+      color: #f8ead8;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
 
-      //  
-      function showNotification(message, type) {
-        let notificationContainer = document.querySelector(".notification-container");
+    .nav2ul a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
 
-        if (!notificationContainer) {
-          notificationContainer = document.createElement("div");
-          notificationContainer.className = "notification-container";
-          document.body.appendChild(notificationContainer);
-        }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
 
-        if ([...notificationContainer.children].some(n => n.textContent === message)) {
-          return;
-        }
+    .fa-bars {
+      color: #f8ead8;
+      cursor: pointer;
+    }
 
-        const notification = document.createElement("div");
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: #f8f9fa;
+      color: black;
+      border-radius: 12px;
+      padding: 10px;
+      width: 150px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
 
-        notificationContainer.appendChild(notification);
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      width: 100%;
+      font-size: 14px;
+      text-align: left;
+      text-decoration: none;
+      color: black;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
 
-        setTimeout(() => {
-          notification.classList.add("fade-out");
-          setTimeout(() => {
-            notification.remove();
-          }, 500);
-        }, 3000);
-      }
-    });
-  </script>
-  <style id="notification-style">
+    .dropdown-item:hover {
+      background-color: #e9ecef;
+    }
+
+    .dropdown-item i {
+      margin-right: 10px;
+      color: #5c4033;
+    }
+
+    .dropdown-item p {
+      color: #5c4033;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    /* MAIN CONTENT STYLES */
+    main {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .checkout-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .checkout-left,
+    .checkout-right {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .box {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .box h3 {
+      color: #333;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    /* Order Summary Styles */
+    .checkout-item {
+      display: flex;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .checkout-item:last-child {
+      border-bottom: none;
+    }
+
+    .product-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-right: 15px;
+    }
+
+    .product-details {
+      flex: 1;
+    }
+
+    .product-details h3 {
+      font-size: 1rem;
+      margin: 0 0 5px 0;
+      padding: 0;
+      border: none;
+    }
+
+    .price {
+      font-weight: 600;
+      color: #e63946;
+      margin: 5px 0;
+    }
+
+    .quantity,
+    .item-total {
+      font-size: 0.9rem;
+      color: #666;
+      margin: 3px 0;
+    }
+
+    .summary {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .summary-row.total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    input.error {
+      border-color: #dc3545;
+    }
+
+    /* Payment Method Styles */
+    .payment-options {
+      margin-bottom: 20px;
+    }
+
+    .payment-option {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .payment-option input[type="radio"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .payment-option label {
+      display: inline;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .payment-details {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    /* Button Styles */
+    .place-order-button {
+      width: 100%;
+      padding: 15px;
+      background-color: #38a169;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .place-order-button:hover {
+      background-color: #2f855a;
+    }
+
+    .changeAddress-btn {
+      border: none;
+      margin-bottom: 20px;
+      background-color: rgb(113, 73, 206);
+      color: white;
+      font-weight: bold;
+      padding: 15px;
+      border-radius: 5px;
+      width: 30%;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .changeAddress-btn:hover {
+      background-color: rgb(86, 32, 211);
+    }
+
+    /* FOOTER STYLES */
+    .footer {
+      margin-top: auto;
+    }
+
+    .topfooter {
+      background-color: #f8ead8;
+      color: black;
+      width: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: flex-start;
+      padding: 40px 20px;
+      flex-wrap: wrap;
+    }
+
+    .topfooter1 {
+      max-width: 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .topfooter1 .logop {
+      font-family: "Kranky", "Baloo Bhai 2", "sans-serif";
+      font-weight: bold;
+      font-size: 40px;
+      color: #5c4033;
+    }
+
+    .topfooter1 p {
+      width: 100%;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .footerhelp {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .footerhelp .help {
+      color: #5c4033;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .footerhelp a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .footerhelp a:hover {
+      color: #5c4033;
+    }
+
+    .footerhelp p {
+      color: #333;
+      margin: 0;
+    }
+
+    .ourinfo {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .ourinfo .info {
+      color: #5c4033;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .ourinfo p {
+      color: #333;
+      margin: 0;
+    }
+
+    .bottomfooter {
+      text-align: center;
+      color: white;
+      width: 100%;
+      background-color: #5c4033;
+      padding: 20px;
+      font-size: 14px;
+    }
+
+    /* Notification Styles */
     .notification-container {
       position: fixed;
       top: 20px;
@@ -248,7 +461,6 @@
         transform: translateX(100%);
         opacity: 0;
       }
-
       to {
         transform: translateX(0);
         opacity: 1;
@@ -259,12 +471,417 @@
       from {
         opacity: 1;
       }
-
       to {
         opacity: 0;
       }
     }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #5c4033;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .checkout-container {
+        flex-direction: column;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .changeAddress-btn {
+        width: 100%;
+      }
+
+      .header-container2 {
+        flex-direction: row;
+        gap: 15px;
+      }
+
+      .nav2ul {
+        flex-direction: row;
+        gap: 10px;
+      }
+
+      .nav2ul li a {
+        font-size: 14px;
+      }
+
+      .topfooter {
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .notification-container {
+        right: 20px;
+      }
+    }
   </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <header>
+    <div class="header-container2">
+      <div class="logonav2">ArtisanSpace</div>
+      <nav class="nav2">
+        <ul class="nav2ul">
+          <li><a href="/customer">Home</a></li>
+          <li><a href="/customer/store">Store</a></li>
+          <li><a href="/customer/cart">Cart</a></li>
+          <li><a href="/customer/workshop">Workshops</a></li>
+          <li><a href="/customer/customorder">Custom Order</a></li>
+          <li class="dropdown">
+            <i class="fa-solid fa-bars fa-lg"></i>
+            <div class="dropdown-menu">
+              <a href="/customer/settings" class="dropdown-item settings-btn">
+                <i class="fa-solid fa-gear"></i>
+                <p>Settings</p>
+              </a>
+              <a href="/logout" class="dropdown-item logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <p>Logout</p>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="checkout-container">
+      <!-- LEFT SECTION: ORDER SUMMARY -->
+      <div class="checkout-left">
+        <div id="orderSummaryBox" class="box">
+          <h3>Order Summary</h3>
+          <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading cart details...</p>
+          </div>
+          <div class="products">
+            <div class="checkout-item">
+              <img src="https://via.placeholder.com/80" alt="Product 1" class="product-img">
+              <div class="product-details">
+                <h3>Handmade Pottery Vase</h3>
+                <p class="price">₹1,299</p>
+                <p class="quantity">Quantity: 1</p>
+                <p class="item-total">Item Total: ₹1,299.00</p>
+              </div>
+            </div>
+
+            <div class="checkout-item">
+              <img src="https://via.placeholder.com/80" alt="Product 2" class="product-img">
+              <div class="product-details">
+                <h3>Wooden Craft Box</h3>
+                <p class="price">₹749</p>
+                <p class="quantity">Quantity: 2</p>
+                <p class="item-total">Item Total: ₹1,498.00</p>
+              </div>
+            </div>
+          </div>
+          <div class="summary">
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <span>₹2,797.00</span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping:</span>
+              <span>₹100</span>
+            </div>
+            <div class="summary-row">
+              <span>Tax:</span>
+              <span>₹450</span>
+            </div>
+            <div class="summary-row total">
+              <span>Total Amount:</span>
+              <span>₹3,347</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SECTION: SHIPPING & PAYMENT -->
+      <div class="checkout-right">
+        <!-- SHIPPING INFORMATION -->
+        <div id="shippingBox" class="box">
+          <h3>Shipping Information</h3>
+          <div id="addressContainer">
+            <div>123 Artisan Street, Gummidipundi, Tamil Nadu</div>
+            <div>State: Tamil Nadu</div>
+            <div>Pincode: 603201</div>
+            <div>John Artisan</div>
+          </div>
+        </div>
+
+        <button class="changeAddress-btn" onclick="alert('Redirect to settings')">Change Address</button>
+
+        <!-- PAYMENT METHOD -->
+        <div id="paymentBox" class="box">
+          <h3>Payment Method</h3>
+          <div class="payment-options">
+            <div class="payment-option">
+              <input type="radio" id="cod" name="paymentMethod" value="cod" checked>
+              <label for="cod">Cash on Delivery</label>
+            </div>
+            <div class="payment-option">
+              <input type="radio" id="card" name="paymentMethod" value="card">
+              <label for="card">Credit/Debit Card</label>
+            </div>
+            <div class="payment-option">
+              <input type="radio" id="upi" name="paymentMethod" value="upi">
+              <label for="upi">UPI</label>
+            </div>
+          </div>
+
+          <!-- CARD DETAILS -->
+          <div id="cardDetails" class="payment-details" style="display: none;">
+            <div class="form-group">
+              <label for="cardNumber">Card Number</label>
+              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="expiry">Expiry Date</label>
+                <input type="text" id="expiry" placeholder="MM/YY">
+              </div>
+              <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" placeholder="123">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="nameOnCard">Name on Card</label>
+              <input type="text" id="nameOnCard">
+            </div>
+          </div>
+
+          <!-- UPI DETAILS -->
+          <div id="upiDetails" class="payment-details" style="display: none;">
+            <div class="form-group">
+              <label for="upiId">UPI ID</label>
+              <input type="text" id="upiId" placeholder="example@upi">
+            </div>
+          </div>
+        </div>
+
+        <button id="placeOrderBtn" class="place-order-button">Place Order</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="topfooter">
+      <div class="topfooter1">
+        <p class="logop">AS</p>
+        <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+      </div>
+      <div class="footerhelp">
+        <p class="help">Help</p>
+        <a href="/aboutus">
+          <p>About Us</p>
+        </a>
+        <a href="/contactus">
+          <p>Contact</p>
+        </a>
+        <a href="/supportTicket">
+          <p>Support Ticket</p>
+        </a>
+      </div>
+      <div class="ourinfo">
+        <p class="info">Our Information</p>
+        <p>IIIT SriCity</p>
+        <p>+91 0000000000</p>
+        <p>Artisanspace09@gmail.com</p>
+      </div>
+    </div>
+    <div class="bottomfooter">
+      Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+
+
+      async function loadCartDetails() {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const productsContainer = document.querySelector('.products');
+    const summaryContainer = document.querySelector('.summary');
+
+    try {
+      // Show loading spinner
+      loadingSpinner.style.display = 'block';
+      productsContainer.innerHTML = ''; // clear existing
+      summaryContainer.innerHTML = ''; // clear existing
+
+      const response = await fetch('/customer/checkout-products',{
+        headers: { 'Accept': 'application/json' }
+      });
+      console.log('Fetch Response:', response);
+
+      if (!response.ok) throw new Error('Failed to fetch cart data');
+
+      const data = await response.json();
+      console.log('Cart Data:', data);
+      const { cart, amount } = data;
+
+      let subtotal = 0;
+      cart.forEach(item => {
+        const product = item.productId;
+        const total = product.newPrice * item.quantity;
+        subtotal += total;
+
+        const itemHTML = `
+          <div class="checkout-item">
+            <img src="${product.imageUrl || 'https://via.placeholder.com/80'}" alt="${product.name}" class="product-img">
+            <div class="product-details">
+              <h3>${product.name}</h3>
+              <p class="price">₹${product.newPrice}</p>
+              <p class="quantity">Quantity: ${item.quantity}</p>
+              <p class="item-total">Item Total: ₹${total.toFixed(2)}</p>
+            </div>
+          </div>`;
+        productsContainer.insertAdjacentHTML('beforeend', itemHTML);
+      });
+
+      const shipping = 50;
+      const tax = Math.round(subtotal * 0.05);
+      const total = subtotal + shipping + tax;
+
+      summaryContainer.innerHTML = `
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>₹${subtotal.toFixed(2)}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping:</span>
+          <span>₹${shipping}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax:</span>
+          <span>₹${tax}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total Amount:</span>
+          <span>₹${total.toFixed(2)}</span>
+        </div>`;
+    } catch (error) {
+      console.error('Error loading cart:', error);
+      showNotification('Failed to load cart details', 'error');
+      // Show error message in products container
+      productsContainer.innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Failed to load cart details. Please refresh the page.</p>';
+    } finally {
+      // Hide loading spinner
+      loadingSpinner.style.display = 'none';
+    }
+  }
+
+  // Call on page load
+  await loadCartDetails();
+
+
+      // Navbar dropdown toggle
+      const barsIcon = document.querySelector(".fa-bars");
+      const dropdownMenu = document.querySelector(".dropdown-menu");
+
+      barsIcon.addEventListener("click", (event) => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+        event.stopPropagation();
+      });
+
+      document.addEventListener("click", () => {
+        dropdownMenu.style.display = "none";
+      });
+
+      dropdownMenu.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+
+      // Payment method toggle
+      const paymentMethods = document.getElementsByName('paymentMethod');
+      const cardDetails = document.getElementById('cardDetails');
+      const upiDetails = document.getElementById('upiDetails');
+
+      paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+          if (this.value === 'card') {
+            cardDetails.style.display = 'block';
+            upiDetails.style.display = 'none';
+          } else if (this.value === 'upi') {
+            cardDetails.style.display = 'none';
+            upiDetails.style.display = 'block';
+          } else {
+            cardDetails.style.display = 'none';
+            upiDetails.style.display = 'none';
+          }
+        });
+      });
+
+
+      // Place Order button
+      document.getElementById("placeOrderBtn").addEventListener('click', function() {
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        
+        // Show success notification
+        showNotification('Order placed successfully!', 'success');
+
+        setTimeout(() => {
+          alert('Order placed with ' + paymentMethod + ' method');
+        }, 1500);
+      });
+
+      // Notification function
+      function showNotification(message, type) {
+        let notificationContainer = document.querySelector(".notification-container");
+
+        if (!notificationContainer) {
+          notificationContainer = document.createElement("div");
+          notificationContainer.className = "notification-container";
+          document.body.appendChild(notificationContainer);
+        }
+
+        if ([...notificationContainer.children].some(n => n.textContent === message)) {
+          return;
+        }
+
+        const notification = document.createElement("div");
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+
+        notificationContainer.appendChild(notification);
+
+        setTimeout(() => {
+          notification.classList.add("fade-out");
+          setTimeout(() => {
+            notification.remove();
+          }, 500);
+        }, 3000);
+      }
+    });
+  </script>
 </body>
 
 </html>
