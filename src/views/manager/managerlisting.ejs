@@ -291,6 +291,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('[ManagerListing] Page loaded.');
       const productName = document.getElementById('product-name');
       const productType = document.getElementById('product-type');
       const material = document.getElementById("material")
@@ -310,6 +311,7 @@
       productPhoto.addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
+          console.log('[ManagerListing] Image selected:', file.name, file.size, file.type);
           const reader = new FileReader();
           reader.onload = function(e) {
             imagePreview.innerHTML = `<img src="${e.target.result}" alt="Product preview">`;
@@ -323,6 +325,7 @@
       // Handle form submission
       document.getElementById("product-form").addEventListener("submit", async function(event) {
         event.preventDefault();
+        console.log('[ManagerListing] Add Product button clicked.');
 
         // Reset previous error states
         productName.classList.remove('error-input');
@@ -344,6 +347,7 @@
             behavior: 'smooth',
             block: 'center'
           });
+          console.warn('[ManagerListing] Product name validation failed:', );
           return;
         }
         if (!materialregex.test(material.value) || material.value.length < 3 || material.value.length > 50) {
@@ -353,6 +357,7 @@
             behavior: 'smooth',
             block: 'center'
           });
+          console.warn('[ManagerListing] Material validation failed:');
           return;
         }
         if (!originalPriceregex.test(originalPrice.value)) {
@@ -362,6 +367,7 @@
             behavior: 'smooth',
             block: 'center'
           });
+          console.warn('[ManagerListing] Price validation failed:');
           return;
         }
         if (!descriptionregex.test(description.value) || description.value.length < 10 || description.value.length > 500) {
@@ -371,6 +377,7 @@
             behavior: 'smooth',
             block: 'center'
           });
+          console.warn('[ManagerListing] Description validation failed:', description.value);
           return;
         }
         if (!quantityregex.test(quantity.value)) {
@@ -380,6 +387,7 @@
             behavior: 'smooth',
             block: 'center'
           });
+          console.warn('[ManagerListing] Quantity validation failed:', quantity.value);
           return;
         }
 
@@ -393,6 +401,7 @@
           }
         })
 
+        console.log('[ManagerListing] Submitting product form:', Object.fromEntries(formData.entries()));
         try {
           const response = await fetch(this.action, {
             method: "POST",
@@ -404,7 +413,6 @@
             statusMessage.classList.add("success");
             statusMessage.style.display = "block";
 
-
             setTimeout(() => {
               window.location.href = "/manager/";
             }, 2000);
@@ -412,7 +420,7 @@
             throw new Error("Failed to add product. Please try again.");
           }
         } catch (error) {
-          console.error("Error:", error);
+          console.error('[ManagerListing] Error:', error);
           statusMessage.innerText = "Error: " + error.message;
           statusMessage.classList.add("error");
           statusMessage.style.display = "block";

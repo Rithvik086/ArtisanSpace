@@ -14,6 +14,7 @@ const salesData = {
   ],
 };
 
+console.log('[ManagerDashboard] Page script loaded.');
 // Fetch orders data for the chart - keeping dynamic data only
 fetch("/api/orders_chart")
   .then((res) => res.json())
@@ -51,6 +52,7 @@ fetch("/api/orders_chart")
 
     // Create the chart only if we have data
     if (labels.length > 0) {
+      console.log('[ManagerDashboard] Rendering monthly orders chart:', ordersData);
       new Chart(document.getElementById("monthlyOrdersChart"), {
         type: "line",
         data: ordersData,
@@ -148,6 +150,7 @@ fetch("/api/products_chart")
 
     // Create the chart only if we have data
     if (labels.length > 0) {
+      console.log('[ManagerDashboard] Rendering products chart:', productsData);
       new Chart(document.getElementById("productsChart"), {
         type: "line",
         data: productsData,
@@ -202,6 +205,7 @@ fetch("/api/customer_chart")
 
     // Create the chart only if we have data
     if (labels.length > 0) {
+      console.log('[ManagerDashboard] Rendering customers chart:', customersData);
       new Chart(document.getElementById("customersChart"), {
         type: "line",
         data: customersData,
@@ -212,6 +216,47 @@ fetch("/api/customer_chart")
       document.getElementById("customersChart").innerHTML =
         '<div style="text-align:center;padding:20px;">No customer data available</div>';
     }
+// Button and tab click logs
+document.addEventListener('DOMContentLoaded', function() {
+  // Tab switching
+  document.getElementById('usersTabBtn')?.addEventListener('click', function() {
+    console.log('[ManagerDashboard] Users tab clicked');
+  });
+  document.getElementById('productsTabBtn')?.addEventListener('click', function() {
+    console.log('[ManagerDashboard] Products tab clicked');
+  });
+
+  // User delete button
+  document.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (this.closest('tr[data-user-id]')) {
+        console.log('[ManagerDashboard] Delete user button clicked:', this.closest('tr').dataset.userId);
+      }
+      if (this.closest('tr[data-product-id]')) {
+        console.log('[ManagerDashboard] Delete product button clicked:', this.closest('tr').dataset.productId);
+      }
+    });
+  });
+
+  // Product edit button
+  document.querySelectorAll('.btn-edit').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (this.closest('tr[data-product-id]')) {
+        console.log('[ManagerDashboard] Edit product button clicked:', this.closest('tr').dataset.productId);
+      }
+    });
+  });
+
+  // Modal action buttons
+  document.getElementById('confirmDeleteBtn')?.addEventListener('click', function() {
+    console.log('[ManagerDashboard] Confirm delete button clicked');
+  });
+  document.querySelectorAll('.btn-cancel').forEach(btn => {
+    btn.addEventListener('click', function() {
+      console.log('[ManagerDashboard] Cancel button clicked in modal');
+    });
+  });
+});
   })
   .catch((err) => {
     console.error("Error loading customer chart:", err);
