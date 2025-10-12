@@ -696,7 +696,75 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
+
+
+      async function loadCartDetails() {
+    try {
+      const response = await fetch('/customer/cart/checkout1', {
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch cart data');
+
+      const data = await response.json();
+      const { cart, amount } = data;
+
+      const productsContainer = document.querySelector('.products');
+      const summaryContainer = document.querySelector('.summary');
+
+      productsContainer.innerHTML = ''; // clear existing
+
+      let subtotal = 0;
+      cart.forEach(item => {
+        const product = item.productId;
+        const total = product.newPrice * item.quantity;
+        subtotal += total;
+
+        const itemHTML = `
+          <div class="checkout-item">
+            <img src="${product.imageUrl || 'https://via.placeholder.com/80'}" alt="${product.name}" class="product-img">
+            <div class="product-details">
+              <h3>${product.name}</h3>
+              <p class="price">₹${product.newPrice}</p>
+              <p class="quantity">Quantity: ${item.quantity}</p>
+              <p class="item-total">Item Total: ₹${total.toFixed(2)}</p>
+            </div>
+          </div>`;
+        productsContainer.insertAdjacentHTML('beforeend', itemHTML);
+      });
+
+      const shipping = 50;
+      const tax = Math.round(subtotal * 0.05);
+      const total = subtotal + shipping + tax;
+
+      summaryContainer.innerHTML = `
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>₹${subtotal.toFixed(2)}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping:</span>
+          <span>₹${shipping}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax:</span>
+          <span>₹${tax}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total Amount:</span>
+          <span>₹${total.toFixed(2)}</span>
+        </div>`;
+    } catch (error) {
+      console.error('Error loading cart:', error);
+      showNotification('Failed to load cart details', 'error');
+    }
+  }
+
+  // Call on page load
+  await loadCartDetails();
+
+
       // Navbar dropdown toggle
       const barsIcon = document.querySelector(".fa-bars");
       const dropdownMenu = document.querySelector(".dropdown-menu");
@@ -733,6 +801,7 @@
           }
         });
       });
+
 
       // Place Order button
       document.getElementById("placeOrderBtn").addEventListener('click', function() {

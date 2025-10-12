@@ -16,6 +16,7 @@ import {
   placeOrderController,
   getSettingsCustomer,
   getOrdersPageCustomer,
+  checkout1
 } from "../controller/customerController.js";
 
 const router = express.Router();
@@ -33,6 +34,7 @@ router.post("/requestWorkshop", bookWorkshopPage);
 router.get("/customorder", getCustomOrderPage);
 router.post("/customorder", upload.single("image"), reqCustomOrder);
 router.get("/checkout", checkout);
+router.get("/checkout1", checkout1);
 router.post("/place-order", placeOrderController);
 router.get("/settings", getSettingsCustomer);
 

@@ -258,7 +258,9 @@ export const checkout = async (req, res) => {
     const tax = Math.round(amount * 0.05 * 100) / 100; // 5% tax
     let user = await getUserById(userId);
 
-    res.render("customer/checkout", {
+
+  
+  res.render("customer/checkout", {
       role: custrole,
       cart,
       products,
@@ -267,6 +269,8 @@ export const checkout = async (req, res) => {
       tax,
       user,
     });
+
+
   } catch (error) {
     console.error("Error loading checkout page:", error);
     res
@@ -274,6 +278,46 @@ export const checkout = async (req, res) => {
       .json({ success: false, message: "Failed to load checkout page" });
   }
 };
+
+
+export const checkout1 = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const cart = await getCart(userId);
+
+    if (!cart || cart.length === 0) {
+      return res.redirect("/customer/orders");
+    }
+
+    const products = await getProducts();
+
+    // Calculate total amount
+    let amount = 0;
+    cart.forEach((item) => {
+      if (item) {
+        amount += item.productId.newPrice * item.quantity;
+      }
+    });
+
+    // Calculate shipping and tax
+    const shipping = 50; // Fixed shipping fee
+    const tax = Math.round(amount * 0.05 * 100) / 100; // 5% tax
+    let user = await getUserById(userId);
+
+  res.json({cart,amount})
+
+
+  } catch (error) {
+    console.error("Error loading checkout page:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to load checkout page" });
+  }
+};
+
+
+
+
 export const placeOrderController = async (req, res) => {
   try {
     const userId = req.user.id;
