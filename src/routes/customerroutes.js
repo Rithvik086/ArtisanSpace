@@ -23,6 +23,17 @@ const router = express.Router();
 router.use(authorizerole("admin", "manager", "artisan", "customer"));
 
 router.get("/", getHomePage);
+
+// API endpoint for homepage products (first 10)
+import { getProducts } from "../services/productServices.js";
+router.get("/api/products", async (req, res) => {
+  try {
+    const products = await getProducts(null, true);
+    res.json(products.slice(0, 10));
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
 router.get("/orders/:orderId", getOrdersPageCustomer);
 router.get("/store", getStorePage);
 router.post("/store", addToCart);
