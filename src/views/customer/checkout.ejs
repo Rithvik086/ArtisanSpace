@@ -476,6 +476,29 @@
       }
     }
 
+    /* Loading Spinner */
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #5c4033;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .checkout-container {
@@ -553,6 +576,10 @@
       <div class="checkout-left">
         <div id="orderSummaryBox" class="box">
           <h3>Order Summary</h3>
+          <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading cart details...</p>
+          </div>
           <div class="products">
             <div class="checkout-item">
               <img src="https://via.placeholder.com/80" alt="Product 1" class="product-img">
@@ -700,20 +727,26 @@
 
 
       async function loadCartDetails() {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const productsContainer = document.querySelector('.products');
+    const summaryContainer = document.querySelector('.summary');
+
     try {
-      const response = await fetch('/customer/checkout', {
+      // Show loading spinner
+      loadingSpinner.style.display = 'block';
+      productsContainer.innerHTML = ''; // clear existing
+      summaryContainer.innerHTML = ''; // clear existing
+
+      const response = await fetch('/customer/checkout-products',{
         headers: { 'Accept': 'application/json' }
       });
+      console.log('Fetch Response:', response);
 
       if (!response.ok) throw new Error('Failed to fetch cart data');
 
       const data = await response.json();
+      console.log('Cart Data:', data);
       const { cart, amount } = data;
-
-      const productsContainer = document.querySelector('.products');
-      const summaryContainer = document.querySelector('.summary');
-
-      productsContainer.innerHTML = ''; // clear existing
 
       let subtotal = 0;
       cart.forEach(item => {
@@ -758,6 +791,11 @@
     } catch (error) {
       console.error('Error loading cart:', error);
       showNotification('Failed to load cart details', 'error');
+      // Show error message in products container
+      productsContainer.innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Failed to load cart details. Please refresh the page.</p>';
+    } finally {
+      // Hide loading spinner
+      loadingSpinner.style.display = 'none';
     }
   }
 
