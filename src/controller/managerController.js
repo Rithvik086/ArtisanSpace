@@ -13,6 +13,11 @@ import {
   getUsersByRole,
   removeUser,
 } from "../services/userServices.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const mngrole = "manager";
 
@@ -118,7 +123,7 @@ export const loadPartialSection = async (req, res) => {
 };
 
 export const getMangerListings = (req, res) => {
-  res.render("manager/managerlisting", { role: mngrole });
+  res.sendFile(path.join(__dirname, "../views/manager/managerlisting.html"));
 };
 
 export const getManagerSettings = async (req, res) => {

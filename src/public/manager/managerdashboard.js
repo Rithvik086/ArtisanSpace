@@ -412,6 +412,8 @@ function groupByTwoDayIntervals(data) {
       }
     }
 
+    
+
     // If no interval found (edge case), create one
     if (!intervalFound) {
       const key = dateStr;

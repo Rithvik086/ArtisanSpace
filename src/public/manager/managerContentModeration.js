@@ -15,6 +15,7 @@ async function loadPartial(section) {
       disapproved: document.getElementById("disapproved-section"),
     };
 
+    //java script of content
     if (sections[section]) {
       sections[section].innerHTML = html;
       console.log(`[ManagerContentModeration] Rendered HTML for section: ${section}`);
