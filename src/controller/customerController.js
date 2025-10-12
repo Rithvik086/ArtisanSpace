@@ -25,8 +25,6 @@ import {
 const custrole = "customer";
 
 export const getHomePage = async (req, res) => {
-  const products = await getProducts(null, true);
-  const pro = products.slice(0, 10);
   const userId = req.user.id;
   const customerOrders = await getOrdersById(userId);
   // Debug log removed: console.log(customerOrders, userId);
@@ -34,7 +32,6 @@ export const getHomePage = async (req, res) => {
   const customerWorkshops = await getWorkshopByUserId(userId);
   res.render("customer/customerhome", {
     role: custrole,
-    products: pro,
     requests: customerRequests,
     orders: customerOrders,
     workshops: customerWorkshops,

@@ -249,13 +249,7 @@
       </div>
     </div>
     <div class="slider-container">
-      <div class="slider">
-        <% products.forEach(product => {%>
-        <a href="/products/<%= product._id.toString() %>">
-          <img src="<%= product.image %>" alt="<%= product.name %>">
-        </a>
-        <%}) %>
-      </div>
+      <div class="slider"></div>
     </div>
     <!-- // new tabs -->
 
@@ -419,7 +413,6 @@
       // Make cards clickable except when clicking on action buttons
       document.querySelectorAll(".card").forEach((card) => {
         card.addEventListener("click", (event) => {
-          // Check if we clicked on a button
           if (!event.target.closest('button')) {
             const orderId = card.getAttribute("data-id");
             if (orderId) {
@@ -429,29 +422,41 @@
         });
       });
 
-      // Prevent button clicks from navigating through card
       document.querySelectorAll(".card button").forEach(button => {
         button.addEventListener("click", (e) => {
           e.stopPropagation();
         });
       });
 
+      // Dynamically load slider products
       const slider = document.querySelector(".slider");
+      fetch("/customer/api/products")
+        .then(res => res.json())
+        .then(products => {
+          slider.innerHTML = "";
+          products.forEach(product => {
+            const a = document.createElement('a');
+            a.href = `/products/${product._id}`;
+            const img = document.createElement('img');
+            img.src = product.image;
+            img.alt = product.name;
+            a.appendChild(img);
+            slider.appendChild(a);
+          });
+        });
 
       function moveSlider() {
         const firstImage = slider.firstElementChild;
+        if (!firstImage) return;
         const imgWidth = firstImage.offsetWidth + 20;
-
         slider.style.transition = "transform 0.7s ease-in-out";
         slider.style.transform = `translateX(-${imgWidth}px)`;
-
         setTimeout(() => {
           slider.appendChild(firstImage);
           slider.style.transition = "none";
           slider.style.transform = "translateX(0)";
         }, 700);
       }
-
       setInterval(moveSlider, 4000);
     });
   </script>
