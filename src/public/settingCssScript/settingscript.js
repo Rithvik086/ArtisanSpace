@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
+  console.log("[Settings] DOMContentLoaded event fired");
   let userData = JSON.parse(document.getElementById("userData").value);
+  console.log("[Settings] Loaded userData:", userData);
 
   // DOM Elements
   const tabs = document.querySelectorAll(".tab");
@@ -22,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const mobile_noError = document.getElementById("mobile_noError");
 
   function loadUserData() {
+    console.log("[Settings] Loading user data into input fields");
     document.getElementById("name").value = userData.name || "";
     document.getElementById("email").value = userData.email || "";
     document.getElementById("mobile_no").value = userData.mobile_no || "";
@@ -32,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
       addressFieldsData.forEach((field, index) => {
         document.getElementById(field).value = addressParts[index] || "";
       });
+      console.log("[Settings] Loaded address fields:", addressParts);
     }
   }
 
@@ -79,9 +83,18 @@ document.addEventListener("DOMContentLoaded", function () {
   editButtons.forEach((button) => {
     button.addEventListener("click", function () {
       const fieldId = button.getAttribute("data-field");
+      if (!fieldId) {
+        // No data-field attribute, skip this button
+        console.warn("[Settings] Edit button missing data-field attribute, skipping.");
+        return;
+      }
       const field = document.getElementById(fieldId);
-
+      if (!field) {
+        console.warn(`[Settings] Field with id '${fieldId}' not found, skipping button.`);
+        return;
+      }
       if (field.disabled) {
+        console.log(`[Settings] Editing field: ${fieldId}`);
         field.disabled = false;
         field.focus();
         button.textContent = "Save";
@@ -89,17 +102,20 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         if (fieldId === "name") {
           if (!validateName(field.value)) {
+            console.warn("[Settings] Name validation failed");
             return;
           }
         }
         if (fieldId === "mobile_no") {
           if (!validatepno(field.value)) {
+            console.warn("[Settings] Mobile number validation failed");
             return;
           }
         }
         field.disabled = true;
         button.textContent = "Edit";
         field.style.backgroundColor = "#f5f5f5";
+        console.log(`[Settings] Saving field: ${fieldId} with value:`, field.value);
         saveUserData({
           [fieldId]: field.value,
         });
@@ -109,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Address Edit Button
   editAddressBtn.addEventListener("click", function () {
+    console.log("[Settings] Editing address fields");
     toggleAddressFields(false);
     editAddressBtn.style.display = "none";
     saveAddressBtn.style.display = "block";
@@ -120,6 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
       (field) => document.getElementById(field).value
     );
     const newAddressString = newAddressArray.join("|");
+    console.log("[Settings] Saving address:", newAddressArray);
 
     toggleAddressFields(true);
     saveAddressBtn.style.display = "none";
@@ -136,19 +154,18 @@ document.addEventListener("DOMContentLoaded", function () {
       field.disabled = disable;
       field.style.backgroundColor = disable ? "#f5f5f5" : "white";
     });
+    console.log(`[Settings] Address fields ${disable ? "disabled" : "enabled"}`);
   }
 
   // Save All Edited Data to Server
   function saveUserData(updatedFields) {
     showToast("Saving...", "info");
-
     // Merge existing userData with new updates
     const updatedUserData = {
       ...userData,
       ...updatedFields,
     };
-
-    console.log(updatedUserData);
+    console.log("[Settings] Sending updated user data to server:", updatedUserData);
 
     fetch("/update-profile", {
       method: "POST",
@@ -159,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("[Settings] Server response for saveUserData:", data);
         if (data.success) {
           showToast("Saved successfully!", "success");
           setTimeout(() => {
@@ -168,8 +186,9 @@ document.addEventListener("DOMContentLoaded", function () {
           showToast("Failed to save. Try again.", "error");
         }
       })
-      .catch(() => {
+      .catch((err) => {
         showToast("Error saving data.", "error");
+        console.error("[Settings] Error saving user data:", err);
       });
   }
 
@@ -191,33 +210,43 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("deleteAccountBtn")
     .addEventListener("click", async function () {
+      console.log("[Settings] Delete account button clicked");
       if (
         confirm(
           "Are you sure you want to delete your account? This action cannot be undone."
         )
       ) {
-        // Perform delete account action (send request to the server)
-        const response = await fetch(`/delete-account`);
-        if (!response.ok) {
-          showToast("Failed to delete account! Please try again.", "error");
-          throw new Error("Server returned an error response.");
-        }
+        try {
+          // Perform delete account action (send request to the server)
+          console.log("[Settings] Sending delete account request to server");
+          const response = await fetch(`/delete-account`);
+          if (!response.ok) {
+            showToast("Failed to delete account! Please try again.", "error");
+            console.error("[Settings] Server returned an error response for delete-account");
+            throw new Error("Server returned an error response.");
+          }
 
-        const result = await response.json();
+          const result = await response.json();
+          console.log("[Settings] Server response for delete-account:", result);
 
-        if (result.success) {
-          showToast("Account deleted successfully!", "success");
-          setTimeout(() => {
-            window.location.href = "/"; // Redirect after a short delay
-          }, 1000);
-        } else {
-          showToast("Failed to delete account! Please try again.", "error");
+          if (result.success) {
+            showToast("Account deleted successfully!", "success");
+            setTimeout(() => {
+              window.location.href = "/"; // Redirect after a short delay
+            }, 1000);
+          } else {
+            showToast("Failed to delete account! Please try again.", "error");
+          }
+        } catch (err) {
+          showToast("Error deleting account.", "error");
+          console.error("[Settings] Error deleting account:", err);
         }
       } else {
         showToast("Account deletion canceled!", "error");
-        console.log("Account deletion canceled.");
+        console.log("[Settings] Account deletion canceled by user");
       }
     });
   // Initialize User Data
   loadUserData();
+  console.log("[Settings] User data loaded and page initialized");
 });
