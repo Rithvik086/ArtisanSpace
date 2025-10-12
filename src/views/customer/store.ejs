@@ -86,6 +86,7 @@
   <%- include("../partials/footer") %>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      console.log('[Store] Page loaded.');
       const checkboxes = document.querySelectorAll('input[name="category"]');
       let timeout = 300;
 
@@ -98,6 +99,7 @@
 
         // Listen for changes and update the URL with a delay
         checkbox.addEventListener("change", function() {
+          console.log('[Store] Filter checkbox changed:', checkbox.value, checkbox.checked);
           clearTimeout(timeout); // Clear previous timeout
 
           timeout = setTimeout(() => {
@@ -109,31 +111,46 @@
             newUrl.searchParams.delete("category");
             selected.forEach((category) => newUrl.searchParams.append("category", category));
 
+            console.log('[Store] Applying filters:', selected);
             window.location.href = newUrl.toString(); // Reload page after timeout
           }, 500); // Adjust timeout as needed (500ms = 0.5s)
+        });
+      });
+
+      // Pagination button logs
+      document.querySelectorAll('.pagination a').forEach(a => {
+        a.addEventListener('click', function(e) {
+          console.log('[Store] Pagination clicked:', this.textContent.trim());
+        });
+      });
+
+      // Add to cart button logs (product-card partial must call updateCart)
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          console.log('[Store] Add to cart button clicked:', this.dataset.productId);
         });
       });
     });
 
     async function updateCart(userId, productId) {
       try {
-        console.log("Adding to cart:", userId, productId); // Debugging line
+        console.log('[Store] Adding to cart:', userId, productId);
         const response = await fetch(`/customer/store?userId=${userId}&productId=${productId}`, {
           method: "POST"
         });
 
         const data = await response.json();
 
-        console.log("Response Data:", data); // Debugging line
+        console.log('[Store] Add to cart response:', data);
         if (data.success) {
           showNotification("Product Added to cart!", "success");
         } else {
           showNotification(data.message || "Failed to Add. Try Again", "error")
         }
 
-        console.log(data.message);
+        console.log('[Store] Add to cart message:', data.message);
       } catch (error) {
-        console.log("Error updating cart: ", error);
+        console.error('[Store] Error updating cart:', error);
       }
     }
 
@@ -221,7 +238,7 @@
       try {
         const response = await fetch("/api/getProducts");
         const products = await response.json();
-        console.log("Products loaded:", products.length);
+  console.log('[Store] Products loaded:', products.length);
 
         // Configure Fuse.js for searching
         const options = {
@@ -298,7 +315,7 @@
 
             // Perform search with sanitized query
             const results = fuse.search(sanitizedQuery);
-            console.log("Search results:", results.length);
+            console.log('[Store] Search results:', results.length);
 
             // Display results below search bar
             if (results.length > 0) {
@@ -343,6 +360,7 @@
               // Trigger the search
               clearTimeout(debounceTimeout);
               searchInput.dispatchEvent(new Event('input'));
+              console.log('[Store] Search submitted:', query);
             }
           }
         });
