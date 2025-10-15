@@ -19,6 +19,7 @@ import {
   getProductsApi,
 } from "../controller/userController.js";
 const router = express.Router();
+router.get("/aboutus", renderAboutUs);
 
 router.use(verifytoken);
 
@@ -26,7 +27,6 @@ router.use("/admin", adminroutes);
 router.use("/artisan", artisanroutes);
 router.use("/customer", customerroutes);
 router.use("/manager", managerroutes);
-router.get("/aboutus", renderAboutUs);
 router.get("/api/user-role", getUserRole);
 router.get("/contactus", renderContactUs);
 router.get("/supportTicket", renderSupportTicket);

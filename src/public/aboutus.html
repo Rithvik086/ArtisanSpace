@@ -11,6 +11,7 @@
   <style>
     body {
       margin: 0;
+      font-family: "Baloo 2", cursive;
     }
 
     .about-container {
@@ -22,7 +23,7 @@
       --background-color: #faf7f2;
       --section-padding: 5rem 2rem;
       --border-radius: 8px;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Baloo 2",'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: var(--text-color);
       background-color: var(--background-color);
       line-height: 1.6;
@@ -539,10 +540,12 @@
           const data = await response.json();
           return data.role;
         }
+        // If response is unauthorized or not OK, treat as not logged in
+        return null;
       } catch (error) {
         console.error('Error fetching user role:', error);
+        return null;
       }
-      return 'customer'; // Default fallback
     }
 
     // Function to load navbar
@@ -710,17 +713,27 @@
 
     // Initialize the page
     async function initializePage() {
-      const role = await getUserRole();
-      
-      loadNavbar(role);
-      loadFooter(role);
+      // Determine user role; if not authenticated, don't show navbar
+      let role;
+      try {
+        role = await getUserRole();
+      } catch (e) {
+        role = null;
+      }
+
+      // Only load navbar and navbar functionality if a role was returned (user authenticated)
+      if (role) {
+        loadNavbar(role);
+        // Add navbar functionality
+        setupNavbarFunctionality();
+      }
+
+      // Always load footer, page content and CTAs (footer may vary by role)
+      loadFooter(role || 'guest');
       loadCraftValues();
       loadTeamMembers();
-      loadCTAButtons(role);
-      
-      // Add navbar functionality
-      setupNavbarFunctionality();
-      
+      loadCTAButtons(role || 'guest');
+
       // Add scroll animations
       setupScrollAnimations();
     }

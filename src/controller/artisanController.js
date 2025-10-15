@@ -10,7 +10,7 @@ import {
   getAvailableWorkshops,
   getAcceptedWorkshops,
   acceptWorkshop,
-  removeWorkshop,  
+  removeWorkshop,
   getWorkshopById,
 } from "../services/workshopServices.js";
 import {
@@ -313,9 +313,5 @@ export const deleteCustomRequest = async (req, res) => {
 };
 
 export const getSettingsArtisan = async (req, res) => {
-  const user = await getUserById(req.user.id);
-  delete user.password;
-  delete user.userId;
-  delete user.role;
-  res.render("settings", { role: astrole, user });
+  res.sendFile(path.join(process.cwd(), "src/views/settings.html"));
 };
