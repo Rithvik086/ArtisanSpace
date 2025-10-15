@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
   <link rel="stylesheet" href="/artisan/artisandashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     .error-input {
       border: 1px solid red !important;
@@ -19,11 +20,54 @@
       font-size: 14px;
       margin: 5px 0 0;
     }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      color: #666;
+    }
+
+    .error {
+      text-align: center;
+      padding: 20px;
+      color: #d32f2f;
+      background-color: #ffebee;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
   </style>
 </head>
 
 <body>
-  <%- include('../partials/navbar2', { role }) %>
+  <!-- Navbar -->
+  <header>
+    <div class="header-container2">
+      <div class="logonav2">ArtisanSpace</div>
+      <nav class="nav2">
+        <ul class="nav2ul">
+          <li><a href="/artisan/">Dashboard</a></li>
+          <li><a href="/artisan/listings">Listings</a></li>
+          <li><a href="/artisan/workshops">Workshops</a></li>
+          <li><a href="/artisan/customrequests">Custom Requests</a></li>
+          <li class="dropdown">
+            <i class="fa-solid fa-bars fa-lg"></i>
+            <div class="dropdown-menu">
+              <a href="/artisan/settings" class="dropdown-item settings-btn">
+                <i class="fa-solid fa-gear"></i>
+                <p>Settings</p>
+              </a>
+              <a href="/logout" class="dropdown-item logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <p>Logout</p>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
   <div class="container">
     <h1 class="dashboard-title">Dashboard Overview</h1>
 
@@ -38,7 +82,7 @@
         <div class="stat-card">
           <h3>Products</h3>
           <canvas id="productsChart"></canvas>
-          <p class="stat-value">75</p>
+          <p class="stat-value" id="productCount">Loading...</p>
         </div>
       </div>
     </section>
@@ -46,8 +90,11 @@
     <!-- Products Section -->
     <section class="products-section">
       <div class="products-header">
-        <h2 class="products-title">Manage Products<span><%= products.length %></span></h2>
+        <h2 class="products-title">Manage Products<span id="productCountSpan">0</span></h2>
       </div>
+
+      <div id="loading" class="loading" style="display: none;">Loading products...</div>
+      <div id="error" class="error" style="display: none;"></div>
 
       <table id="productTable">
         <thead>
@@ -62,34 +109,9 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <% if (products.length > 0) { %>
-          <% products.forEach(product => { %>
-          <tr data-product-id="<%= product._id.toString() %>">
-            <td><%= product.category%></td>
-            <td><img src="<%= product.image %>" alt="Product Image" class="product-image"></td>
-            <td><%= product.name %></td>
-            <td>₹<%= product.oldPrice %></td>
-            <td>₹<%= product.newPrice %></td>
-            <td><%= product.quantity %></td>
-            <td>
-              <span class="status-badge status-<%= product.status %>">
-                <%= product.status.charAt(0).toUpperCase() + product.status.slice(1) %>
-              </span>
-            </td>
-            <td>
-              <button class="btn btn-edit" onclick="openEditModal('<%= product._id.toString() %>', '<%= product.name %>', '<%= product.oldPrice %>', '<%= product.newPrice %>', '<%= product.quantity %>','<%= product.description %>')">Edit</button>
-              <button class="btn btn-delete" onclick="confirmDelete('<%= product._id.toString() %>')">Delete</button>
-            </td>
-          </tr>
-          <% }) %>
-          <% } else { %>
-          <tr id="noProductRow">
-            <td colspan="8">No products found</td>
-          </tr>
-          <% } %>
+        <tbody id="productTableBody">
+          <!-- Products will be loaded dynamically -->
         </tbody>
-
       </table>
     </section>
   </div>
@@ -148,8 +170,76 @@
       </div>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="topfooter">
+      <div class="topfooter1">
+        <p class="logop">AS</p>
+        <p>
+          It is a long established fact that a reader will be distracted by
+          the readable content of a page when looking at its layout.
+        </p>
+      </div>
+      <div class="footerhelp">
+        <p class="help">Help</p>
+        <a href="/aboutus" style="text-decoration: none; color: black">
+          <p>AboutUs</p>
+        </a>
+        <a href="/contactus" style="text-decoration: none; color: black;">
+          <p>Contact</p>
+        </a>
+        <a href="/supportTicket" style="text-decoration: none; color: black;">
+          <p>Support Ticket</p>
+        </a>
+      </div>
+      <div class="ourinfo">
+        <p class="info">Our Information</p>
+        <p>IIIT SriCity</p>
+        <p>+91 0000000000</p>
+        <p>Artisanspace09@gmail.com</p>
+      </div>
+    </div>
+    <div class="bottomfooter">
+      Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
+    </div>
+  </footer>
+
+  <script>
+    // Navbar functionality
+    document.addEventListener("DOMContentLoaded", () => {
+      const barsIcon = document.querySelector(".fa-bars");
+      const dropdownMenu = document.querySelector(".dropdown-menu");
+
+      if (barsIcon && dropdownMenu) {
+        barsIcon.addEventListener("click", (event) => {
+          dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+          event.stopPropagation();
+        });
+
+        document.addEventListener("click", () => {
+          dropdownMenu.style.display = "none";
+        });
+
+        dropdownMenu.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+      }
+
+      // Load products data
+      // loadProducts(); // Removed duplicate call - it's now in the main JS file
+    });
+
+    function openSettings() {
+      window.location.href = "/settings"
+    }
+
+    function logout() {
+      window.location.href = "/logout";
+    }
+  </script>
+
   <script src="/artisan/artisandashboard.js"></script>
-  <%- include("../partials/footer") %>
 </body>
 
 </html>
