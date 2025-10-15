@@ -1,4 +1,5 @@
 import cloudinary from "../config/cloudinary.js";
+import path from "path";
 import {
   addProduct,
   deleteProduct,
@@ -24,12 +25,22 @@ const astrole = "artisan";
 
 export const getArtisanDashboard = async (req, res) => {
   try {
-    const products = await getProducts(req.user.id);
-
-    res.render("artisan/artisandashboard", { role: astrole, products });
+    // Serve the static HTML file
+    res.sendFile(path.join(process.cwd(), 'src', 'public', 'artisan', 'artisandashboard.html'));
   } catch (err) {
-    console.error("Error fetching requests:", err);
+    console.error("Error serving dashboard:", err);
     res.status(500).send("error");
+  }
+};
+
+// New API endpoint for fetching products data
+export const getArtisanProductsAPI = async (req, res) => {
+  try {
+    const products = await getProducts(req.user.id);
+    res.status(200).json({ products });
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 };
 

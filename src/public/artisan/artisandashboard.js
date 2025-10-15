@@ -42,8 +42,8 @@ const commonOptions = {
   },
 };
 
-// Initialize charts and load product data on window load
-window.onload = function () {
+// Initialize charts on window load
+function initializeCharts() {
   // Initialize charts
   new Chart(document.getElementById("totalSalesChart"), {
     type: "line",
@@ -56,6 +56,78 @@ window.onload = function () {
     data: productsData,
     options: commonOptions,
   });
+}
+
+// Load products data from API
+async function loadProducts() {
+  const loadingElement = document.getElementById('loading');
+  const errorElement = document.getElementById('error');
+  const tableBody = document.getElementById('productTableBody');
+  const productCountSpan = document.getElementById('productCountSpan');
+  const productCount = document.getElementById('productCount');
+
+  try {
+    loadingElement.style.display = 'block';
+    errorElement.style.display = 'none';
+
+    const response = await fetch('/artisan/api/products');
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+
+    const data = await response.json();
+    const products = data.products;
+
+    loadingElement.style.display = 'none';
+
+    // Update product count
+    productCountSpan.textContent = products.length;
+    productCount.textContent = products.length;
+
+    // Clear existing content
+    tableBody.innerHTML = '';
+
+    if (products.length === 0) {
+      tableBody.innerHTML = '<tr id="noProductRow"><td colspan="8">No products found</td></tr>';
+      return;
+    }
+
+    // Populate table with products
+    products.forEach(product => {
+      const row = document.createElement('tr');
+      row.setAttribute('data-product-id', product._id);
+      row.innerHTML = `
+        <td>${product.category || 'N/A'}</td>
+        <td><img src="${product.image}" alt="Product Image" class="product-image"></td>
+        <td>${product.name}</td>
+        <td>₹${product.oldPrice}</td>
+        <td>₹${product.newPrice}</td>
+        <td>${product.quantity}</td>
+        <td>
+          <span class="status-badge status-${product.status}">
+            ${product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+          </span>
+        </td>
+        <td>
+          <button class="btn btn-edit" onclick="openEditModal('${product._id}', '${product.name.replace(/'/g, "\\'")}', '${product.oldPrice}', '${product.newPrice}', '${product.quantity}','${product.description.replace(/'/g, "\\'")}')">Edit</button>
+          <button class="btn btn-delete" onclick="confirmDelete('${product._id}')">Delete</button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+
+  } catch (error) {
+    console.error('Error loading products:', error);
+    loadingElement.style.display = 'none';
+    errorElement.style.display = 'block';
+    errorElement.textContent = 'Failed to load products. Please try again later.';
+  }
+}
+
+// Initialize on window load
+window.onload = function () {
+  initializeCharts();
+  loadProducts();
 };
 
 function closeModal() {

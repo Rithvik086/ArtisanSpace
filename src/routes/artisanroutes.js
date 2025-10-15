@@ -4,6 +4,7 @@ import authorizerole from "../middleware/roleMiddleware.js";
 
 import {
   getArtisanDashboard,
+  getArtisanProductsAPI,
   editProductController,
   deleteProductController,
   getListingsController,
@@ -22,6 +23,9 @@ const astrole = "artisan";
 router.use(authorizerole("admin", "manager", "artisan"));
 
 router.get("/", getArtisanDashboard);
+
+// API endpoint for products data
+router.get("/api/products", getArtisanProductsAPI);
 
 router.put("/edit-product/:id", editProductController);
 
