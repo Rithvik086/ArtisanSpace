@@ -26,7 +26,11 @@ import {
   getProducts,
   getApprovedProducts,
 } from "../services/productServices.js";
-import { getUserById } from "../services/userServices.js";
+import {
+  getUserById,
+  updateUser,
+  removeUser,
+} from "../services/userServices.js";
 
 const router = express.Router();
 
@@ -129,7 +133,75 @@ router.get("/api/workshops", async (req, res) => {
 });
 
 router.get("/api/user", async (req, res) => {
-  res.json({ id: req.user.id });
+  try {
+    const user = await getUserById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    // convert mongoose document to plain object so properties are enumerable
+    const userObj =
+      typeof user.toObject === "function"
+        ? user.toObject()
+        : JSON.parse(JSON.stringify(user));
+    delete userObj.password;
+    delete userObj.role;
+    delete userObj.userId;
+    console.log("[API] GET /customer/api/user ->", Object.keys(userObj));
+    res.json(userObj);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ error: "Failed to fetch user data" });
+  }
+});
+
+// Update user data
+router.put("/api/user", async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const updateData = { ...req.body };
+
+    // Prevent sensitive fields from being updated via this endpoint
+    delete updateData.password;
+    delete updateData.role;
+    delete updateData.userId;
+
+    // call service with positional args (name, mobile_no, address)
+    const updated = await updateUser(
+      userId,
+      updateData.name,
+      updateData.mobile_no,
+      updateData.address
+    );
+
+    if (updated && updated.success) {
+      res.json({ success: true, message: "User updated successfully" });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "Failed to update user" });
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ success: false, message: "Failed to update user" });
+  }
+});
+
+// Delete user account
+router.delete("/api/user", async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const deleted = await removeUser(userId);
+    if (deleted && deleted.success) {
+      res.json({ success: true, message: "Account deleted successfully" });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "Failed to delete account" });
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to delete account" });
+  }
 });
 
 // API for cart
@@ -201,11 +273,13 @@ router.get("/settings", getSettingsCustomer);
 
 // Partial routes for HTML
 router.get("/partials/navbar2", (req, res) => {
-  res.render("partials/navbar2", { role: "customer" });
+  const role = req.user && req.user.role ? req.user.role : "customer";
+  res.render("partials/navbar2", { role });
 });
 
 router.get("/partials/footer", (req, res) => {
-  res.render("partials/footer", { role: "customer" });
+  const role = req.user && req.user.role ? req.user.role : "customer";
+  res.render("partials/footer", { role });
 });
 
 export default router;

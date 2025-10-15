@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings</title>
+  <link rel="stylesheet" href="/navbar2.css" />
+  <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="/settingCssScript/setting.css">
+  <style>
+    .error-input {
+      border: 1px solid red !important;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin: 5px 0 0;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #663300;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #status-message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+      font-weight: 600;
+      display: none;
+    }
+
+    .success {
+      background-color: rgba(0, 128, 0, 0.1);
+      color: #006400;
+    }
+
+    .error {
+      background-color: rgba(255, 0, 0, 0.1);
+      color: #8b0000;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <div id="navbar"></div>
+
+  <main>
+    <div class="container">
+      <div class="header">
+        <h1>Settings</h1>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="profile">Profile</div>
+        <div class="tab" data-tab="address">Address</div>
+      </div>
+
+      <div class="tab-content active" id="profile">
+        <div class="form-group">
+          <label for="username">Username (Non editable)</label>
+          <input type="text" id="username" class="form-control" disabled required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address (Non editable)</label>
+          <input type="email" id="email" class="form-control" disabled required>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" class="form-control" disabled required>
+          <button class="btn btn-primary btn-edit" data-field="name">Edit</button>
+          <p id="fullNameError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            fullName can only contain alphabets
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="mobile_no">Phone Number</label>
+          <input type="tel" id="mobile_no" class="form-control" disabled required>
+          <button class="btn btn-primary btn-edit" data-field="mobile_no">Edit</button>
+          <p id="mobile_noError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            length can be only 10 digits and only numbers
+          </p>
+        </div>
+      </div>
+
+
+
+      <!-- Address section -->
+
+      <div class="tab-content" id="address">
+        <div class="address-form">
+          <button class="btn btn-edit btn-primary btn-address" id="editAddressBtn">Edit</button>
+          <div class="form-group">
+            <label for="addressLine1">Address Line 1</label>
+            <input type="text" id="addressLine1" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
+            <label for="addressLine2">Address Line 2</label>
+            <input type="text" id="addressLine2" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
+            <label for="state">State / Province</label>
+            <input type="text" id="state" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
+            <label for="zipCode">Zip / Postal Code</label>
+            <input type="text" id="zipCode" class="form-control" disabled required>
+          </div>
+
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" id="country" class="form-control" disabled required>
+          </div>
+
+          <button class="btn address-save-btn" id="saveAddressBtn" style="display: none;">Save Address</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="account-delete">
+      <button id="deleteAccountBtn" class="delete-btn">Delete Account</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <div id="footer-container"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('[Settings] Page loaded.');
+
+      // Load navbar
+      fetch('/customer/partials/navbar2')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navbar').innerHTML = html;
+
+          // Add hamburger menu functionality after navbar is loaded
+          const barsIcon = document.querySelector(".fa-bars");
+          const dropdownMenu = document.querySelector(".dropdown-menu");
+
+          if (barsIcon && dropdownMenu) {
+            barsIcon.addEventListener("click", (event) => {
+              dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+              event.stopPropagation();
+            });
+
+            document.addEventListener("click", () => {
+              dropdownMenu.style.display = "none";
+            });
+
+            dropdownMenu.addEventListener("click", (event) => {
+              event.stopPropagation();
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error loading navbar:', error);
+        });
+
+      // Load footer
+      fetch('/customer/partials/footer')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('footer-container').innerHTML = html;
+        })
+        .catch(error => {
+          console.error('Error loading footer:', error);
+        });
+
+      // Load user data
+      fetch('/customer/api/user')
+        .then(async response => {
+          if (!response.ok) {
+            const text = await response.text();
+            console.error('[Settings] /api/user returned non-OK', response.status, text);
+            throw new Error('Failed to load user data');
+          }
+          return response.json();
+        })
+        .then(user => {
+          console.log('[Settings] User data loaded:', user);
+          populateUserData(user);
+        })
+        .catch(error => {
+          console.error('Error loading user data:', error);
+        });
+    });
+
+    function populateUserData(user) {
+      document.getElementById('username').value = user.username || '';
+      document.getElementById('email').value = user.email || '';
+      document.getElementById('name').value = user.name || '';
+      document.getElementById('mobile_no').value = user.mobile_no || '';
+
+      // Parse address if it exists
+      if (user.address) {
+        const addressParts = user.address.split('|');
+        if (addressParts.length >= 6) {
+          document.getElementById('addressLine1').value = addressParts[0] || '';
+          document.getElementById('addressLine2').value = addressParts[1] || '';
+          document.getElementById('city').value = addressParts[2] || '';
+          document.getElementById('state').value = addressParts[3] || '';
+          document.getElementById('zipCode').value = addressParts[4] || '';
+          document.getElementById('country').value = addressParts[5] || '';
+        }
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.style.display = 'block';
+
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // Tab switching functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+        // Add active class to clicked tab and corresponding content
+        tab.classList.add('active');
+        const tabId = tab.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // Edit functionality for profile fields
+    document.querySelectorAll('.btn-edit[data-field]').forEach(button => {
+      button.addEventListener('click', function() {
+        const field = this.getAttribute('data-field');
+        const input = document.getElementById(field);
+        const isEditing = !input.disabled;
+
+        if (isEditing) {
+          // Save changes — validate but avoid showing realtime-only hints here
+          const value = input.value.trim();
+          if (validateField(field, value, { showMessage: true })) {
+            updateUserField(field, value);
+          }
+        } else {
+          // Enable editing
+          input.disabled = false;
+          input.focus();
+          this.textContent = 'Save';
+        }
+      });
+    });
+
+    // Real-time validation while typing (show errors immediately)
+    const nameInput = document.getElementById('name');
+    const mobileInput = document.getElementById('mobile_no');
+
+    if (nameInput) {
+      nameInput.addEventListener('input', (e) => {
+        validateField('name', e.target.value, { showMessage: true, realtime: true });
+      });
+    }
+
+    if (mobileInput) {
+      mobileInput.addEventListener('input', (e) => {
+        validateField('mobile_no', e.target.value, { showMessage: true, realtime: true });
+      });
+    }
+
+    // Address edit functionality
+    document.getElementById('editAddressBtn').addEventListener('click', function() {
+      const inputs = document.querySelectorAll('#address input:not([type="hidden"])');
+      const isEditing = !inputs[0].disabled;
+
+      if (isEditing) {
+        // Save address
+        const addressData = {
+          addressLine1: document.getElementById('addressLine1').value.trim(),
+          addressLine2: document.getElementById('addressLine2').value.trim(),
+          city: document.getElementById('city').value.trim(),
+          state: document.getElementById('state').value.trim(),
+          zipCode: document.getElementById('zipCode').value.trim(),
+          country: document.getElementById('country').value.trim()
+        };
+
+        if (validateAddress(addressData)) {
+          updateUserAddress(addressData);
+        }
+      } else {
+        // Enable editing
+        inputs.forEach(input => input.disabled = false);
+        document.getElementById('saveAddressBtn').style.display = 'block';
+        this.style.display = 'none';
+      }
+    });
+
+    document.getElementById('saveAddressBtn').addEventListener('click', function() {
+      const addressData = {
+        addressLine1: document.getElementById('addressLine1').value.trim(),
+        addressLine2: document.getElementById('addressLine2').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        state: document.getElementById('state').value.trim(),
+        zipCode: document.getElementById('zipCode').value.trim(),
+        country: document.getElementById('country').value.trim()
+      };
+
+      if (validateAddress(addressData)) {
+        updateUserAddress(addressData);
+      }
+    });
+
+    // Delete account functionality
+    document.getElementById('deleteAccountBtn').addEventListener('click', function() {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        deleteAccount();
+      }
+    });
+
+    function validateField(field, value, options = { showMessage: false, realtime: false }) {
+      const fullNameError = document.getElementById('fullNameError');
+      const mobileError = document.getElementById('mobile_noError');
+      const { showMessage, realtime } = options;
+
+      // Helper to show/hide messages only when desired
+      const show = (el) => { if (showMessage) el.style.display = 'block'; };
+      const hide = (el) => { if (showMessage || realtime) el.style.display = 'none'; };
+
+      if (field === 'name') {
+        const nameRegex = /^[a-zA-Z\s]+$/;
+        if (!nameRegex.test(value)) {
+          show(fullNameError);
+          return false;
+        }
+        hide(fullNameError);
+        return true;
+      }
+
+      if (field === 'mobile_no') {
+        const mobileRegex = /^\d{10}$/;
+        if (!mobileRegex.test(value)) {
+          show(mobileError);
+          return false;
+        }
+        hide(mobileError);
+        return true;
+      }
+
+      return true;
+    }
+
+    function validateAddress(addressData) {
+      // Basic validation - ensure required fields are not empty
+      const requiredFields = ['addressLine1', 'city', 'state', 'zipCode', 'country'];
+      for (const field of requiredFields) {
+        if (!addressData[field]) {
+          showToast('Please fill in all required address fields', 'error');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    async function updateUserField(field, value) {
+      try {
+        const response = await fetch('/customer/api/user', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ [field]: value }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showToast('Profile updated successfully');
+          document.getElementById(field).disabled = true;
+          document.querySelector(`[data-field="${field}"]`).textContent = 'Edit';
+        } else {
+          showToast(result.message || 'Failed to update profile', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating user field:', error);
+        showToast('An error occurred while updating your profile', 'error');
+      }
+    }
+
+    async function updateUserAddress(addressData) {
+      try {
+        // Convert address object to pipe-separated string format
+        const addressString = `${addressData.addressLine1}|${addressData.addressLine2}|${addressData.city}|${addressData.state}|${addressData.zipCode}|${addressData.country}`;
+
+        const response = await fetch('/customer/api/user', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ address: addressString }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showToast('Address updated successfully');
+          // Disable inputs and hide save button
+          const inputs = document.querySelectorAll('#address input:not([type="hidden"])');
+          inputs.forEach(input => input.disabled = true);
+          document.getElementById('saveAddressBtn').style.display = 'none';
+          document.getElementById('editAddressBtn').style.display = 'block';
+        } else {
+          showToast(result.message || 'Failed to update address', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating address:', error);
+        showToast('An error occurred while updating your address', 'error');
+      }
+    }
+
+    async function deleteAccount() {
+      try {
+        const response = await fetch('/customer/api/user', {
+          method: 'DELETE',
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showToast('Account deleted successfully');
+          setTimeout(() => {
+            window.location.href = '/logout';
+          }, 2000);
+        } else {
+          showToast(result.message || 'Failed to delete account', 'error');
+        }
+      } catch (error) {
+        console.error('Error deleting account:', error);
+        showToast('An error occurred while deleting your account', 'error');
+      }
+    }
+  </script>
+</body>
+
+</html>
