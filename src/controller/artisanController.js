@@ -250,6 +250,40 @@ export const getArtisanCustomRequestsAPI = async (req, res) => {
   }
 };
 
+// API: GET /artisan/api/customrequests/:id -> return a single mapped request
+export const getArtisanRequestByIdAPI = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) return res.status(400).json({ error: 'Missing id' });
+
+    const requests = await getRequests(null); // fetch all then filter (service doesn't have single-get)
+    const found = (requests || []).find(r => r && r._id && r._id.toString() === id);
+    if (!found) return res.status(404).json({ error: 'Request not found' });
+
+    const obj = found && found.toObject ? found.toObject() : found;
+    const requester = (obj.userId && typeof obj.userId === 'object') ? {
+      username: obj.userId.username || null,
+      email: obj.userId.email || null,
+      mobile_no: obj.userId.mobile_no || null,
+    } : null;
+
+    return res.status(200).json({ request: { ...obj, requester } });
+  } catch (error) {
+    console.error('Error fetching request by id:', error);
+    res.status(500).json({ error: 'Failed to fetch request' });
+  }
+};
+
+// Serve the static view details HTML page
+export const getViewDetailsController = async (req, res) => {
+  try {
+    res.sendFile(path.join(process.cwd(), 'src', 'public', 'artisan', 'viewdetails.html'));
+  } catch (error) {
+    console.error('Error serving viewdetails page:', error);
+    res.status(500).send('error');
+  }
+};
+
 export const approveCustomRequest = async (req, res) => {
   try {
     const approvingartisanid = req.user.id;
