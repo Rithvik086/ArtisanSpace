@@ -2,6 +2,7 @@ import {
   getApprovedProducts,
   getProducts,
 } from "../services/productServices.js";
+import path from "path";
 import {
   addItem,
   changeProductAmount,
@@ -25,60 +26,19 @@ import {
 const custrole = "customer";
 
 export const getHomePage = async (req, res) => {
-  const userId = req.user.id;
-  const customerOrders = await getOrdersById(userId);
-  // Debug log removed: console.log(customerOrders, userId);
-  const customerRequests = await getRequestById(userId);
-  const customerWorkshops = await getWorkshopByUserId(userId);
-  res.render("customer/customerhome", {
-    role: custrole,
-    requests: customerRequests,
-    orders: customerOrders,
-    workshops: customerWorkshops,
-    userId,
-  });
+  res.sendFile(
+    path.join(process.cwd(), "src/views/customer/customerhome.html")
+  );
 };
 
 export const getOrdersPageCustomer = async (req, res) => {
-  const userId = req.user.id;
-  const orderId = req.params.orderId;
-
-  const order = await getOrderByOrderId(orderId);
-
-  if (!order) {
-    return res.status(404).send("Order not found");
-  }
-
-  res.render("customer/orderDetails", {
-    role: custrole,
-    order: order,
-  });
+  res.sendFile(
+    path.join(process.cwd(), "src/views/customer/orderDetails.html")
+  );
 };
 
 export const getStorePage = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { category } = req.query;
-    const products = await getApprovedProducts(category);
-
-    const page = parseInt(req.query.page) || 1;
-    const limit = 12;
-
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-
-    const paginatedProducts = products.slice(startIndex, endIndex);
-
-    res.render("customer/store", {
-      products: paginatedProducts,
-      currentPage: page,
-      totalPages: Math.ceil(products.length / limit),
-      role: custrole,
-      userId,
-    });
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
+  res.sendFile(path.join(process.cwd(), "src/views/customer/store.html"));
 };
 
 export const addToCart = async (req, res) => {
@@ -95,33 +55,9 @@ export const addToCart = async (req, res) => {
 //Orders
 
 export const getCartController = async (req, res) => {
-  const userId = req.user.id;
-  const cart = await getCart(userId);
-
-  let amount = 0;
-  for (const item of cart) {
-    amount += item.quantity * item.productId.newPrice;
-  }
-
-  // Check if this is a summary-only request (for quantity updates)
-  if (
-    req.query.summary === "true" &&
-    req.headers["x-requested-with"] === "XMLHttpRequest"
-  ) {
-    return res.json({ success: true, amount });
-  }
-
-  // Regular AJAX or full page request
-  if (req.headers["x-requested-with"] === "XMLHttpRequest") {
-    res.render("partials/cart", { cart, userId, amount });
-  } else {
-    res.render("customer/customerCart", {
-      role: custrole,
-      cart,
-      userId,
-      amount,
-    });
-  }
+  res.sendFile(
+    path.join(process.cwd(), "src/views/customer/customerCart.html")
+  );
 };
 
 export const editCart = async (req, res) => {
@@ -147,7 +83,7 @@ export const editCart = async (req, res) => {
 //Workshops
 
 export const getWorkshopPage = (req, res) => {
-  res.render("customer/workshop", { role: custrole });
+  res.sendFile(path.join(process.cwd(), "src/views/customer/workshop.html"));
 };
 
 export const bookWorkshopPage = async (req, res) => {
@@ -191,7 +127,7 @@ export const bookWorkshopPage = async (req, res) => {
 //Custom orders
 
 export const getCustomOrderPage = (req, res) => {
-  res.render("customer/customorder", { role: req.user.role });
+  res.sendFile(path.join(process.cwd(), "src/views/customer/customorder.html"));
 };
 
 export const reqCustomOrder = async (req, res) => {
@@ -233,44 +169,7 @@ export const reqCustomOrder = async (req, res) => {
 
 //checkout Page
 export const checkout = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const cart = await getCart(userId);
-
-    if (!cart || cart.length === 0) {
-      return res.redirect("/customer/orders");
-    }
-
-    const products = await getProducts();
-
-    // Calculate total amount
-    let amount = 0;
-    cart.forEach((item) => {
-      if (item) {
-        amount += item.productId.newPrice * item.quantity;
-      }
-    });
-
-    // Calculate shipping and tax
-    const shipping = 50; // Fixed shipping fee
-    const tax = Math.round(amount * 0.05 * 100) / 100; // 5% tax
-    let user = await getUserById(userId);
-
-    res.render("customer/checkout", {
-      role: custrole,
-      cart,
-      products,
-      amount: amount.toFixed(2),
-      shipping,
-      tax,
-      user,
-    });
-  } catch (error) {
-    console.error("Error loading checkout page:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to load checkout page" });
-  }
+  res.sendFile(path.join(process.cwd(), "src/views/customer/checkout.html"));
 };
 
 export const checkout1 = async (req, res) => {

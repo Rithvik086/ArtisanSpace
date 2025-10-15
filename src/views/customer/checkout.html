@@ -173,6 +173,18 @@
       border-bottom: 1px solid #eee;
     }
 
+    .address-item {
+      margin-bottom: 10px;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .address-item strong {
+      color: #333;
+      display: inline-block;
+      min-width: 70px;
+    }
+
     /* Order Summary Styles */
     .checkout-item {
       display: flex;
@@ -581,43 +593,10 @@
             <p>Loading cart details...</p>
           </div>
           <div class="products">
-            <div class="checkout-item">
-              <img src="https://via.placeholder.com/80" alt="Product 1" class="product-img">
-              <div class="product-details">
-                <h3>Handmade Pottery Vase</h3>
-                <p class="price">₹1,299</p>
-                <p class="quantity">Quantity: 1</p>
-                <p class="item-total">Item Total: ₹1,299.00</p>
-              </div>
-            </div>
-
-            <div class="checkout-item">
-              <img src="https://via.placeholder.com/80" alt="Product 2" class="product-img">
-              <div class="product-details">
-                <h3>Wooden Craft Box</h3>
-                <p class="price">₹749</p>
-                <p class="quantity">Quantity: 2</p>
-                <p class="item-total">Item Total: ₹1,498.00</p>
-              </div>
-            </div>
+            <!-- Products will be loaded here -->
           </div>
           <div class="summary">
-            <div class="summary-row">
-              <span>Subtotal:</span>
-              <span>₹2,797.00</span>
-            </div>
-            <div class="summary-row">
-              <span>Shipping:</span>
-              <span>₹100</span>
-            </div>
-            <div class="summary-row">
-              <span>Tax:</span>
-              <span>₹450</span>
-            </div>
-            <div class="summary-row total">
-              <span>Total Amount:</span>
-              <span>₹3,347</span>
-            </div>
+            <!-- Summary will be loaded here -->
           </div>
         </div>
       </div>
@@ -628,14 +607,11 @@
         <div id="shippingBox" class="box">
           <h3>Shipping Information</h3>
           <div id="addressContainer">
-            <div>123 Artisan Street, Gummidipundi, Tamil Nadu</div>
-            <div>State: Tamil Nadu</div>
-            <div>Pincode: 603201</div>
-            <div>John Artisan</div>
+            <!-- Address will be loaded here -->
           </div>
         </div>
 
-        <button class="changeAddress-btn" onclick="alert('Redirect to settings')">Change Address</button>
+        <button class="changeAddress-btn" onclick="window.location.href='/customer/settings'">Change Address</button>
 
         <!-- PAYMENT METHOD -->
         <div id="paymentBox" class="box">
@@ -724,84 +700,8 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', async function() {
-
-
-      async function loadCartDetails() {
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const productsContainer = document.querySelector('.products');
-    const summaryContainer = document.querySelector('.summary');
-
-    try {
-      // Show loading spinner
-      loadingSpinner.style.display = 'block';
-      productsContainer.innerHTML = ''; // clear existing
-      summaryContainer.innerHTML = ''; // clear existing
-
-      const response = await fetch('/customer/checkout-products',{
-        headers: { 'Accept': 'application/json' }
-      });
-      console.log('Fetch Response:', response);
-
-      if (!response.ok) throw new Error('Failed to fetch cart data');
-
-      const data = await response.json();
-      console.log('Cart Data:', data);
-      const { cart, amount } = data;
-
-      let subtotal = 0;
-      cart.forEach(item => {
-        const product = item.productId;
-        const total = product.newPrice * item.quantity;
-        subtotal += total;
-
-        const itemHTML = `
-          <div class="checkout-item">
-            <img src="${product.imageUrl || 'https://via.placeholder.com/80'}" alt="${product.name}" class="product-img">
-            <div class="product-details">
-              <h3>${product.name}</h3>
-              <p class="price">₹${product.newPrice}</p>
-              <p class="quantity">Quantity: ${item.quantity}</p>
-              <p class="item-total">Item Total: ₹${total.toFixed(2)}</p>
-            </div>
-          </div>`;
-        productsContainer.insertAdjacentHTML('beforeend', itemHTML);
-      });
-
-      const shipping = 50;
-      const tax = Math.round(subtotal * 0.05);
-      const total = subtotal + shipping + tax;
-
-      summaryContainer.innerHTML = `
-        <div class="summary-row">
-          <span>Subtotal:</span>
-          <span>₹${subtotal.toFixed(2)}</span>
-        </div>
-        <div class="summary-row">
-          <span>Shipping:</span>
-          <span>₹${shipping}</span>
-        </div>
-        <div class="summary-row">
-          <span>Tax:</span>
-          <span>₹${tax}</span>
-        </div>
-        <div class="summary-row total">
-          <span>Total Amount:</span>
-          <span>₹${total.toFixed(2)}</span>
-        </div>`;
-    } catch (error) {
-      console.error('Error loading cart:', error);
-      showNotification('Failed to load cart details', 'error');
-      // Show error message in products container
-      productsContainer.innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Failed to load cart details. Please refresh the page.</p>';
-    } finally {
-      // Hide loading spinner
-      loadingSpinner.style.display = 'none';
-    }
-  }
-
-  // Call on page load
-  await loadCartDetails();
-
+      // Load checkout data
+      await loadCheckoutData();
 
       // Navbar dropdown toggle
       const barsIcon = document.querySelector(".fa-bars");
@@ -840,47 +740,149 @@
         });
       });
 
-
       // Place Order button
-      document.getElementById("placeOrderBtn").addEventListener('click', function() {
+      document.getElementById("placeOrderBtn").addEventListener('click', async function() {
         const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-        
-        // Show success notification
-        showNotification('Order placed successfully!', 'success');
 
-        setTimeout(() => {
-          alert('Order placed with ' + paymentMethod + ' method');
-        }, 1500);
+        try {
+          const response = await fetch('/customer/place-order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ paymentMethod }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showNotification('Order placed successfully!', 'success');
+            setTimeout(() => {
+              window.location.href = '/customer';
+            }, 1500);
+          } else {
+            showNotification(data.message || 'Failed to place order', 'error');
+          }
+        } catch (error) {
+          console.error('Error placing order:', error);
+          showNotification('Something went wrong', 'error');
+        }
       });
-
-      // Notification function
-      function showNotification(message, type) {
-        let notificationContainer = document.querySelector(".notification-container");
-
-        if (!notificationContainer) {
-          notificationContainer = document.createElement("div");
-          notificationContainer.className = "notification-container";
-          document.body.appendChild(notificationContainer);
-        }
-
-        if ([...notificationContainer.children].some(n => n.textContent === message)) {
-          return;
-        }
-
-        const notification = document.createElement("div");
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-
-        notificationContainer.appendChild(notification);
-
-        setTimeout(() => {
-          notification.classList.add("fade-out");
-          setTimeout(() => {
-            notification.remove();
-          }, 500);
-        }, 3000);
-      }
     });
+
+    async function loadCheckoutData() {
+      const loadingSpinner = document.getElementById('loadingSpinner');
+      const productsContainer = document.querySelector('.products');
+      const summaryContainer = document.querySelector('.summary');
+      const addressContainer = document.getElementById('addressContainer');
+
+      try {
+        loadingSpinner.style.display = 'block';
+        productsContainer.innerHTML = '';
+        summaryContainer.innerHTML = '';
+        addressContainer.innerHTML = '';
+
+        const response = await fetch('/customer/api/checkout');
+        if (!response.ok) throw new Error('Failed to fetch checkout data');
+
+        const data = await response.json();
+        const { cart, amount, shipping, tax, user } = data;
+
+        let subtotal = 0;
+        cart.forEach(item => {
+          const product = item.productId;
+          const total = product.newPrice * item.quantity;
+          subtotal += total;
+
+          const itemHTML = `
+            <div class="checkout-item">
+              <img src="${product.image}" alt="${product.name}" class="product-img">
+              <div class="product-details">
+                <h3>${product.name}</h3>
+                <p class="price">₹${product.newPrice}</p>
+                <p class="quantity">Quantity: ${item.quantity}</p>
+                <p class="item-total">Item Total: ₹${total.toFixed(2)}</p>
+              </div>
+            </div>`;
+          productsContainer.insertAdjacentHTML('beforeend', itemHTML);
+        });
+
+        const total = subtotal + shipping + tax;
+
+        summaryContainer.innerHTML = `
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span>₹${subtotal.toFixed(2)}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping:</span>
+            <span>₹${shipping}</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax:</span>
+            <span>₹${tax.toFixed(2)}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total Amount:</span>
+            <span>₹${total.toFixed(2)}</span>
+          </div>`;
+
+        // Populate address
+        if (user) {
+          const addressParts = user.address ? user.address.split('|') : [];
+          const displayAddress = addressParts.slice(0, 3).join(', ') || 'No address provided';
+          const state = addressParts[3] || 'N/A';
+          const pincode = addressParts[4] || 'N/A';
+          addressContainer.innerHTML = `
+            <div class="address-item">
+              <strong>Address:</strong> ${displayAddress}
+            </div>
+            <div class="address-item">
+              <strong>State:</strong> ${state}
+            </div>
+            <div class="address-item">
+              <strong>Pincode:</strong> ${pincode}
+            </div>
+            <div class="address-item">
+              <strong>Name:</strong> ${user.name || 'N/A'}
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading checkout data:', error);
+        showNotification('Failed to load checkout details', 'error');
+        productsContainer.innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Failed to load checkout details. Please refresh the page.</p>';
+      } finally {
+        loadingSpinner.style.display = 'none';
+      }
+    }
+
+    function showNotification(message, type) {
+      let notificationContainer = document.querySelector(".notification-container");
+
+      if (!notificationContainer) {
+        notificationContainer = document.createElement("div");
+        notificationContainer.className = "notification-container";
+        document.body.appendChild(notificationContainer);
+      }
+
+      if ([...notificationContainer.children].some(n => n.textContent === message)) {
+        return;
+      }
+
+      const notification = document.createElement("div");
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+
+      notificationContainer.appendChild(notification);
+
+      setTimeout(() => {
+        notification.classList.add("fade-out");
+        setTimeout(() => {
+          notification.remove();
+        }, 500);
+      }, 3000);
+    }
   </script>
 </body>
 
