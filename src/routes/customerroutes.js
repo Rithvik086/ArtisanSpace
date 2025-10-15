@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import authorizerole from "../middleware/roleMiddleware.js";
 import upload from "../middleware/multer.js";
 
@@ -274,12 +275,12 @@ router.get("/settings", getSettingsCustomer);
 // Partial routes for HTML
 router.get("/partials/navbar2", (req, res) => {
   const role = req.user && req.user.role ? req.user.role : "customer";
-  res.render("partials/navbar2", { role });
+  const navbarFile = `navbar2-${role}.html`;
+  res.sendFile(path.join(process.cwd(), "src/public/partials", navbarFile));
 });
 
 router.get("/partials/footer", (req, res) => {
-  const role = req.user && req.user.role ? req.user.role : "customer";
-  res.render("partials/footer", { role });
+  res.sendFile(path.join(process.cwd(), "src/public/partials/footer.html"));
 });
 
 export default router;

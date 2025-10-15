@@ -7,6 +7,7 @@ import {
   getPendingProducts,
   getProductsByRole,
   getProductsCount,
+  updateProduct,
 } from "../services/productServices.js";
 import {
   getUserById,
@@ -22,9 +23,7 @@ const __dirname = path.dirname(__filename);
 const mngrole = "manager";
 
 export const getManagerDashboard = async (req, res) => {
-  const userlist = await getUsersByRole("manager");
-  const products = await getProductsByRole(req.user.role);
-  res.render("manager/managerdashboard", { role: mngrole, userlist, products });
+  res.sendFile(path.join(__dirname, "../public/manager/managerdashboard.html"));
 };
 
 export const deleteUserHandler = async (req, res) => {
@@ -45,6 +44,34 @@ export const deleteUserHandler = async (req, res) => {
       res
         .status(500)
         .json({ success: false, message: "Failed to delete user" });
+    }
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+};
+
+export const editProductHandler = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const { name, oldPrice, newPrice, quantity, description } = req.body;
+
+    const result = await updateProduct(
+      productId,
+      name,
+      oldPrice,
+      newPrice,
+      quantity,
+      description
+    );
+
+    if (result.success) {
+      res
+        .status(200)
+        .json({ success: true, message: "Product updated successfully" });
+    } else {
+      res
+        .status(500)
+        .json({ success: false, message: "Failed to update product" });
     }
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
@@ -74,7 +101,9 @@ export const getAndHandleContentModerationManager = async (req, res) => {
         res.status(500).json({ success: false });
       }
     } else {
-      res.render("manager/managerContentModeration", { role: mngrole });
+      res.sendFile(
+        path.join(__dirname, "../public/manager/managerContentModeration.html")
+      );
     }
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
@@ -86,39 +115,85 @@ export const loadPartialSection = async (req, res) => {
   const counts = await getProductsCount();
   let html = "";
 
+  const tableHeader = `<table>
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Name</th>
+      <th>UploadedBy</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Type</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>`;
+
+  const tableFooter = `</tbody></table>`;
+
   if (section === "approved") {
     const approvedProducts = await getApprovedProducts();
-    html = res.render(
-      "manager/partials/approved",
-      { approvedProducts },
-      (err, rendered) => {
-        if (err)
-          return res.status(500).json({ success: false, error: err.message });
-        res.json({ success: true, html: rendered, counts });
-      }
-    );
+    html = tableHeader;
+    approvedProducts.forEach((product) => {
+      html += `<tr id="product-${product._id.toString()}">
+        <td class="product-name">
+          <img src="${product.image}" class="product-img" alt="${product.name}">
+        </td>
+        <td>${product.name}</td>
+        <td>${product.userId.username} (${product.uploadedBy})</td>
+        <td>${product.quantity}</td>
+        <td><s>₹${product.oldPrice}</s> <br><span class="price">₹${
+        product.newPrice
+      }</span></td>
+        <td>${product.category}</td>
+        <td><button class="btn remove-btn approve-side" data-id="${product._id.toString()}">Remove</button></td>
+      </tr>`;
+    });
+    html += tableFooter;
+    res.json({ success: true, html, counts });
   } else if (section === "disapproved") {
     const disapprovedProducts = await getDisapprovedProducts();
-    html = res.render(
-      "manager/partials/disapproved",
-      { disapprovedProducts },
-      (err, rendered) => {
-        if (err)
-          return res.status(500).json({ success: false, error: err.message });
-        res.json({ success: true, html: rendered, counts });
-      }
-    );
+    html = tableHeader;
+    disapprovedProducts.forEach((product) => {
+      html += `<tr id="product-${product._id.toString()}">
+        <td class="product-name">
+          <img src="${product.image}" class="product-img" alt="${product.name}">
+        </td>
+        <td>${product.name}</td>
+        <td>${product.userId.username} (${product.uploadedBy})</td>
+        <td>${product.quantity}</td>
+        <td><s>₹${product.oldPrice}</s> <br><span class="price">₹${
+        product.newPrice
+      }</span></td>
+        <td>${product.category}</td>
+        <td><button class="btn remove-btn" data-id="${product._id.toString()}">Remove</button></td>
+      </tr>`;
+    });
+    html += tableFooter;
+    res.json({ success: true, html, counts });
   } else if (section === "pending") {
     const pendingProducts = await getPendingProducts();
-    html = res.render(
-      "manager/partials/pending",
-      { pendingProducts },
-      (err, rendered) => {
-        if (err)
-          return res.status(500).json({ success: false, error: err.message });
-        res.json({ success: true, html: rendered, counts });
-      }
-    );
+    html = tableHeader;
+    pendingProducts.forEach((product) => {
+      html += `<tr id="product-${product._id.toString()}">
+        <td class="product-name">
+          <img src="${product.image}" class="product-img" alt="${product.name}">
+        </td>
+        <td class="product-name">${product.name}</td>
+        <td>${product.userId.username} (${product.uploadedBy})</td>
+        <td>${product.quantity}</td>
+        <td><s>₹${product.oldPrice}</s> <br><span class="price">₹${
+        product.newPrice
+      }</span></td>
+        <td>${product.category}</td>
+        <td>
+          <button class="btn approve-btn" data-id="${product._id.toString()}">Approve</button>
+          <button class="btn disapprove-btn" data-id="${product._id.toString()}">Disapprove</button>
+        </td>
+      </tr>`;
+    });
+    html += tableFooter;
+    res.json({ success: true, html, counts });
   }
 };
 

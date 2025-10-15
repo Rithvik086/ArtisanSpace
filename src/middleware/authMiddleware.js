@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import path from 'path';
+import path from "path";
 import { userExists } from "../services/userServices.js";
 
 export const verifytoken = async (req, res, next) => {
@@ -9,7 +9,9 @@ export const verifytoken = async (req, res, next) => {
 
   let token = req.cookies.token;
   if (!token) {
-    return res.status(401).sendFile(path.join(process.cwd(), 'src', 'public', 'accessdenied.html'));
+    return res
+      .status(401)
+      .sendFile(path.join(process.cwd(), "src", "public", "accessdenied.html"));
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -30,7 +32,9 @@ export const redirectBasedOnRole = async (req, res, next) => {
   // If no token exists, just show the homepage
   let token = req.cookies.token;
   if (!token) {
-    return res.render("HomePage", { role: null });
+    return res.sendFile(
+      path.join(process.cwd(), "src", "public", "HomePage.html")
+    );
   }
 
   try {
@@ -43,19 +47,23 @@ export const redirectBasedOnRole = async (req, res, next) => {
       // Extract role from the token
       const role = user.role;
 
+      // Build redirect URL with return path if not homepage
+      const returnPath =
+        req.path !== "/" ? `?from=${encodeURIComponent(req.path)}` : "";
+
       // Redirect based on role
       switch (role) {
         case "admin":
-          res.redirect("/admin/");
+          res.redirect(`/admin/${returnPath}`);
           break;
         case "manager":
-          res.redirect("/manager/");
+          res.redirect(`/manager/${returnPath}`);
           break;
         case "customer":
-          res.redirect("/customer/");
+          res.redirect(`/customer/${returnPath}`);
           break;
         case "artisan":
-          res.redirect("/artisan/");
+          res.redirect(`/artisan/${returnPath}`);
           break;
         default:
           // If no recognized role, just proceed

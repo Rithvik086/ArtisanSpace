@@ -419,28 +419,7 @@
 </head>
 
 <body>
-  <!-- Navbar -->
-  <header>
-    <div class="header-container2">
-      <div class="logonav2">ArtisanSpace</div>
-      <nav class="nav2">
-        <ul class="nav2ul">
-          <li><a href="/manager">Dashboard</a></li>
-        <li><a href="/manager/content-moderation">Content Moderation</a></li>
-        <li><a href="/manager/listing">Listings</a></li>
-        <li class="dropdown">
-          <i class="fa-solid fa-bars fa-lg"></i>
-          <div class="dropdown-menu">
-            <a href="/manager/settings" class="dropdown-item settings-btn">
-              <i class="fa-solid fa-gear"></i>
-              <p>Settings</p>
-            </a>
-            </div>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <div id="navbar"></div>
 
   <main>
     <div class="page-title">
@@ -521,55 +500,43 @@
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="topfooter">
-      <div class="topfooter1">
-        <p class="logop">AS</p>
-        <p>
-          
-          It is a long established fact that a reader will be distracted by
-          the readable content of a page when looking at its layout.
-        </p>
-      </div>
-      <div class="footerhelp">
-        <p class="help">Help</p>
-        <a href="/aboutus.html" style="text-decoration: none; color: black">
-          <p>AboutUs</p>
-        </a>
-      </div>
-      <div class="ourinfo">
-        <p class="info">Our Information</p>
-        <p>IIIT SriCity</p>
-        <p>+91 0000000000</p>
-        <p>Artisanspace09@gmail.com</p>
-      </div>
-    </div>
-    <div class="bottomfooter">
-      Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
-    </div>
-  </footer>
+  <div id="footer"></div>
+
+  <script>
+    // Load navbar
+    fetch('/manager/partials/navbar2')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+        // Attach dropdown listeners
+        const barsIcon = document.querySelector(".fa-bars");
+        const dropdownMenu = document.querySelector(".dropdown-menu");
+        if (barsIcon && dropdownMenu) {
+          barsIcon.addEventListener("click", (event) => {
+            dropdownMenu.classList.toggle('show');
+            event.stopPropagation();
+          });
+          document.addEventListener("click", () => {
+            dropdownMenu.classList.remove('show');
+          });
+          dropdownMenu.addEventListener("click", (event) => {
+            event.stopPropagation();
+          });
+        }
+      })
+      .catch(error => console.error('Error loading navbar:', error));
+
+    // Load footer
+    fetch('/manager/partials/footer')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('footer').innerHTML = html;
+      })
+      .catch(error => console.error('Error loading footer:', error));
+  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Dropdown toggle
-      const barsIcon = document.querySelector(".fa-bars");
-      const dropdownMenu = document.querySelector(".dropdown-menu");
-
-      if (barsIcon && dropdownMenu) {
-        barsIcon.addEventListener("click", (event) => {
-          dropdownMenu.classList.toggle('show');
-          event.stopPropagation();
-        });
-
-        document.addEventListener("click", () => {
-          dropdownMenu.classList.remove('show');
-        });
-
-        dropdownMenu.addEventListener("click", (event) => {
-          event.stopPropagation();
-        });
-      }
 
       // Form elements
       const productName = document.getElementById('product-name');

@@ -12,9 +12,17 @@
 </head>
 
 <body>
-  <%- include("partials/header") %>
+  <header>
+    <div class="backimageheader"></div>
+
+    <div class="headelems">
+      <div class="logo">
+        <img src="/images/logo.png" alt="logo" />
+      </div>
+    </div>
+  </header>
   <main>
-    <%- include("partials/navbar") %>
+    <div id="navbar"></div>
     <div class="mainimage">
       <h3>We Make Things With love</h3>
       <h1>HANDMADE</h1>
@@ -41,7 +49,27 @@
       </div>
     </div>
   </main>
-  <%- include("partials/footer",{role}) %>
+  <div id="footer"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load navbar
+      fetch('/partials/navbar')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navbar').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading navbar:', error));
+
+      // Load footer
+      fetch('/partials/footer')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('footer').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading footer:', error));
+    });
+  </script>
 </body>
 
 </html>
