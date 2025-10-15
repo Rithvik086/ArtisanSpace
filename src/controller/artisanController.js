@@ -123,14 +123,25 @@ export const postListingsController = async (req, res) => {
 // Workshops
 
 export const getWorkshopsController = async (req, res) => {
-  let availableWorkshops = await getAvailableWorkshops();
-  let acceptedWorkshops = await getAcceptedWorkshops(req.user.id);
+  try {
+    // Serve the static HTML page
+    res.sendFile(path.join(process.cwd(), 'src', 'public', 'artisan', 'artisanworkshop.html'));
+  } catch (err) {
+    console.error('Error serving artisan workshop page:', err);
+    res.status(500).send('error');
+  }
+};
 
-  res.render("artisan/artisanworkshop", {
-    role: astrole,
-    availableWorkshops,
-    acceptedWorkshops,
-  });
+// API endpoint to return workshops data for the current artisan
+export const getArtisanWorkshopsAPI = async (req, res) => {
+  try {
+    const availableWorkshops = await getAvailableWorkshops();
+    const acceptedWorkshops = await getAcceptedWorkshops(req.user.id);
+    res.status(200).json({ availableWorkshops, acceptedWorkshops });
+  } catch (error) {
+    console.error('Error fetching workshops:', error);
+    res.status(500).json({ error: 'Failed to fetch workshops' });
+  }
 };
 
 export const handleWorksopAction = async (req, res) => {

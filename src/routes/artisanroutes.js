@@ -10,6 +10,7 @@ import {
   getListingsController,
   postListingsController,
   getWorkshopsController,
+  getArtisanWorkshopsAPI,
   handleWorksopAction,
   getCustomRequestsController,
   approveCustomRequest,
@@ -26,6 +27,9 @@ router.get("/", getArtisanDashboard);
 
 // API endpoint for products data
 router.get("/api/products", getArtisanProductsAPI);
+
+// API endpoint for workshops data
+router.get('/api/workshops', getArtisanWorkshopsAPI);
 
 router.put("/edit-product/:id", editProductController);
 
