@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import path from 'path';
 import { userExists } from "../services/userServices.js";
 
 export const verifytoken = async (req, res, next) => {
@@ -8,7 +9,7 @@ export const verifytoken = async (req, res, next) => {
 
   let token = req.cookies.token;
   if (!token) {
-    return res.status(401).render("accessdenied");
+    return res.status(401).sendFile(path.join(process.cwd(), 'src', 'public', 'accessdenied.html'));
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
