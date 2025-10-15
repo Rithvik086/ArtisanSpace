@@ -1,15 +1,15 @@
 import { addTicket } from "../services/ticketServices.js";
 import { removeUser, updateUser, getUsers } from "../services/userServices.js";
-import path from "path";
 import {
   getApprovedProducts,
   getProduct,
   getProducts,
 } from "../services/productServices.js";
 import { totalOrders, getOrders } from "../services/orderServices.js";
+import path from "path";
 
 export const renderAboutUs = (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'src', 'public', 'aboutus.html'));
+  res.sendFile(path.join(process.cwd(), "src", "public", "aboutus.html"));
 };
 
 // API endpoint to get user role
@@ -22,7 +22,7 @@ export const renderContactUs = (req, res) => {
 };
 
 export const renderSupportTicket = (req, res) => {
-  res.render("supportTicket", { role: req.user.role });
+  res.sendFile(path.join(process.cwd(), "src/views/supportTicket.html"));
   console.log(req.user.userId);
 };
 

@@ -59,4 +59,14 @@ router.get("/customrequests/:requestId", deleteCustomRequest);
 
 router.get("/settings", getSettingsArtisan);
 
+router.get("/partials/navbar2", (req, res) => {
+  const role = req.user && req.user.role ? req.user.role : "artisan";
+  res.render("partials/navbar2", { role });
+});
+
+router.get("/partials/footer", (req, res) => {
+  const role = req.user && req.user.role ? req.user.role : "artisan";
+  res.render("partials/footer", { role });
+});
+
 export default router;

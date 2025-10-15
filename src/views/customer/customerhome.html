@@ -291,6 +291,25 @@
         const navbarResponse = await fetch('/customer/partials/navbar2');
         const navbarHtml = await navbarResponse.text();
         document.getElementById('navbar').innerHTML = navbarHtml;
+
+        // Add hamburger menu functionality after navbar is loaded
+        const barsIcon = document.querySelector(".fa-bars");
+        const dropdownMenu = document.querySelector(".dropdown-menu");
+
+        if (barsIcon && dropdownMenu) {
+          barsIcon.addEventListener("click", (event) => {
+            dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+            event.stopPropagation();
+          });
+
+          document.addEventListener("click", () => {
+            dropdownMenu.style.display = "none";
+          });
+
+          dropdownMenu.addEventListener("click", (event) => {
+            event.stopPropagation();
+          });
+        }
       } catch (error) {
         console.error('Error loading navbar:', error);
       }
@@ -346,7 +365,22 @@
       const slider = document.querySelector(".slider");
       try {
         const productsResponse = await fetch("/customer/api/products");
-        const products = await productsResponse.json();
+        const productsData = await productsResponse.json();
+        // Normalize response shape: API may return an array or an object { products, ... }
+        let products = [];
+        if (Array.isArray(productsData)) {
+          products = productsData;
+        } else if (productsData && Array.isArray(productsData.products)) {
+          products = productsData.products;
+        } else if (productsData && productsData.products) {
+          // fallback: if products is an object (unlikely), take its values
+          try {
+            products = Object.values(productsData.products);
+          } catch (e) {
+            products = [];
+          }
+        }
+
         slider.innerHTML = "";
         products.forEach(product => {
           const a = document.createElement('a');

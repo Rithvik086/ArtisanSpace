@@ -1,11 +1,11 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 /* body {
@@ -21,150 +21,151 @@ body::-webkit-scrollbar {
 } */
 
 main {
-    flex: 1;
-    padding: 50px 0;
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
+  flex: 1;
+  padding: 50px 0;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .page-title {
-    text-align: center;
-    margin-bottom: 40px;
+  text-align: center;
+  margin-bottom: 40px;
+  font-family: "Baloo Bhai 2", cursive;
 }
 
 .page-title h1 {
-    font-size: 42px;
-    color: #5c4033;
-    margin-bottom: 10px;
+  font-size: 42px;
+  color: #5c4033;
+  margin-bottom: 10px;
 }
 
 .page-title p {
-    font-size: 18px;
-    color: #8b4513;
+  font-size: 20px;
+  color: #8b4513;
 }
 
 .form-container {
-    background-color: #f8ead8;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    padding: 40px;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+  background-color: #f8ead8;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 40px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .form-row {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  margin-bottom: 20px;
 }
 
 label {
-    color: #5c4033;
-    font-weight: 600;
-    font-size: 16px;
+  color: #5c4033;
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .required::after {
-    content: " *";
-    color: #8b4513;
+  content: " *";
+  color: #8b4513;
 }
 
 input,
 select,
 textarea {
-    padding: 12px;
-    border: 2px solid #deb887;
-    border-radius: 8px;
-    background-color: #fff8dc;
-    font-family: "Baloo Bhai 2", cursive;
-    color: #5c4033;
-    font-weight: 500;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
-    width: 100%;
+  padding: 12px;
+  border: 2px solid #deb887;
+  border-radius: 8px;
+  background-color: #fff8dc;
+  font-family: "Baloo Bhai 2", cursive;
+  color: #5c4033;
+  font-weight: 500;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  width: 100%;
 }
 
 textarea {
-    resize: vertical;
-    min-height: 120px;
+  resize: vertical;
+  min-height: 120px;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-    outline: none;
-    border-color: #8b4513;
-    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+  outline: none;
+  border-color: #8b4513;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
 }
 
 select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235c4033%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
-    padding-right: 30px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235c4033%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 30px;
 }
 
 button {
-    cursor: pointer;
-    padding: 14px;
-    font-size: 18px;
-    border-radius: 8px;
-    background-color: #5c4033;
-    color: white;
-    border: none;
-    transition: background-color 0.3s;
-    font-family: "Baloo Bhai 2", cursive;
-    font-weight: 600;
-    margin-top: 10px;
-    width: 100%;
+  cursor: pointer;
+  padding: 14px;
+  font-size: 18px;
+  border-radius: 8px;
+  background-color: #5c4033;
+  color: white;
+  border: none;
+  transition: background-color 0.3s;
+  font-family: "Baloo Bhai 2", cursive;
+  font-weight: 600;
+  margin-top: 10px;
+  width: 100%;
 }
 
 button:hover {
-    background-color: #8b4513;
+  background-color: #8b4513;
 }
 
 #status-message {
-    padding: 12px;
-    border-radius: 8px;
-    margin-top: 20px;
-    text-align: center;
-    font-weight: 600;
-    display: none;
-    background-color: rgba(92, 64, 51, 0.1);
-    color: #5c4033;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 600;
+  display: none;
+  background-color: rgba(92, 64, 51, 0.1);
+  color: #5c4033;
 }
 
 .success {
-    display: block !important;
+  display: block !important;
 }
 
 @media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-    }
+  .form-row {
+    flex-direction: column;
+  }
 
-    .form-container {
-        padding: 30px 20px;
-    }
+  .form-container {
+    padding: 30px 20px;
+  }
 
-    main {
-        padding: 30px 0;
-    }
+  main {
+    padding: 30px 0;
+  }
 }
