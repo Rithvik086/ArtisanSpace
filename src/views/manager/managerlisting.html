@@ -2,61 +2,22 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Product - ArtisanSpace</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listings</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&family=Kranky&display=swap");
 
-    /* ======================= */
-    /* GLOBAL RESET & LAYOUT */
-    /* ======================= */
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      font-family: "Baloo Bhai 2", sans-serif;
-      background-color: #f8f8f8;
-      color: #5c4033;
-      display: flex;
-      flex-direction: column;
-    }
-
-    body::-webkit-scrollbar {
-      display: none;
-    }
-
-    main {
-      flex: 1;
-      padding: 50px 0;
-      width: 90%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    footer {
-      margin-top: auto;
-      width: 100%;
-    }
-
-    /* ======================= */
-    /* NAVBAR STYLES */
-    /* ======================= */
-
+    /* Navbar Styles */
     header {
       background-color: #5c4033;
       color: #f8ead8;
       padding: 20px 0;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
     .header-container2 {
@@ -77,48 +38,26 @@
       color: #f8ead8;
     }
 
-    /* Navigation Menu */
-    .nav2ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  padding: 0;
-  margin: 0;
-}
-   
+    .nav2 {
+      display: flex;
+      align-items: center;
+    }
+
     .nav2ul {
       list-style: none;
       display: flex;
-      gap: 0;
+      gap: 20px;
       padding: 0;
       margin: 0;
       align-items: center;
-      justify-content: flex-start;
-      width: 100%;
     }
 
     .nav2ul li {
       list-style: none;
     }
 
-    .nav2-links {
-      display: flex;
-      gap: 0;
-      align-items: center;
-    }
-
-    .nav2-links li a {
-      display: block;
-      padding: 10px 20px;
-      color: #f8ead8;
-      text-decoration: none;
-      font-weight: 600;
-      transition: none;
-      border-bottom: 3px solid transparent;
-    }
-
     .nav2ul .dropdown {
-      margin-left: auto;
+      margin-left: 10px;
     }
 
     .nav2ul a {
@@ -127,10 +66,13 @@
       font-weight: 600;
       padding: 5px 10px;
       border-radius: 5px;
-      transition: none;
+      transition: background-color 0.3s;
     }
 
-    /* Dropdown Styles */
+    .nav2ul a:hover {
+      background-color: rgba(248, 234, 216, 0.1);
+    }
+
     .dropdown {
       position: relative;
       display: inline-block;
@@ -139,12 +81,6 @@
 
     .dropdown i {
       color: #f8ead8;
-      font-size: 18px;
-      transition: color 0.3s ease;
-    }
-
-    .dropdown i:hover {
-      color: #deb887;
     }
 
     .dropdown-menu {
@@ -156,49 +92,70 @@
       color: black;
       border-radius: 12px;
       padding: 10px;
-      width: 140px;
+      width: 120px;
       box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
       z-index: 1000;
     }
 
-    .dropdown-menu.active {
+    .dropdown-menu.show {
       display: block;
     }
 
-    /* Dropdown Items */
     .dropdown-item {
       display: flex;
       align-items: center;
       padding: 8px 10px;
       width: 100%;
-      font-size: 14px;
+      font-size: 16px;
       text-align: left;
       text-decoration: none;
-      color: #5c4033;
+      color: black;
       cursor: pointer;
       border-radius: 6px;
-      transition: background-color 0.2s ease;
+      transition: background 0.2s;
     }
 
     .dropdown-item:hover {
-      background-color: #f0e5d8;
+      background-color: rgba(92, 64, 51, 0.1);
     }
 
     .dropdown-item i {
       margin-right: 8px;
       color: #5c4033;
-      min-width: 16px;
     }
 
     .dropdown-item p {
       color: #5c4033;
       margin: 0;
-      font-weight: 500;
     }
 
-    /* ======================= */
-    /* MAIN CONTENT STYLES */
-    /* ======================= */
+    /* Main Body Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body::-webkit-scrollbar {
+      display: none;
+    }
+
+    body {
+      font-family: "Baloo Bhai 2", cursive;
+      background-color: #f8f8f8;
+      color: #5c4033;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1;
+      padding: 50px 0;
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
     .page-title {
       text-align: center;
@@ -257,7 +214,7 @@
       border: 2px solid #deb887;
       border-radius: 8px;
       background-color: #fff8dc;
-      font-family: "Baloo Bhai 2", sans-serif;
+      font-family: "Baloo Bhai 2", cursive;
       color: #5c4033;
       font-weight: 500;
       font-size: 16px;
@@ -283,6 +240,10 @@
       margin: 0;
     }
 
+    .error-input {
+      border-color: #dc3545 !important;
+    }
+
     .image-preview {
       margin-top: 10px;
     }
@@ -295,6 +256,37 @@
       object-fit: cover;
     }
 
+    /* Live preview styles */
+    .live-preview {
+      margin-top: 24px;
+      background: linear-gradient(180deg, #fffef9, #f8f1e6);
+      border: 2px solid #f0d9bf;
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .live-preview .preview-image {
+      width: 140px;
+      height: 140px;
+      background: #fff8dc;
+      border: 2px dashed #deb887;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .live-preview .preview-image img { width: 100%; height: 100%; object-fit: cover; }
+
+    .live-preview .preview-info { flex: 1; }
+    .live-preview .preview-info h3 { margin: 0 0 8px 0; color: #5c4033; }
+    .live-preview .preview-info p { margin: 4px 0; color: #6b4b36; }
+
     button {
       cursor: pointer;
       padding: 14px;
@@ -304,7 +296,7 @@
       color: white;
       border: none;
       transition: background-color 0.3s;
-      font-family: "Baloo Bhai 2", sans-serif;
+      font-family: "Baloo Bhai 2", cursive;
       font-weight: 600;
       margin-top: 10px;
       width: 100%;
@@ -327,32 +319,12 @@
 
     .success {
       display: block !important;
-      background-color: rgba(40, 167, 69, 0.1);
-      color: #28a745;
     }
 
-    .error {
-      display: block !important;
-      background-color: rgba(220, 53, 69, 0.1);
-      color: #dc3545;
-    }
-
-    .error-input {
-      border: 2px solid red !important;
-    }
-
-    .error-message {
-      color: red;
-      font-size: 14px;
-      margin: 5px 0 0;
-    }
-
-    
-
+    /* Footer Styles */
     .footer {
       font-family: "Baloo Bhai 2", sans-serif;
-      width: 100%;
-      background-color: #f8ead8;
+      margin-top: 50px;
     }
 
     .topfooter {
@@ -361,10 +333,9 @@
       width: 100%;
       display: flex;
       justify-content: space-evenly;
-      align-items: flex-start;
-      padding: 40px 20px;
+      align-items: start;
+      padding: 40px 0px;
       flex-wrap: wrap;
-      gap: 30px;
     }
 
     .topfooter1 {
@@ -373,21 +344,18 @@
       flex-direction: column;
       gap: 10px;
       align-items: center;
-      text-align: center;
     }
 
     .topfooter1 .logop {
       font-family: "Kranky", "Baloo Bhai 2", sans-serif;
       font-weight: bold;
       font-size: 40px;
-      color: #5c4033;
     }
 
-    .topfooter1 p {
+    .topfooter p {
       width: 260px;
       font-size: 16px;
-      color: #5c4033;
-      line-height: 1.6;
+      margin: 5px 0;
     }
 
     .footerhelp {
@@ -395,30 +363,17 @@
       flex-direction: column;
       gap: 10px;
       font-size: 16px;
-      min-width: 150px;
     }
 
     .footerhelp .help {
       color: #5c4033;
       font-weight: bold;
-      font-size: 20px;
-      margin-bottom: 5px;
+      font-size: 24px;
     }
 
     .footerhelp a {
-      color: #5c4033;
+      color: black;
       text-decoration: none;
-      transition: color 0.3s ease;
-      font-weight: 500;
-    }
-
-    .footerhelp a:hover {
-      color: #8b4513;
-    }
-
-    .footerhelp p {
-      color: #5c4033;
-      margin: 0;
     }
 
     .ourinfo {
@@ -426,20 +381,17 @@
       flex-direction: column;
       gap: 10px;
       font-size: 16px;
-      min-width: 200px;
     }
 
     .ourinfo .info {
       color: #5c4033;
       font-weight: bold;
-      font-size: 20px;
-      margin-bottom: 5px;
+      font-size: 24px;
     }
 
     .ourinfo p {
-      color: #5c4033;
-      margin: 0;
-      font-weight: 500;
+      color: black;
+      margin: 5px 0;
     }
 
     .bottomfooter {
@@ -447,138 +399,42 @@
       color: white;
       width: 100%;
       background-color: #5c4033;
-      padding: 20px;
-      font-weight: 600;
-      font-size: 14px;
+      padding: 20px 0;
     }
 
-    /* ======================= */
-    /* RESPONSIVE STYLES */
-    /* ======================= */
-
     @media (max-width: 768px) {
-      .form-row {
-        flex-direction: column;
+      .page-title h1 {
+        font-size: 2rem;
       }
 
       .form-container {
-        padding: 30px 20px;
+        padding: 25px;
       }
 
       main {
-        padding: 30px 0;
-      }
-
-      .page-title h1 {
-        font-size: 32px;
-      }
-
-      .header-container2 {
-        flex-direction: column;
-        gap: 15px;
-        height: auto;
-        padding: 15px 0;
-      }
-
-      .nav2 {
-        margin-left: 0;
-        width: 100%;
-      }
-
-      .nav2ul {
-        gap: 15px;
-      }
-
-      .topfooter {
-        justify-content: center;
-        padding: 30px 20px;
-        gap: 20px;
-      }
-
-      .topfooter1 {
-        max-width: 100%;
-      }
-
-      .topfooter1 p {
-        width: 100%;
-      }
-
-      .footerhelp,
-      .ourinfo {
-        min-width: auto;
-      }
-
-      .footerhelp .help,
-      .ourinfo .info {
-        font-size: 18px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .header-container2 {
-        flex-direction: column;
-      }
-
-      .nav2ul {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .topfooter {
-        flex-direction: column;
-        align-items: center;
-        padding: 20px 15px;
-      }
-
-      .topfooter1 .logop {
-        font-size: 32px;
-      }
-
-      .topfooter1 p {
-        width: 100%;
-        font-size: 14px;
-      }
-
-      .footerhelp,
-      .ourinfo {
-        text-align: center;
-      }
-
-      .bottomfooter {
-        font-size: 12px;
-        padding: 15px 10px;
-      }
-
-      .dropdown-menu {
-        left: -80px;
+        margin: 20px auto;
       }
     }
   </style>
 </head>
 
 <body>
-  <!-- Navigation Header -->
+  <!-- Navbar -->
   <header>
     <div class="header-container2">
       <div class="logonav2">ArtisanSpace</div>
       <nav class="nav2">
         <ul class="nav2ul">
-          <div class="nav2-links">
-            <li><a href="/manager/">Dashboard</a></li>
-            <li><a href="/manager/content-moderation">Content Moderation</a></li>
-            <li><a href="/manager/listing">Listings</a></li>
-          </div>
-          <li class="dropdown">
-            <i class="fa-solid fa-bars fa-lg"></i>
-            <div class="dropdown-menu">
-              <a href="/manager/settings" class="dropdown-item settings-btn">
-                <i class="fa-solid fa-gear"></i>
-                <p>Settings</p>
-              </a>
-              <a href="/logout" class="dropdown-item logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <p>Logout</p>
-              </a>
+          <li><a href="/manager">Dashboard</a></li>
+        <li><a href="/manager/content-moderation">Content Moderation</a></li>
+        <li><a href="/manager/listing">Listings</a></li>
+        <li class="dropdown">
+          <i class="fa-solid fa-bars fa-lg"></i>
+          <div class="dropdown-menu">
+            <a href="/manager/settings" class="dropdown-item settings-btn">
+              <i class="fa-solid fa-gear"></i>
+              <p>Settings</p>
+            </a>
             </div>
           </li>
         </ul>
@@ -586,7 +442,6 @@
     </div>
   </header>
 
-  <!-- Main Content -->
   <main>
     <div class="page-title">
       <h1>Add New Product</h1>
@@ -600,7 +455,7 @@
             <label for="product-name">Product Name</label>
             <input type="text" id="product-name" name="productName" placeholder="Enter product name" required />
             <p id="productNameError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
-              Product name must only contain letters, numbers, spaces, and hyphens, and be between 3 and 40 characters long.
+              Product name must only contain letters, numbers, spaces, and hyphens, and be between 3 and 30 characters long.
             </p>
           </div>
         </div>
@@ -639,6 +494,7 @@
           <label for="product-photo">Product Photo</label>
           <input type="file" id="product-photo" name="image" accept="image/*" required />
           <div id="image-preview" class="image-preview"></div>
+            
         </div>
 
         <div class="form-group">
@@ -677,7 +533,9 @@
       </div>
       <div class="footerhelp">
         <p class="help">Help</p>
-        <a href="/aboutus">AboutUs</a>
+        <a href="/aboutus.html" style="text-decoration: none; color: black">
+          <p>AboutUs</p>
+        </a>
       </div>
       <div class="ourinfo">
         <p class="info">Our Information</p>
@@ -693,22 +551,44 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Dropdown toggle
+      const barsIcon = document.querySelector(".fa-bars");
+      const dropdownMenu = document.querySelector(".dropdown-menu");
+
+      if (barsIcon && dropdownMenu) {
+        barsIcon.addEventListener("click", (event) => {
+          dropdownMenu.classList.toggle('show');
+          event.stopPropagation();
+        });
+
+        document.addEventListener("click", () => {
+          dropdownMenu.classList.remove('show');
+        });
+
+        dropdownMenu.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+      }
+
+      // Form elements
       const productName = document.getElementById('product-name');
-      const material = document.getElementById("material");
+      const material = document.getElementById('material');
       const originalPrice = document.getElementById('original-price');
       const description = document.getElementById('description');
       const quantity = document.getElementById('quantity');
       const productPhoto = document.getElementById('product-photo');
       const imagePreview = document.getElementById('image-preview');
-      const statusMessage = document.getElementById("status-message");
 
-      const productNameRegex = /^[a-zA-Z0-9\s-&]+$/;
-      const materialRegex = /^[a-zA-Z\s,\-]+$/;
-      const originalPriceRegex = /^\d+(\.\d{1,2})?$/;
-      const descriptionRegex = /^[a-zA-Z0-9\s.,'"\-!?()]+$/;
-      const quantityRegex = /^[1-9][0-9]*$/;
+  // Validation regex
+  // Product name: letters, spaces, ampersand and hyphen (numbers NOT allowed)
+  const productNameregex = /^[a-zA-Z\s&\-]+$/;
+  // Material: letters, spaces, comma and hyphen (numbers NOT allowed)
+  const materialregex = /^[a-zA-Z\s,\-]+$/;
+      const originalPriceregex = /^\d+(\.\d{1,2})?$/;
+      const descriptionregex = /^[a-zA-Z0-9\s.,'"\-!?()]+$/;
+      const quantityregex = /^[1-9][0-9]*$/;
 
-      // Handle image preview
+      // Handle image preview (kept simple)
       productPhoto.addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
@@ -722,119 +602,202 @@
         }
       });
 
-      // Handle dropdown menu
-      const barsIcon = document.querySelector(".fa-bars");
-      const dropdownMenu = document.querySelector(".dropdown-menu");
+      // Validation functions
+      function validateProductName() {
+        const errorElement = document.getElementById('productNameError');
+        const val = productName.value;
 
-      if (barsIcon && dropdownMenu) {
-        barsIcon.addEventListener("click", (event) => {
-          dropdownMenu.classList.toggle('active');
-          event.stopPropagation();
-        });
+        // Empty state
+        if (!val || val.trim().length === 0) {
+          errorElement.style.display = 'none';
+          productName.classList.remove('error-input');
+          return false;
+        }
 
-        document.addEventListener("click", () => {
-          dropdownMenu.classList.remove('active');
-        });
+        // Numbers not allowed
+        if (/\d/.test(val)) {
+          errorElement.textContent = 'Numbers are not allowed in product name.';
+          errorElement.style.display = 'block';
+          productName.classList.add('error-input');
+          return false;
+        }
 
-        dropdownMenu.addEventListener("click", (event) => {
-          event.stopPropagation();
-        });
+        // Allowed characters check
+        if (!productNameregex.test(val)) {
+          errorElement.textContent = 'Only letters, spaces, & and - are allowed.';
+          errorElement.style.display = 'block';
+          productName.classList.add('error-input');
+          return false;
+        }
+
+        // Length
+        if (val.trim().length < 3) {
+          errorElement.textContent = 'Minimum 3 characters required.';
+          errorElement.style.display = 'block';
+          productName.classList.add('error-input');
+          return false;
+        }
+
+        if (val.trim().length > 40) {
+          errorElement.textContent = 'Maximum 40 characters allowed.';
+          errorElement.style.display = 'block';
+          productName.classList.add('error-input');
+          return false;
+        }
+
+        // All good
+        errorElement.style.display = 'none';
+        productName.classList.remove('error-input');
+        return true;
       }
+
+      function validateMaterial() {
+        const errorElement = document.getElementById('materialError');
+        const val = material.value;
+
+        if (!val || val.trim().length === 0) {
+          errorElement.style.display = 'none';
+          material.classList.remove('error-input');
+          return false;
+        }
+
+        if (/\d/.test(val)) {
+          errorElement.textContent = 'Numbers are not allowed in material.';
+          errorElement.style.display = 'block';
+          material.classList.add('error-input');
+          return false;
+        }
+
+        if (!materialregex.test(val) || val.trim().length < 3) {
+          errorElement.textContent = 'Material must be at least 3 letters and only contain letters, spaces or commas.';
+          errorElement.style.display = 'block';
+          material.classList.add('error-input');
+          return false;
+        }
+
+        if (val.trim().length > 50) {
+          errorElement.textContent = 'Maximum 50 characters allowed.';
+          errorElement.style.display = 'block';
+          material.classList.add('error-input');
+          return false;
+        }
+
+        errorElement.style.display = 'none';
+        material.classList.remove('error-input');
+        return true;
+      }
+
+      function validateOriginalPrice() {
+        const errorElement = document.getElementById('originalPriceError');
+        if (!originalPriceregex.test(originalPrice.value)) {
+          errorElement.style.display = "block";
+          originalPrice.classList.add('error-input');
+          return false;
+        } else {
+          errorElement.style.display = "none";
+          originalPrice.classList.remove('error-input');
+          return true;
+        }
+      }
+
+      function validateDescription() {
+        const errorElement = document.getElementById('descriptionError');
+        if (!descriptionregex.test(description.value) || description.value.length < 10 || description.value.length > 500) {
+          errorElement.style.display = "block";
+          description.classList.add('error-input');
+          return false;
+        } else {
+          errorElement.style.display = "none";
+          description.classList.remove('error-input');
+          return true;
+        }
+      }
+
+      function validateQuantity() {
+        const errorElement = document.getElementById('quantityError');
+        if (!quantityregex.test(quantity.value)) {
+          errorElement.style.display = "block";
+          quantity.classList.add('error-input');
+          return false;
+        } else {
+          errorElement.style.display = "none";
+          quantity.classList.remove('error-input');
+          return true;
+        }
+      }
+
+      // Attach real-time validation events
+      productName.addEventListener('input', validateProductName);
+      material.addEventListener('input', validateMaterial);
+      originalPrice.addEventListener('input', validateOriginalPrice);
+      description.addEventListener('input', validateDescription);
+      quantity.addEventListener('input', validateQuantity);
 
       // Handle form submission
       document.getElementById("product-form").addEventListener("submit", async function(event) {
         event.preventDefault();
 
-        // Reset previous error states
-        productName.classList.remove('error-input');
-        document.getElementById('productNameError').style.display = "none";
-        material.classList.remove("error-input");
-        document.getElementById('materialError').style.display = "none";
-        originalPrice.classList.remove('error-input');
-        document.getElementById('originalPriceError').style.display = "none";
-        description.classList.remove('error-input');
-        document.getElementById('descriptionError').style.display = "none";
-        quantity.classList.remove('error-input');
-        document.getElementById('quantityError').style.display = "none";
+        // Run all validations
+        const isProductNameValid = validateProductName();
+        const isMaterialValid = validateMaterial();
+        const isPriceValid = validateOriginalPrice();
+        const isDescriptionValid = validateDescription();
+        const isQuantityValid = validateQuantity();
 
-        // Validate product name
-        if (!productNameRegex.test(productName.value) || productName.value.length < 3 || productName.value.length > 40) {
-          document.getElementById('productNameError').style.display = "block";
-          productName.classList.add('error-input');
-          productName.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
+        // If all validations pass, submit the form
+        if (isProductNameValid && isMaterialValid && isPriceValid && isDescriptionValid && isQuantityValid) {
+          const inputs = this.querySelectorAll("input");
+          const formData = new FormData(this);
+          const statusMessage = document.getElementById("status-message");
 
-        // Validate material
-        if (!materialRegex.test(material.value) || material.value.length < 3 || material.value.length > 50) {
-          document.getElementById('materialError').style.display = "block";
-          material.classList.add('error-input');
-          material.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        // Validate price
-        if (!originalPriceRegex.test(originalPrice.value)) {
-          document.getElementById('originalPriceError').style.display = "block";
-          originalPrice.classList.add('error-input');
-          originalPrice.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        // Validate description
-        if (!descriptionRegex.test(description.value) || description.value.length < 10 || description.value.length > 500) {
-          document.getElementById('descriptionError').style.display = "block";
-          description.classList.add('error-input');
-          description.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        // Validate quantity
-        if (!quantityRegex.test(quantity.value)) {
-          document.getElementById('quantityError').style.display = "block";
-          quantity.classList.add('error-input');
-          quantity.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        // Trim all inputs
-        const inputs = this.querySelectorAll("input");
-        const formData = new FormData(this);
-
-        inputs.forEach(input => {
-          if (input.type !== "file") {
-            input.value = input.value.trim();
-          }
-        });
-
-        try {
-          const response = await fetch(this.action, {
-            method: "POST",
-            body: formData
+          // Trim input values
+          inputs.forEach(input => {
+            if (input.type !== "file") {
+              input.value = input.value.trim();
+            }
           });
 
-          if (response.ok) {
-            statusMessage.innerText = "Product successfully added!";
-            statusMessage.classList.add("success");
-            statusMessage.classList.remove("error");
-            statusMessage.style.display = "block";
+          try {
+            const response = await fetch(this.action, {
+              method: "POST",
+              body: formData
+            });
 
-            setTimeout(() => {
-              window.location.href = "/manager/";
-            }, 2000);
-          } else {
-            throw new Error("Failed to add product. Please try again.");
+            if (response.ok) {
+              statusMessage.innerText = "Product successfully added!";
+              statusMessage.classList.remove("error");
+              statusMessage.classList.add("success");
+              statusMessage.style.display = "block";
+
+              setTimeout(() => {
+                window.location.href = "/manager/listing";
+              }, 2000);
+            } else {
+              throw new Error("Failed to add product. Please try again.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            statusMessage.innerText = "Error: " + error.message;
+            statusMessage.classList.remove("success");
+            statusMessage.classList.add("error");
+            statusMessage.style.display = "block";
           }
-        } catch (error) {
-          console.error("Error:", error);
-          statusMessage.innerText = "Error: " + error.message;
-          statusMessage.classList.add("error");
-          statusMessage.classList.remove("success");
-          statusMessage.style.display = "block";
+        } else {
+          // Scroll to the first invalid field
+          if (!isProductNameValid) {
+            productName.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (!isMaterialValid) {
+            material.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (!isPriceValid) {
+            originalPrice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (!isDescriptionValid) {
+            description.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (!isQuantityValid) {
+            quantity.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
       });
     });
   </script>
 </body>
-
 </html>
