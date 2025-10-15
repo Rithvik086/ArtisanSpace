@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Order</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&family=Kranky&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/footer.css">
+  <style>
+    main {
+      width: 50%;
+      margin: 40px auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0 auto;
+      background-color: #f8f5f2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .form-header h1 {
+      color: #663300;
+      margin-bottom: 10px;
+    }
+
+    .form-header p {
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .file-upload {
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+      background-color: #f5f5f5;
+      border: 2px dashed #ddd;
+      padding: 20px;
+      text-align: center;
+      border-radius: 4px;
+    }
+
+    .file-upload input {
+      position: absolute;
+      font-size: 100px;
+      opacity: 0;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: #663300;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #8a4500;
+    }
+
+    .required:after {
+      content: "*";
+      color: #e32;
+      margin-left: 4px;
+    }
+
+    .note-box {
+      background-color: #fff8f0;
+      border-left: 4px solid #663300;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .error-input {
+      border: 1px solid red !important;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin: 5px 0 0;
+    }
+
+    #status-message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+      font-weight: 600;
+      display: none;
+    }
+
+    .success {
+      background-color: rgba(0, 128, 0, 0.1);
+      color: #006400;
+    }
+
+    .error {
+      background-color: rgba(255, 0, 0, 0.1);
+      color: #8b0000;
+    }
+
+    /* NAVBAR STYLES */
+    header {
+      background-color: #5c4033;
+      color: #f8ead8;
+      padding: 20px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-container2 {
+      height: 6vh;
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "Baloo Bhai 2", sans-serif;
+      font-size: 16px;
+    }
+
+    .logonav2 {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .nav2 {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav2ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+      align-items: center;
+    }
+
+    .nav2ul li {
+      list-style: none;
+    }
+
+    .nav2ul .dropdown {
+      margin-left: 10px;
+    }
+
+    .nav2ul a {
+      color: #f8ead8;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .nav2ul a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .fa-bars {
+      color: #f8ead8;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background-color: #5c4033;
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 5px;
+    }
+
+    .dropdown-menu a {
+      color: #f8ead8;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-weight: 500;
+    }
+
+    .dropdown-item {
+      display: flex !important;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dropdown-item i {
+      font-size: 16px;
+    }
+
+    .dropdown-item p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #663300;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <header>
+    <div class="header-container2">
+      <div class="logonav2">ArtisanSpace</div>
+      <nav class="nav2">
+        <ul class="nav2ul">
+          <li><a href="/customer">Home</a></li>
+          <li><a href="/customer/store">Store</a></li>
+          <li><a href="/customer/cart">Cart</a></li>
+          <li><a href="/customer/workshop">Workshops</a></li>
+          <li><a href="/customer/customorder">Custom Order</a></li>
+          <li class="dropdown">
+            <i class="fa-solid fa-bars fa-lg"></i>
+            <div class="dropdown-menu">
+              <a href="/customer/settings" class="dropdown-item settings-btn">
+                <i class="fa-solid fa-gear"></i>
+                <p>Settings</p>
+              </a>
+              <a href="/logout" class="dropdown-item logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <p>Logout</p>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <div class="form-header">
+        <h1>Request a Custom Handcrafted Item</h1>
+        <p>Describe your dream creation and our skilled artisans will bring it to life</p>
+      </div>
+
+      <div class="note-box">
+        <p>Your request will be visible to all artisans on our platform. Interested artisans will contact you with proposals.</p>
+      </div>
+
+      <form id="customOrderForm" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="userId" name="userId" value="" required>
+
+        <div class="form-group">
+          <label for="title" class="required">Request Title</label>
+          <input type="text" id="title" name="title" placeholder="Give your request a name" required>
+          <p id="titleError" class="error-message" style="display: none;">
+            Title is only alphanumeric
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="type" class="required">Type of Product</label>
+          <select id="type" name="type" required>
+            <option value="" disabled selected>Select product type</option>
+            <option value="statue">Statue</option>
+            <option value="painting">Painting</option>
+            <option value="footware">Footware</option>
+            <option value="pottery">Pottery</option>
+            <option value="toys">Toys</option>
+            <option value="headware">Headware</option>
+            <option value="musical instrument">Musical instrument</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="required">Detailed Description</label>
+          <textarea id="description" name="description" placeholder="Please describe your custom item in detail. Include size, color preferences, materials, design elements, intended use, etc." required></textarea>
+          <p id="descError" class="error-message" style="display: none;">
+            Description must be 10-300 words and contain only letters, numbers, spaces, and basic punctuation
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="image">Reference Image</label>
+          <div class="file-upload">
+            <p>Drag & drop an image here or click to upload</p>
+            <p>(Max 5MB)</p>
+            <input type="file" id="image" name="image" accept="image/*">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="budget" class="required">Budget</label>
+            <input type="text" id="budget" name="budget" required>
+            <p id="budgetError" class="error-message" style="display: none;">
+              Invalid budget (1-100,000)
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label for="requiredBy" class="required">Required By</label>
+            <input type="date" id="requiredBy" name="requiredBy" required>
+          </div>
+        </div>
+
+        <button type="submit">Submit Custom Order Request</button>
+        <div id="status-message"></div>
+      </form>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <div id="footer-container"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('[CustomOrder] Page loaded.');
+
+      // Load footer
+      fetch('/customer/partials/footer')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('footer-container').innerHTML = html;
+        })
+        .catch(error => {
+          console.error('Error loading footer:', error);
+        });
+
+      // Navbar dropdown toggle
+      const barsIcon = document.querySelector(".fa-bars");
+      const dropdownMenu = document.querySelector(".dropdown-menu");
+
+      barsIcon.addEventListener("click", (event) => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+        event.stopPropagation();
+      });
+
+      document.addEventListener("click", () => {
+        dropdownMenu.style.display = "none";
+      });
+
+      dropdownMenu.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+
+      // Initialize form elements
+      const customOrderForm = document.getElementById('customOrderForm');
+      const statusMessage = document.getElementById('status-message');
+      const imageInput = document.getElementById('image');
+      const imagePreview = document.createElement('div');
+      const budgetInput = document.getElementById('budget');
+
+      // Create a container for image preview
+      imagePreview.style.marginTop = '10px';
+      imagePreview.style.textAlign = 'center';
+      imagePreview.style.maxWidth = '100%';
+
+      // Real-time validation
+      const titleInput = document.getElementById('title');
+      const titleError = document.getElementById('titleError');
+      const descriptionInput = document.getElementById('description');
+      const descError = document.getElementById('descError');
+      const budgetError = document.getElementById('budgetError');
+
+      const titleRegex = /^[a-zA-Z0-9 ]+$/;
+      const budgetRegex = /^(?!0+$)([1-9]\d{0,5})$/;
+
+      titleInput.addEventListener('input', function() {
+        if (!titleRegex.test(titleInput.value)) {
+          titleError.style.display = "block";
+          titleInput.classList.add("error-input");
+        } else {
+          titleInput.classList.remove("error-input");
+          titleError.style.display = "none";
+        }
+      });
+
+      const descriptionRegex = /^[a-zA-Z0-9\s.,'"\-!?()]+$/;
+
+      descriptionInput.addEventListener('input', function() {
+        const wordCount = descriptionInput.value.trim().split(/\s+/).length;
+        const hasValidChars = descriptionRegex.test(descriptionInput.value) || descriptionInput.value.trim() === '';
+        const valid = descriptionInput.value.trim() && wordCount >= 10 && wordCount <= 300 && hasValidChars;
+        if (!valid) {
+          descError.style.display = "block";
+          descriptionInput.classList.add("error-input");
+        } else {
+          descriptionInput.classList.remove("error-input");
+          descError.style.display = "none";
+        }
+      });
+
+      budgetInput.addEventListener('input', function() {
+        console.log('[CustomOrder] Budget input changed:', budgetInput.value);
+        if (!budgetRegex.test(budgetInput.value)) {
+          budgetError.style.display = "block";
+          budgetInput.classList.add("error-input");
+        } else {
+          budgetInput.classList.remove("error-input");
+          budgetError.style.display = "none";
+        }
+      });
+
+      // Validate on form submission
+      customOrderForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        console.log('[CustomOrder] Submit button clicked.');
+
+        // Check if there are any validation errors
+        if (titleError.style.display === "block" ||
+            descError.style.display === "block" ||
+            budgetError.style.display === "block") {
+          console.warn('[CustomOrder] Form submission prevented due to validation errors.');
+          return;
+        }
+
+        // Show loading state
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="loading"></span>Submitting...';
+
+        const formData = new FormData(this);
+        console.log('[CustomOrder] Submitting form data:', Object.fromEntries(formData.entries()));
+
+        try {
+          const response = await fetch('/customer/customorder', {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await response.json();
+          console.log('[CustomOrder] Server response:', result);
+          const statusMessage = document.getElementById('status-message');
+          statusMessage.innerText = result.message;
+          statusMessage.classList.add(result.success ? 'success' : 'error');
+          statusMessage.style.display = 'block';
+
+          if (result.success) {
+            setTimeout(() => {
+              this.reset();
+              statusMessage.style.display = 'none';
+              // Reset validation states
+              titleInput.classList.remove("error-input");
+              descriptionInput.classList.remove("error-input");
+              budgetInput.classList.remove("error-input");
+              titleError.style.display = "none";
+              descError.style.display = "none";
+              budgetError.style.display = "none";
+              imagePreview.innerHTML = '';
+            }, 2000);
+
+            setTimeout(() => {
+              window.location.href = "/customer/";
+            }, 1500);
+          }
+
+        } catch (error) {
+          console.error('[CustomOrder] Error submitting Custom order:', error);
+          const statusMessage = document.getElementById('status-message');
+          statusMessage.innerText = 'An error occurred. Please try again.';
+          statusMessage.classList.add('error');
+          statusMessage.style.display = 'block';
+        } finally {
+          // Hide loading state
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalText;
+        }
+      });
+
+      // Insert the preview container after the file upload div
+      imageInput.parentNode.appendChild(imagePreview);
+
+      // Handle image preview
+      imageInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          console.log('[CustomOrder] Image selected:', file.name, file.size, file.type);
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Image Preview" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">`;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          imagePreview.innerHTML = ''; // Clear preview if no file selected
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

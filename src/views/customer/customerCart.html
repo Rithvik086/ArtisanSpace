@@ -435,7 +435,7 @@ main {
 </style>
 
 <body>
-  <%- include('../partials/navbar2', { role }) %>
+  <div id="navbar"></div>
   <main>
     <div id="contentBox">
       <!-- Content will be loaded dynamically -->
@@ -445,14 +445,43 @@ main {
       </div>
     </div>
   </main>
-  <%- include("../partials/footer") %>
+  <div id="footer"></div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    let userId;
+    let isInitialLoad = true;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Fetch navbar
+      try {
+        const navbarResponse = await fetch('/customer/partials/navbar2');
+        const navbarHtml = await navbarResponse.text();
+        document.getElementById('navbar').innerHTML = navbarHtml;
+      } catch (error) {
+        console.error('Error loading navbar:', error);
+      }
+
+      // Fetch footer
+      try {
+        const footerResponse = await fetch('/customer/partials/footer');
+        const footerHtml = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerHtml;
+      } catch (error) {
+        console.error('Error loading footer:', error);
+      }
+
+      // Fetch user ID
+      try {
+        const userResponse = await fetch('/customer/api/user');
+        const user = await userResponse.json();
+        userId = user.id;
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+
       console.log('[CustomerCart] Page loaded. Fetching cart data...');
       refreshCart();
     });
-    let isInitialLoad = true;
 
     // Standard update cart function for non-quantity operations (remove, initial load)
     async function updateCart(userId, productId, action, amount) {
@@ -577,15 +606,12 @@ main {
           isInitialLoad = false;
         }
 
-        console.log('[CustomerCart] Fetching cart HTML from server...');
-        const response = await fetch("/customer/cart", {
-          headers: {
-            "X-Requested-With": "XMLHttpRequest",
-          }
-        });
-        const html = await response.text();
-        document.getElementById("contentBox").innerHTML = html;
-        console.log('[CustomerCart] Cart HTML rendered.');
+        console.log('[CustomerCart] Fetching cart data...');
+        const response = await fetch("/customer/api/cart");
+        const data = await response.json();
+
+        renderCart(data.cart, data.amount);
+        console.log('[CustomerCart] Cart rendered.');
 
         attachEventListeners();
         console.log('[CustomerCart] Event listeners attached.');
@@ -599,6 +625,43 @@ main {
           </div>
         `;
       }
+    }
+
+    function renderCart(cart, amount) {
+      let html = '';
+      if (cart && cart.length > 0) {
+        html += '<div class="cart-items">';
+        cart.forEach(item => {
+          html += `
+            <div class="cart-item" data-id="${item.productId._id}">
+              <img src="${item.productId.image}" alt="${item.productId.name}">
+              <div class="cart-item-details">
+                <h3 class="cart-item-name">${item.productId.name}</h3>
+                <p>Category: ${item.productId.category}</p>
+                <p>Material: ${item.productId.material || ''}</p>
+                <p class="cart-item-price">₹${item.productId.newPrice}</p>
+              </div>
+              <div class="quantity-controls">
+                <button class="quantity-btn minus">-</button>
+                <input type="number" value="${item.quantity}" min="1" class="quantity-input" id="${item.productId._id}">
+                <button class="quantity-btn plus">+</button>
+              </div>
+              <button onclick="updateCart('${userId}', '${item.productId._id}', 'rem', 0)" class="remove-btn">Remove</button>
+            </div>
+          `;
+        });
+        html += `<button id="checkoutBtn" class="checkout-button">Proceed to Checkout</button>`;
+        html += '</div>';
+      } else {
+        html = `
+          <div class="empty-cart">
+            <h2>Your cart is empty</h2>
+            <p>Looks like you haven't added any products to your cart yet</p>
+            <a href="/customer/store" class="shop-now-btn">Shop Now</a>
+          </div>
+        `;
+      }
+      document.getElementById("contentBox").innerHTML = html;
     }
 
     function attachEventListeners() {
@@ -632,7 +695,7 @@ main {
 
           try {
             const response = await fetch(
-              `/customer/cart?userId=<%= userId %>&productId=${productId}&action=none&amount=${newQuantity}`, {
+              `/customer/cart?userId=${userId}&productId=${productId}&action=none&amount=${newQuantity}`, {
                 method: "POST",
               }
             );
@@ -640,7 +703,15 @@ main {
 
             if (data.success) {
               showNotification(data.message, "success");
-              await updateCartSummary('<%= userId %>');
+              if (data.message === "Inventory limit reached!") {
+                input.value = data.quantity;
+              }
+              // Update minus button
+              const minusBtn = input.parentElement.querySelector('.quantity-btn.minus');
+              if (minusBtn) {
+                minusBtn.disabled = parseInt(input.value) <= 1;
+              }
+              await updateCartSummary(userId);
             } else {
               showNotification(data.message || "Failed to update quantity", "error");
             }
@@ -658,10 +729,8 @@ main {
       document.querySelectorAll(".quantity-btn.plus").forEach(button => {
         button.addEventListener("click", function() {
           const productId = this.parentElement.querySelector('.quantity-input').id;
-          updateQuantity('<%= userId %>', productId, 'add');
+          updateQuantity(userId, productId, 'add');
         });
-        // Remove the inline onclick attribute
-        button.removeAttribute('onclick');
       });
 
       document.querySelectorAll(".quantity-btn.minus").forEach(button => {
@@ -672,28 +741,19 @@ main {
 
           // Only enable the minus button action if quantity > 1
           if (currentQuantity > 1) {
-            updateQuantity('<%= userId %>', productId, 'del');
+            updateQuantity(userId, productId, 'del');
           }
         });
-        // Remove the inline onclick attribute
-        button.removeAttribute('onclick');
       });
 
       // Check for checkout button
-      const cartItems = document.querySelectorAll(".cart-item");
-      if (cartItems.length > 0 && !document.getElementById("checkoutBtn")) {
-        const checkoutButton = document.createElement("button");
-        checkoutButton.textContent = "Proceed to Checkout";
-        checkoutButton.id = "checkoutBtn";
-        checkoutButton.className = "checkout-button";
-        checkoutButton.addEventListener("click", () => {
+      const checkoutBtn = document.getElementById("checkoutBtn");
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener("click", () => {
           window.location.href = "/customer/checkout";
         });
-        document.querySelector(".cart-items").appendChild(checkoutButton);
       }
     }
-
-
 
     function showNotification(message, type) {
       let notificationContainer = document.querySelector(".notification-container");
