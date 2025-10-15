@@ -533,7 +533,8 @@ main {
       try {
         console.log('[CustomerCart] Fetching cart summary for user');
         // Fetch just the updated totals
-        const response = await fetch(`/customer/cart?summary=true`, {
+        // Use the API endpoint which returns JSON (the HTML route returns an HTML page and breaks JSON.parse)
+        const response = await fetch(`/customer/api/cart?summary=true`, {
           headers: {
             "X-Requested-With": "XMLHttpRequest",
           }

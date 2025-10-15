@@ -55,6 +55,18 @@ export async function addItem(userId, productId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
+    if (!userId) {
+      throw new Error("Missing userId");
+    }
+    if (!productId) {
+      throw new Error("Missing productId");
+    }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid userId format");
+    }
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      throw new Error("Invalid productId format");
+    }
     const productQuantity = await productCount(productId, session);
     let cartQuantity = 0;
 
@@ -95,6 +107,12 @@ export async function deleteItem(userId, productId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
+    if (!userId) {
+      throw new Error("Missing userId");
+    }
+    if (!productId) {
+      throw new Error("Missing productId");
+    }
     const userProductCount = await getCartProductQuantity(
       userId,
       productId,
@@ -140,6 +158,15 @@ export async function changeProductAmount(userId, productId, amount) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
+    if (!userId) {
+      throw new Error("Missing userId");
+    }
+    if (!productId) {
+      throw new Error("Missing productId");
+    }
+    if (amount == null) {
+      throw new Error("Missing amount");
+    }
     const productQuantity = await productCount(productId, session);
     if (amount > productQuantity) {
       await Cart.findOneAndUpdate(
@@ -174,6 +201,12 @@ export async function removeCompleteItem(userId, productId) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
+    if (!userId) {
+      throw new Error("Missing userId");
+    }
+    if (!productId) {
+      throw new Error("Missing productId");
+    }
     // First check if the cart has only this one product
     const userCart = await getCart(userId, session);
     const productCount = userCart.length;
