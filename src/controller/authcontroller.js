@@ -1,3 +1,4 @@
+import path from "path";
 import {
   addUser,
   findUserByEmail,
@@ -89,7 +90,7 @@ const logout = (req, res) => {
 };
 
 const forgotPasswordRender = async (req, res) => {
-  res.render("forgotPassword");
+  res.sendFile(path.join(process.cwd(), "src/views/auth/forgotPassword.html"));
 };
 
 const forgotPasswordEmail = async (req, res) => {

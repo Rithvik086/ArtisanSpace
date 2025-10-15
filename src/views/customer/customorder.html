@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Custom Order</title>
+  <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&family=Kranky&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/footer.css">
@@ -164,116 +165,6 @@
       color: #8b0000;
     }
 
-    /* NAVBAR STYLES */
-    header {
-      background-color: #5c4033;
-      color: #f8ead8;
-      padding: 20px 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .header-container2 {
-      height: 6vh;
-      width: 90%;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: "Baloo Bhai 2", sans-serif;
-      font-size: 16px;
-    }
-
-    .logonav2 {
-      font-size: 28px;
-      font-weight: 800;
-    }
-
-    .nav2 {
-      display: flex;
-      align-items: center;
-    }
-
-    .nav2ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-      padding: 0;
-      margin: 0;
-      align-items: center;
-    }
-
-    .nav2ul li {
-      list-style: none;
-    }
-
-    .nav2ul .dropdown {
-      margin-left: 10px;
-    }
-
-    .nav2ul a {
-      color: #f8ead8;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 5px 10px;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    .nav2ul a:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-      cursor: pointer;
-    }
-
-    .fa-bars {
-      color: #f8ead8;
-      cursor: pointer;
-    }
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 40px;
-      right: 0;
-      background-color: #5c4033;
-      min-width: 160px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      z-index: 1;
-      border-radius: 5px;
-    }
-
-    .dropdown-menu a {
-      color: #f8ead8;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      font-weight: 500;
-    }
-
-    .dropdown-item {
-      display: flex !important;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .dropdown-item i {
-      font-size: 16px;
-    }
-
-    .dropdown-item p {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    .dropdown-menu a:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
     .loading {
       display: inline-block;
       width: 20px;
@@ -299,33 +190,7 @@
 
 <body>
   <!-- NAVBAR -->
-  <header>
-    <div class="header-container2">
-      <div class="logonav2">ArtisanSpace</div>
-      <nav class="nav2">
-        <ul class="nav2ul">
-          <li><a href="/customer">Home</a></li>
-          <li><a href="/customer/store">Store</a></li>
-          <li><a href="/customer/cart">Cart</a></li>
-          <li><a href="/customer/workshop">Workshops</a></li>
-          <li><a href="/customer/customorder">Custom Order</a></li>
-          <li class="dropdown">
-            <i class="fa-solid fa-bars fa-lg"></i>
-            <div class="dropdown-menu">
-              <a href="/customer/settings" class="dropdown-item settings-btn">
-                <i class="fa-solid fa-gear"></i>
-                <p>Settings</p>
-              </a>
-              <a href="/logout" class="dropdown-item logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <p>Logout</p>
-              </a>
-            </div>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <div id="navbar"></div>
 
   <main>
     <div class="form-container">
@@ -409,6 +274,35 @@
     document.addEventListener('DOMContentLoaded', function() {
       console.log('[CustomOrder] Page loaded.');
 
+      // Load navbar
+      fetch('/customer/partials/navbar2')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navbar').innerHTML = html;
+
+          // Add hamburger menu functionality after navbar is loaded
+          const barsIcon = document.querySelector(".fa-bars");
+          const dropdownMenu = document.querySelector(".dropdown-menu");
+
+          if (barsIcon && dropdownMenu) {
+            barsIcon.addEventListener("click", (event) => {
+              dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+              event.stopPropagation();
+            });
+
+            document.addEventListener("click", () => {
+              dropdownMenu.style.display = "none";
+            });
+
+            dropdownMenu.addEventListener("click", (event) => {
+              event.stopPropagation();
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error loading navbar:', error);
+        });
+
       // Load footer
       fetch('/customer/partials/footer')
         .then(response => response.text())
@@ -418,23 +312,6 @@
         .catch(error => {
           console.error('Error loading footer:', error);
         });
-
-      // Navbar dropdown toggle
-      const barsIcon = document.querySelector(".fa-bars");
-      const dropdownMenu = document.querySelector(".dropdown-menu");
-
-      barsIcon.addEventListener("click", (event) => {
-        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
-        event.stopPropagation();
-      });
-
-      document.addEventListener("click", () => {
-        dropdownMenu.style.display = "none";
-      });
-
-      dropdownMenu.addEventListener("click", (event) => {
-        event.stopPropagation();
-      });
 
       // Initialize form elements
       const customOrderForm = document.getElementById('customOrderForm');

@@ -81,6 +81,25 @@
         const navbarResponse = await fetch('/customer/partials/navbar2');
         const navbarHtml = await navbarResponse.text();
         document.getElementById('navbar').innerHTML = navbarHtml;
+
+        // Add hamburger menu functionality after navbar is loaded
+        const barsIcon = document.querySelector(".fa-bars");
+        const dropdownMenu = document.querySelector(".dropdown-menu");
+
+        if (barsIcon && dropdownMenu) {
+          barsIcon.addEventListener("click", (event) => {
+            dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+            event.stopPropagation();
+          });
+
+          document.addEventListener("click", () => {
+            dropdownMenu.style.display = "none";
+          });
+
+          dropdownMenu.addEventListener("click", (event) => {
+            event.stopPropagation();
+          });
+        }
       } catch (error) {
         console.error('Error loading navbar:', error);
       }
