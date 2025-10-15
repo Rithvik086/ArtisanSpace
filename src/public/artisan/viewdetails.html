@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Custom Order Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    .details-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .details-image {
+      max-width: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+      max-height: 300px;
+    }
+
+    .label {
+      font-weight: 600;
+      color: #555;
+    }
+
+    .value {
+      font-size: 1.05rem;
+      word-wrap: break-word;
+    }
+
+    .badge-budget {
+      background-color: #28a745;
+      font-size: 1rem;
+    }
+
+    .badge-date {
+      background-color: #dc3545;
+      font-size: 1rem;
+    }
+
+    .details-container {
+      padding: 2rem 0;
+    }   </style>
+</head>
+<body>
+  <div class="container details-container">
+    <div class="card details-card p-4">
+      <h2 class="mb-4">Custom Order Details</h2>
+      <div class="row g-4">
+        <!-- Image -->
+        <div class="col-md-5">
+          <img id="req-image" src="https://via.placeholder.com/400x300" alt="Order Image" class="details-image w-100" />
+        </div>
+
+        <!-- Info -->
+        <div class="col-md-7">
+          <div class="mb-3">
+            <span class="label">Title:</span>
+            <div id="req-title" class="value">Loading...</div>
+          </div>
+
+          <div class="mb-3">
+            <span class="label">Type:</span>
+            <div id="req-type" class="value">Loading...</div>
+          </div>
+
+          <div class="mb-3">
+            <span class="label">Description:</span>
+            <div id="req-description" class="value">Loading...</div>
+          </div>
+
+          <div class="mb-3">
+            <span class="label">Budget:</span><br>
+            <span id="req-budget" class="badge badge-budget">-</span>
+          </div>
+
+          <div class="mb-3">
+            <span class="label">Required By:</span><br>
+            <span id="req-requiredBy" class="badge badge-date">-</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4" />
+
+      <!-- Customer Info -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <span class="label">Customer Name:</span>
+            <div id="req-customer-name" class="value">Loading...</div>
+          </div>
+
+          <div class="mb-3">
+            <span class="label">Email:</span>
+            <div id="req-customer-email" class="value">Loading...</div>
+          </div>
+
+          <div class="mb-3">
+            <span class="label">Phone:</span>
+            <div id="req-customer-phone" class="value">Loading...</div>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex align-items-start justify-content-end">
+          <div class="d-grid gap-2">
+            <button id="complete-btn" class="btn btn-success">Mark as Completed</button>
+            <a id="back-link" href="/artisan/customrequests" class="btn btn-secondary">Back to Requests</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Try to determine requestId from the path or query string
+    function getRequestIdFromUrl() {
+      // If URL like /artisan/customrequests/view/:id
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      const last = pathParts[pathParts.length - 1];
+      if (last && /^[0-9a-fA-F]{24}$/.test(last)) return last; // mongodb id
+
+      // fallback to query param ?id=
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('id')) return params.get('id');
+      return null;
+    }
+
+    async function fetchRequest(requestId) {
+      try {
+        const resp = await fetch(`/artisan/api/customrequests/${requestId}`);
+        if (!resp.ok) throw new Error('Failed to load request');
+        const payload = await resp.json();
+        return payload.request || payload; // defensive
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    }
+
+    function populate(req) {
+      if (!req) return;
+      document.getElementById('req-image').src = req.image || 'https://via.placeholder.com/400x300';
+      document.getElementById('req-title').textContent = req.title || '-';
+      document.getElementById('req-type').textContent = req.type || '-';
+      document.getElementById('req-description').textContent = req.description || '-';
+      document.getElementById('req-budget').textContent = req.budget ? '₹' + req.budget : '-';
+      document.getElementById('req-requiredBy').textContent = req.requiredBy || '-';
+
+      // requester fallback logic
+      const requester = (req.requester && typeof req.requester === 'object') ? req.requester : (req.userId && typeof req.userId === 'object') ? req.userId : {};
+      document.getElementById('req-customer-name').textContent = requester.username || 'Unknown User';
+      document.getElementById('req-customer-email').textContent = requester.email || 'No Email';
+      document.getElementById('req-customer-phone').textContent = requester.mobile_no || requester.mobileNo || 'No Phone';
+
+      // wire complete button
+      const completeBtn = document.getElementById('complete-btn');
+      completeBtn.addEventListener('click', async () => {
+        completeBtn.disabled = true;
+        completeBtn.textContent = 'Processing...';
+        try {
+          const r = await fetch(`/artisan/customrequests/${req._id}`, { method: 'GET' });
+          if (r.ok) {
+            window.location.href = '/artisan/customrequests';
+          } else {
+            alert('Failed to mark as completed');
+            completeBtn.disabled = false;
+            completeBtn.textContent = 'Mark as Completed';
+          }
+        } catch (e) {
+          console.error(e);
+          alert('Error marking as completed');
+          completeBtn.disabled = false;
+          completeBtn.textContent = 'Mark as Completed';
+        }
+      });
+    }
+
+    (async function init() {
+      const requestId = getRequestIdFromUrl();
+      if (!requestId) {
+        alert('Missing request id');
+        return;
+      }
+      const req = await fetchRequest(requestId);
+      if (!req) {
+        alert('Request not found or you are not authorized');
+        return;
+      }
+      populate(req);
+    })();
+  </script>
+</body>
+</html>

@@ -7,6 +7,7 @@
   <title>AboutUs</title>
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     body {
       margin: 0;
@@ -22,8 +23,6 @@
       --section-padding: 5rem 2rem;
       --border-radius: 8px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      /* margin: 0; */
-      /* padding: 0; */
       color: var(--text-color);
       background-color: var(--background-color);
       line-height: 1.6;
@@ -375,11 +374,24 @@
         gap: 2rem;
       }
     }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      color: #666;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 
 <body>
-  <%- include('partials/navbar2', { role }) %>
+  <!-- Navbar will be loaded dynamically -->
+  <div id="navbar-container"></div>
+
   <main class="about-container">
     <!-- Hero Section -->
     <section class="hero-section">
@@ -409,41 +421,8 @@
     <section class="craftsmanship-section">
       <div class="section-container">
         <h2>Our Craftsmanship & Values</h2>
-        <div class="values-grid">
-          <% 
-                    const craftValues = [
-                      {
-                        title: "Authentic Craftsmanship",
-                        icon: "/images/Aboutus/authenticcraft.jpg",
-                        description: "Every item is meticulously handcrafted using time-honored techniques that have been perfected over generations."
-                      },
-                      {
-                        title: "Sustainable Materials",
-                        icon: "/images/Aboutus/Firozabad Glass.jpg",
-                        description: "We source only the finest sustainable materials, ensuring our products are as kind to the planet as they are beautiful."
-                      },
-                      {
-                        title: "Fair Trade Practices",
-                        icon: "/images/Aboutus/fair trade.png",
-                        description: "We believe in fair compensation for our artisans, creating economic opportunities in communities around the world."
-                      },
-                      {
-                        title: "Unique Designs",
-                        icon: "/images/Aboutus/rickshaw toy.webp",
-                        description: "No two pieces are exactly alike, ensuring you receive a one-of-a-kind treasure with its own character and charm."
-                      }
-                    ];
-                  %>
-
-          <% craftValues.forEach(function(value) { %>
-          <div class="value-card">
-            <div class="value-icon">
-              <img src="<%= value.icon %>" alt="<%= value.title %> icon" />
-            </div>
-            <h3><%= value.title %></h3>
-            <p><%= value.description %></p>
-          </div>
-          <% }); %>
+        <div class="values-grid" id="valuesGrid">
+          <!-- Values will be loaded dynamically -->
         </div>
         <div class="craftsmanship-content">
           <div class="craft-image">
@@ -466,40 +445,8 @@
         <h2>Meet Our Artisans</h2>
         <p class="team-intro">Behind every Artisan Haven piece is a talented individual with a passion for their craft. Our team brings together diverse skills and backgrounds, united by a shared commitment to excellence and authenticity.</p>
 
-        <div class="team-grid">
-          <% 
-                    const teamMembers = [
-                      {
-                        name: "Dara Sai Vivash",
-                        title: "Master Weaver & Sculptor",
-                        image: "/images/Aboutus/vivash.jpeg",
-                        bio: "Vivash founded Artisan Haven after traveling the world and learning traditional weaving techniques from master craftspeople. His vision was to create a platform where artisanal skills are celebrated and preserved."
-                      },
-                      {
-                        name: "Vasu Dilware",
-                        title: "Wood Craftsman",
-                        image: "/images/Aboutus/vasu.jpg",
-                        bio: "With over 20 years of experience working with wood, Vasu creates stunning furniture and home accessories that showcase the natural beauty of sustainable hardwoods."
-                      },
-                      {
-                        name: "Gautam Chauhan",
-                        title: "Ceramic Artist",
-                        image: "/images/Aboutus/gautam.jpeg",
-                        bio: "Gautam's distinctive ceramic pieces blend traditional African patterns with modern minimalist design, resulting in functional art that tells a story."
-                      }
-                    ];
-                  %>
-
-          <% teamMembers.forEach(function(member) { %>
-          <div class="team-member">
-            <div class="member-image">
-              <img src="<%= member.image %>" alt="<%= member.name %>" />
-            </div>
-            <h3><%= member.name %></h3>
-            <p class="member-title"><%= member.title %></p>
-            <p class="member-bio"><%= member.bio %></p>
-          </div>
-          <% }); %>
+        <div class="team-grid" id="teamGrid">
+          <!-- Team members will be loaded dynamically -->
         </div>
       </div>
     </section>
@@ -528,27 +475,288 @@
       <div class="cta-container">
         <h2>Bring Artisan Craftsmanship Into Your Life</h2>
         <p>Discover our collection of handcrafted treasures or work with our artisans to create a custom piece that's uniquely yours.</p>
-        <div class="cta-buttons">
-          <a href="/customer/store" class="btn primary-btn">Explore Our Collections</a>
-          <a href="/customer/customorder" class="btn secondary-btn">Request Custom Order</a>
+        <div class="cta-buttons" id="ctaButtons">
+          <!-- CTA buttons will be loaded dynamically based on user role -->
         </div>
       </div>
     </section>
   </main>
-  <%- include("partials/footer",{role}) %>
+
+  <!-- Footer will be loaded dynamically -->
+  <div id="footer-container"></div>
+
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    // Data that was previously in EJS template
+    const craftValues = [
+      {
+        title: "Authentic Craftsmanship",
+        icon: "/images/Aboutus/authenticcraft.jpg",
+        description: "Every item is meticulously handcrafted using time-honored techniques that have been perfected over generations."
+      },
+      {
+        title: "Sustainable Materials",
+        icon: "/images/Aboutus/Firozabad Glass.jpg",
+        description: "We source only the finest sustainable materials, ensuring our products are as kind to the planet as they are beautiful."
+      },
+      {
+        title: "Fair Trade Practices",
+        icon: "/images/Aboutus/fair trade.png",
+        description: "We believe in fair compensation for our artisans, creating economic opportunities in communities around the world."
+      },
+      {
+        title: "Unique Designs",
+        icon: "/images/Aboutus/rickshaw toy.webp",
+        description: "No two pieces are exactly alike, ensuring you receive a one-of-a-kind treasure with its own character and charm."
+      }
+    ];
+
+    const teamMembers = [
+      {
+        name: "Dara Sai Vivash",
+        title: "Master Weaver & Sculptor",
+        image: "/images/Aboutus/vivash.jpeg",
+        bio: "Vivash founded Artisan Haven after traveling the world and learning traditional weaving techniques from master craftspeople. His vision was to create a platform where artisanal skills are celebrated and preserved."
+      },
+      {
+        name: "Vasu Dilware",
+        title: "Wood Craftsman",
+        image: "/images/Aboutus/vasu.jpg",
+        bio: "With over 20 years of experience working with wood, Vasu creates stunning furniture and home accessories that showcase the natural beauty of sustainable hardwoods."
+      },
+      {
+        name: "Gautam Chauhan",
+        title: "Ceramic Artist",
+        image: "/images/Aboutus/gautam.jpeg",
+        bio: "Gautam's distinctive ceramic pieces blend traditional African patterns with modern minimalist design, resulting in functional art that tells a story."
+      }
+    ];
+
+    // Function to get user role from session/cookie or API
+    async function getUserRole() {
+      try {
+        const response = await fetch('/api/user-role');
+        if (response.ok) {
+          const data = await response.json();
+          return data.role;
+        }
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+      }
+      return 'customer'; // Default fallback
+    }
+
+    // Function to load navbar
+    function loadNavbar(role) {
+      const navbarContainer = document.getElementById('navbar-container');
+      navbarContainer.innerHTML = `
+        <header>
+          <div class="header-container2">
+            <div class="logonav2">ArtisanSpace</div>
+            <nav class="nav2">
+              <ul class="nav2ul">
+                ${getNavItems(role)}
+                <li class="dropdown">
+                  <i class="fa-solid fa-bars fa-lg"></i>
+                  <div class="dropdown-menu">
+                    <a href="/${role}/settings" class="dropdown-item settings-btn">
+                      <i class="fa-solid fa-gear"></i>
+                      <p>Settings</p>
+                    </a>
+                    <a href="/logout" class="dropdown-item logout-btn">
+                      <i class="fa-solid fa-right-from-bracket"></i>
+                      <p>Logout</p>
+                    </a>
+                  </div>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+      `;
+    }
+
+    // Function to get navigation items based on role
+    function getNavItems(role) {
+      switch (role) {
+        case 'customer':
+          return `
+            <li><a href="/customer">Home</a></li>
+            <li><a href="/customer/store">Store</a></li>
+            <li><a href="/customer/cart">Cart</a></li>
+            <li><a href="/customer/workshop">Workshops</a></li>
+            <li><a href="/customer/customorder">Custom Order</a></li>
+          `;
+        case 'admin':
+          return `
+            <li><a href="/admin">Dashboard</a></li>
+            <li><a href="/admin/content-moderation">Content Moderation</a></li>
+            <li><a href="/admin/support-ticket">Support-ticket</a></li>
+          `;
+        case 'artisan':
+          return `
+            <li><a href="/artisan/">Dashboard</a></li>
+            <li><a href="/artisan/listings">Listings</a></li>
+            <li><a href="/artisan/workshops">Workshops</a></li>
+            <li><a href="/artisan/customrequests">Custom Requests</a></li>
+          `;
+        case 'manager':
+          return `
+            <li><a href="/manager">Dashboard</a></li>
+            <li><a href="/manager/content-moderation">Content Moderation</a></li>
+            <li><a href="/manager/listing">Listings</a></li>
+          `;
+        default:
+          return '';
+      }
+    }
+
+    // Function to load footer
+    function loadFooter(role) {
+      const footerContainer = document.getElementById('footer-container');
+      const showContactAndSupport = role === 'customer' || role === 'artisan';
+      
+      footerContainer.innerHTML = `
+        <footer class="footer">
+          <div class="topfooter">
+            <div class="topfooter1">
+              <p class="logop">AS</p>
+              <p>
+                It is a long established fact that a reader will be distracted by
+                the readable content of a page when looking at its layout.
+              </p>
+            </div>
+            <div class="footerhelp">
+              <p class="help">Help</p>
+              <a href="/aboutus" style="text-decoration: none; color: black">
+                <p>AboutUs</p>
+              </a>
+              ${showContactAndSupport ? `
+                <a href="/contactus" style="text-decoration: none; color: black;">
+                  <p>Contact</p>
+                </a>
+                <a href="/supportTicket" style="text-decoration: none; color: black;">
+                  <p>Support Ticket</p>
+                </a>
+              ` : ''}
+            </div>
+            <div class="ourinfo">
+              <p class="info">Our Information</p>
+              <p>IIIT SriCity</p>
+              <p>+91 0000000000</p>
+              <p>Artisanspace09@gmail.com</p>
+            </div>
+          </div>
+          <div class="bottomfooter">
+            Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
+          </div>
+        </footer>
+      `;
+    }
+
+    // Function to load craft values
+    function loadCraftValues() {
+      const valuesGrid = document.getElementById('valuesGrid');
+      valuesGrid.innerHTML = '';
+      
+      craftValues.forEach(value => {
+        const valueCard = document.createElement('div');
+        valueCard.className = 'value-card';
+        valueCard.innerHTML = `
+          <div class="value-icon">
+            <img src="${value.icon}" alt="${value.title} icon" />
+          </div>
+          <h3>${value.title}</h3>
+          <p>${value.description}</p>
+        `;
+        valuesGrid.appendChild(valueCard);
+      });
+    }
+
+    // Function to load team members
+    function loadTeamMembers() {
+      const teamGrid = document.getElementById('teamGrid');
+      teamGrid.innerHTML = '';
+      
+      teamMembers.forEach(member => {
+        const memberDiv = document.createElement('div');
+        memberDiv.className = 'team-member';
+        memberDiv.innerHTML = `
+          <div class="member-image">
+            <img src="${member.image}" alt="${member.name}" />
+          </div>
+          <h3>${member.name}</h3>
+          <p class="member-title">${member.title}</p>
+          <p class="member-bio">${member.bio}</p>
+        `;
+        teamGrid.appendChild(memberDiv);
+      });
+    }
+
+    // Function to load CTA buttons based on role
+    function loadCTAButtons(role) {
+      const ctaButtons = document.getElementById('ctaButtons');
+      if (role === 'customer') {
+        ctaButtons.innerHTML = `
+          <a href="/customer/store" class="btn primary-btn">Explore Our Collections</a>
+          <a href="/customer/customorder" class="btn secondary-btn">Request Custom Order</a>
+        `;
+      } else {
+        ctaButtons.innerHTML = `
+          <a href="/customer/store" class="btn primary-btn">Explore Our Collections</a>
+          <a href="#" class="btn secondary-btn" onclick="alert('Please login as a customer to request custom orders')">Request Custom Order</a>
+        `;
+      }
+    }
+
+    // Initialize the page
+    async function initializePage() {
+      const role = await getUserRole();
+      
+      loadNavbar(role);
+      loadFooter(role);
+      loadCraftValues();
+      loadTeamMembers();
+      loadCTAButtons(role);
+      
+      // Add navbar functionality
+      setupNavbarFunctionality();
+      
+      // Add scroll animations
+      setupScrollAnimations();
+    }
+
+    // Setup navbar dropdown functionality
+    function setupNavbarFunctionality() {
+      const barsIcon = document.querySelector('.fa-bars');
+      const dropdownMenu = document.querySelector('.dropdown-menu');
+
+      if (barsIcon && dropdownMenu) {
+        barsIcon.addEventListener('click', (event) => {
+          dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+          event.stopPropagation();
+        });
+
+        document.addEventListener('click', () => {
+          dropdownMenu.style.display = 'none';
+        });
+
+        dropdownMenu.addEventListener('click', (event) => {
+          event.stopPropagation();
+        });
+      }
+    }
+
+    // Setup scroll animations
+    function setupScrollAnimations() {
       // Smooth scrolling for anchor links
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
           e.preventDefault();
-
           const targetId = this.getAttribute('href');
           const targetElement = document.querySelector(targetId);
-
           if (targetElement) {
             window.scrollTo({
-              top: targetElement.offsetTop - 80, // Adjust for fixed header if needed
+              top: targetElement.offsetTop - 80,
               behavior: 'smooth'
             });
           }
@@ -558,55 +766,43 @@
       // Animate elements when they come into view
       const animateOnScroll = function() {
         const elements = document.querySelectorAll('.value-card, .team-member, .testimonial');
-
         elements.forEach(element => {
           const elementPosition = element.getBoundingClientRect().top;
           const windowHeight = window.innerHeight;
-
           if (elementPosition < windowHeight - 100) {
             element.classList.add('animate');
           }
         });
       };
 
-      // Add animation class to CSS
+      // Add animation styles
       const style = document.createElement('style');
       style.textContent = `
-      .value-card, .team-member, .testimonial {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s ease, transform 0.6s ease;
-      }
-      
-      .value-card.animate, .team-member.animate, .testimonial.animate {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      
-      .team-member:nth-child(2) {
-        transition-delay: 0.2s;
-      }
-      
-      .team-member:nth-child(3) {
-        transition-delay: 0.4s;
-      }
-      
-      .value-card:nth-child(2) {
-        transition-delay: 0.2s;
-      }
-      
-      .value-card:nth-child(3) {
-        transition-delay: 0.4s;
-      }
-    `;
+        .value-card, .team-member, .testimonial {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .value-card.animate, .team-member.animate, .testimonial.animate {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        
+        .team-member:nth-child(2) { transition-delay: 0.2s; }
+        .team-member:nth-child(3) { transition-delay: 0.4s; }
+        .value-card:nth-child(2) { transition-delay: 0.2s; }
+        .value-card:nth-child(3) { transition-delay: 0.4s; }
+      `;
       document.head.appendChild(style);
 
-      // Run on load
+      // Run on load and scroll
       animateOnScroll();
-
-      // Run on scroll
       window.addEventListener('scroll', animateOnScroll);
-    });
+    }
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', initializePage);
   </script>
 </body>
 

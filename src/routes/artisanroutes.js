@@ -4,11 +4,16 @@ import authorizerole from "../middleware/roleMiddleware.js";
 
 import {
   getArtisanDashboard,
+  getArtisanProductsAPI,
   editProductController,
   deleteProductController,
   getListingsController,
   postListingsController,
   getWorkshopsController,
+  getArtisanWorkshopsAPI,
+  getArtisanRequestByIdAPI,
+  getViewDetailsController,
+  getArtisanCustomRequestsAPI,
   handleWorksopAction,
   getCustomRequestsController,
   approveCustomRequest,
@@ -23,6 +28,17 @@ router.use(authorizerole("admin", "manager", "artisan"));
 
 router.get("/", getArtisanDashboard);
 
+// API endpoint for products data
+router.get("/api/products", getArtisanProductsAPI);
+
+// API endpoint for custom requests data
+router.get('/api/customrequests', getArtisanCustomRequestsAPI);
+// API to fetch single request by id
+router.get('/api/customrequests/:id', getArtisanRequestByIdAPI);
+
+// API endpoint for workshops data
+router.get('/api/workshops', getArtisanWorkshopsAPI);
+
 router.put("/edit-product/:id", editProductController);
 
 router.post("/delete-product/:id", deleteProductController);
@@ -35,6 +51,8 @@ router.get("/workshops", getWorkshopsController);
 router.get("/workshops/:action/:workshopId", handleWorksopAction);
 
 router.get("/customrequests", getCustomRequestsController);
+// Serve static details page (client will fetch data from API)
+router.get('/customrequests/view/:id', getViewDetailsController);
 
 router.post("/customrequests", approveCustomRequest);
 router.get("/customrequests/:requestId", deleteCustomRequest);

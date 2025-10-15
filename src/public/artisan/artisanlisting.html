@@ -256,6 +256,37 @@
       object-fit: cover;
     }
 
+    /* Live preview styles */
+    .live-preview {
+      margin-top: 24px;
+      background: linear-gradient(180deg, #fffef9, #f8f1e6);
+      border: 2px solid #f0d9bf;
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .live-preview .preview-image {
+      width: 140px;
+      height: 140px;
+      background: #fff8dc;
+      border: 2px dashed #deb887;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .live-preview .preview-image img { width: 100%; height: 100%; object-fit: cover; }
+
+    .live-preview .preview-info { flex: 1; }
+    .live-preview .preview-info h3 { margin: 0 0 8px 0; color: #5c4033; }
+    .live-preview .preview-info p { margin: 4px 0; color: #6b4b36; }
+
     button {
       cursor: pointer;
       padding: 14px;
@@ -468,6 +499,7 @@
           <label for="product-photo">Product Photo</label>
           <input type="file" id="product-photo" name="image" accept="image/*" required />
           <div id="image-preview" class="image-preview"></div>
+            
         </div>
 
         <div class="form-group">
@@ -558,14 +590,16 @@
       const productPhoto = document.getElementById('product-photo');
       const imagePreview = document.getElementById('image-preview');
 
-      // Validation regex
-      const productNameregex = /^[a-zA-Z0-9\s-&]+$/;
-      const materialregex = /^[a-zA-Z\s,\-]+$/;
+  // Validation regex
+  // Product name: letters, spaces, ampersand and hyphen (numbers NOT allowed)
+  const productNameregex = /^[a-zA-Z\s&\-]+$/;
+  // Material: letters, spaces, comma and hyphen (numbers NOT allowed)
+  const materialregex = /^[a-zA-Z\s,\-]+$/;
       const originalPriceregex = /^\d+(\.\d{1,2})?$/;
       const descriptionregex = /^[a-zA-Z0-9\s.,'"\-!?()]+$/;
       const quantityregex = /^[1-9][0-9]*$/;
 
-      // Handle image preview
+      // Handle image preview (kept simple)
       productPhoto.addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
@@ -579,92 +613,199 @@
         }
       });
 
+      // Validation functions
+      function validateProductName() {
+        const errorElement = document.getElementById('productNameError');
+        const val = productName.value;
+
+        // Empty state
+        if (!val || val.trim().length === 0) {
+          errorElement.style.display = 'none';
+          productName.classList.remove('error-input');
+          return false;
+        }
+
+        // Numbers not allowed
+        if (/\d/.test(val)) {
+          errorElement.textContent = 'Numbers are not allowed in product name.';
+          errorElement.style.display = 'block';
+          productName.classList.add('error-input');
+          return false;
+        }
+
+        // Allowed characters check
+        if (!productNameregex.test(val)) {
+          errorElement.textContent = 'Only letters, spaces, & and - are allowed.';
+          errorElement.style.display = 'block';
+          productName.classList.add('error-input');
+          return false;
+        }
+
+        // Length
+        if (val.trim().length < 3) {
+          errorElement.textContent = 'Minimum 3 characters required.';
+          errorElement.style.display = 'block';
+          productName.classList.add('error-input');
+          return false;
+        }
+
+        if (val.trim().length > 40) {
+          errorElement.textContent = 'Maximum 40 characters allowed.';
+          errorElement.style.display = 'block';
+          productName.classList.add('error-input');
+          return false;
+        }
+
+        // All good
+        errorElement.style.display = 'none';
+        productName.classList.remove('error-input');
+        return true;
+      }
+
+      function validateMaterial() {
+        const errorElement = document.getElementById('materialError');
+        const val = material.value;
+
+        if (!val || val.trim().length === 0) {
+          errorElement.style.display = 'none';
+          material.classList.remove('error-input');
+          return false;
+        }
+
+        if (/\d/.test(val)) {
+          errorElement.textContent = 'Numbers are not allowed in material.';
+          errorElement.style.display = 'block';
+          material.classList.add('error-input');
+          return false;
+        }
+
+        if (!materialregex.test(val) || val.trim().length < 3) {
+          errorElement.textContent = 'Material must be at least 3 letters and only contain letters, spaces or commas.';
+          errorElement.style.display = 'block';
+          material.classList.add('error-input');
+          return false;
+        }
+
+        if (val.trim().length > 50) {
+          errorElement.textContent = 'Maximum 50 characters allowed.';
+          errorElement.style.display = 'block';
+          material.classList.add('error-input');
+          return false;
+        }
+
+        errorElement.style.display = 'none';
+        material.classList.remove('error-input');
+        return true;
+      }
+
+      function validateOriginalPrice() {
+        const errorElement = document.getElementById('originalPriceError');
+        if (!originalPriceregex.test(originalPrice.value)) {
+          errorElement.style.display = "block";
+          originalPrice.classList.add('error-input');
+          return false;
+        } else {
+          errorElement.style.display = "none";
+          originalPrice.classList.remove('error-input');
+          return true;
+        }
+      }
+
+      function validateDescription() {
+        const errorElement = document.getElementById('descriptionError');
+        if (!descriptionregex.test(description.value) || description.value.length < 10 || description.value.length > 500) {
+          errorElement.style.display = "block";
+          description.classList.add('error-input');
+          return false;
+        } else {
+          errorElement.style.display = "none";
+          description.classList.remove('error-input');
+          return true;
+        }
+      }
+
+      function validateQuantity() {
+        const errorElement = document.getElementById('quantityError');
+        if (!quantityregex.test(quantity.value)) {
+          errorElement.style.display = "block";
+          quantity.classList.add('error-input');
+          return false;
+        } else {
+          errorElement.style.display = "none";
+          quantity.classList.remove('error-input');
+          return true;
+        }
+      }
+
+      // Attach real-time validation events
+      productName.addEventListener('input', validateProductName);
+      material.addEventListener('input', validateMaterial);
+      originalPrice.addEventListener('input', validateOriginalPrice);
+      description.addEventListener('input', validateDescription);
+      quantity.addEventListener('input', validateQuantity);
+
       // Handle form submission
       document.getElementById("product-form").addEventListener("submit", async function(event) {
         event.preventDefault();
 
-        // Reset previous error states
-        productName.classList.remove('error-input');
-        document.getElementById('productNameError').style.display = "none";
-        material.classList.remove("error-input");
-        document.getElementById('materialError').style.display = "none";
-        originalPrice.classList.remove('error-input');
-        document.getElementById('originalPriceError').style.display = "none";
-        description.classList.remove('error-input');
-        document.getElementById('descriptionError').style.display = "none";
-        quantity.classList.remove('error-input');
-        document.getElementById('quantityError').style.display = "none";
+        // Run all validations
+        const isProductNameValid = validateProductName();
+        const isMaterialValid = validateMaterial();
+        const isPriceValid = validateOriginalPrice();
+        const isDescriptionValid = validateDescription();
+        const isQuantityValid = validateQuantity();
 
-        // Validate product name
-        if (!productNameregex.test(productName.value) || productName.value.length < 3 || productName.value.length > 40) {
-          document.getElementById('productNameError').style.display = "block";
-          productName.classList.add('error-input');
-          productName.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
+        // If all validations pass, submit the form
+        if (isProductNameValid && isMaterialValid && isPriceValid && isDescriptionValid && isQuantityValid) {
+          const inputs = this.querySelectorAll("input");
+          const formData = new FormData(this);
+          const statusMessage = document.getElementById("status-message");
 
-        if (!materialregex.test(material.value) || material.value.length < 3 || material.value.length > 50) {
-          document.getElementById('materialError').style.display = "block";
-          material.classList.add('error-input');
-          material.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        if (!originalPriceregex.test(originalPrice.value)) {
-          document.getElementById('originalPriceError').style.display = "block";
-          originalPrice.classList.add('error-input');
-          originalPrice.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        if (!descriptionregex.test(description.value) || description.value.length < 10 || description.value.length > 500) {
-          document.getElementById('descriptionError').style.display = "block";
-          description.classList.add('error-input');
-          description.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        if (!quantityregex.test(quantity.value)) {
-          document.getElementById('quantityError').style.display = "block";
-          quantity.classList.add('error-input');
-          quantity.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-
-        const inputs = this.querySelectorAll("input");
-        const formData = new FormData(this);
-        const statusMessage = document.getElementById("status-message");
-
-        inputs.forEach(input => {
-          if (input.type !== "file") {
-            input.value = input.value.trim();
-          }
-        });
-
-        try {
-          const response = await fetch(this.action, {
-            method: "POST",
-            body: formData
+          // Trim input values
+          inputs.forEach(input => {
+            if (input.type !== "file") {
+              input.value = input.value.trim();
+            }
           });
 
-          if (response.ok) {
-            statusMessage.innerText = "Product successfully added!";
-            statusMessage.classList.remove("error");
-            statusMessage.classList.add("success");
-            statusMessage.style.display = "block";
+          try {
+            const response = await fetch(this.action, {
+              method: "POST",
+              body: formData
+            });
 
-            setTimeout(() => {
-              window.location.href = "/artisan/";
-            }, 2000);
-          } else {
-            throw new Error("Failed to add product. Please try again.");
+            if (response.ok) {
+              statusMessage.innerText = "Product successfully added!";
+              statusMessage.classList.remove("error");
+              statusMessage.classList.add("success");
+              statusMessage.style.display = "block";
+
+              setTimeout(() => {
+                window.location.href = "/artisan/";
+              }, 2000);
+            } else {
+              throw new Error("Failed to add product. Please try again.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            statusMessage.innerText = "Error: " + error.message;
+            statusMessage.classList.remove("success");
+            statusMessage.classList.add("error");
+            statusMessage.style.display = "block";
           }
-        } catch (error) {
-          console.error("Error:", error);
-          statusMessage.innerText = "Error: " + error.message;
-          statusMessage.classList.remove("success");
-          statusMessage.classList.add("error");
-          statusMessage.style.display = "block";
+        } else {
+          // Scroll to the first invalid field
+          if (!isProductNameValid) {
+            productName.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (!isMaterialValid) {
+            material.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (!isPriceValid) {
+            originalPrice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (!isDescriptionValid) {
+            description.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (!isQuantityValid) {
+            quantity.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
       });
     });

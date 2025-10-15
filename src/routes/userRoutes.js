@@ -8,6 +8,7 @@ import {
   deleteAccount,
   productPage,
   renderAboutUs,
+  getUserRole,
   renderContactUs,
   renderSupportTicket,
   submitSuppotTicket,
@@ -26,6 +27,7 @@ router.use("/artisan", artisanroutes);
 router.use("/customer", customerroutes);
 router.use("/manager", managerroutes);
 router.get("/aboutus", renderAboutUs);
+router.get("/api/user-role", getUserRole);
 router.get("/contactus", renderContactUs);
 router.get("/supportTicket", renderSupportTicket);
 router.post("/submit-ticket", submitSuppotTicket);
