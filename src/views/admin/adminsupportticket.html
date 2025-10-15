@@ -290,42 +290,25 @@
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="topfooter">
-      <div class="topfooter1">
-        <p class="logop">AS</p>
-        <p>
-          It is a long established fact that a reader will be distracted by
-          the readable content of a page when looking at its layout.
-        </p>
-      </div>
-      <div class="footerhelp">
-        <p class="help">Help</p>
-        <a href="/aboutus" style="text-decoration: none; color: black">
-          <p>About Us</p>
-        </a>
-        <a href="/contactus" style="text-decoration: none; color: black;">
-          <p>Contact</p>
-        </a>
-        <a href="/supportTicket" style="text-decoration: none; color: black;">
-          <p>Support Ticket</p>
-        </a>
-      </div>
-      <div class="ourinfo">
-        <p class="info">Our Information</p>
-        <p>IIIT SriCity</p>
-        <p>+91 0000000000</p>
-        <p>Artisanspace09@gmail.com</p>
-      </div>
-    </div>
-    <div class="bottomfooter">
-      Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
-    </div>
-  </footer>
-  
+  <!-- Footer placeholder: the admin footer partial will be injected here -->
+  <div id="admin-footer-placeholder"></div>
+
+  <script type="module" src="/admin/admindashboard.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
+    // Load admin footer from server endpoint and inject into the page
+    (async function loadAdminFooter() {
+      try {
+        const resp = await fetch('/admin/partials/footer', { credentials: 'include' });
+        if (!resp.ok) return;
+        const html = await resp.text();
+        const placeholder = document.getElementById('admin-footer-placeholder');
+        if (placeholder) placeholder.innerHTML = html;
+      } catch (err) {
+        console.error('Failed to load admin footer:', err);
+      }
+    })();
     document.addEventListener("DOMContentLoaded", () => {
       // --- START: Added Navbar Script ---
       const barsIcon = document.querySelector(".fa-bars");

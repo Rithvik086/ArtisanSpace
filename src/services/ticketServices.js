@@ -1,5 +1,5 @@
 import Ticket from "../models/supportticketmodel.js";
-import User from "../models/userModel.js";
+import User from "../models/usermodel.js";
 
 export async function addTicket(userId, subject, category, description) {
   try {
@@ -23,19 +23,26 @@ export async function getTickets() {
 
     const populatedTickets = await Promise.all(
       tickets.map(async (ticket) => {
-        const user = await User.findById(ticket.userId).select("username name email role").lean();
-        
+        const user = await User.findById(ticket.userId)
+          .select("username name email role")
+          .lean();
+
         if (user) {
           return { ...ticket, userId: user };
         }
-        
+
         return {
           ...ticket,
-          userId: { username: "Deleted User", name: "N/A", email: "N/A", role: "N/A" }
+          userId: {
+            username: "Deleted User",
+            name: "N/A",
+            email: "N/A",
+            role: "N/A",
+          },
         };
       })
     );
-    
+
     return populatedTickets;
   } catch (e) {
     console.error("Error fetching tickets in service:", e.message);

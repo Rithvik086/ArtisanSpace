@@ -35,14 +35,13 @@ router.get("/", (req, res) => {
 });
 
 // JSON endpoints used by the static dashboard
-router.get('/users', getAdminUsers);
-router.get('/orders', getAdminOrders);
-router.get('/responses', getAdminResponses);
+router.get("/users", getAdminUsers);
+router.get("/orders", getAdminOrders);
+router.get("/responses", getAdminResponses);
 
 router.get("/orders/:orderId", getOrdersPageStatic);
 
 router.get("/api/orders/:orderId", getOrderDetailsAPI);
-
 
 router.delete("/orders/:orderId", deleteOrder);
 router.put("/orders/:orderId/status", changeStatus);
@@ -54,4 +53,9 @@ router.get("/support-ticket", getSupportTickets);
 router.post("/support-ticket", deleteTicket);
 
 router.get("/settings", getSettingsAdmin);
+// Partial route for admin footer (so admin pages can fetch the shared footer)
+router.get("/partials/footer", (req, res) => {
+  const role = req.user && req.user.role ? req.user.role : "admin";
+  res.render("partials/footer", { role });
+});
 export default router;
