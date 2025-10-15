@@ -87,7 +87,12 @@ export const deleteProductController = async (req, res) => {
 //LIstings
 
 export const getListingsController = (req, res) => {
-  res.render("artisan/artisanlisting", { role: astrole });
+  try {
+    res.sendFile(path.join(process.cwd(), 'src', 'public', 'artisan', 'artisanlisting.html'));
+  } catch (err) {
+    console.error('Error serving artisan listings page:', err);
+    res.status(500).send('error');
+  }
 };
 
 export const postListingsController = async (req, res) => {
