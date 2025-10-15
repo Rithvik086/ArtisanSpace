@@ -1,5 +1,6 @@
 import { addTicket } from "../services/ticketServices.js";
 import { removeUser, updateUser, getUsers } from "../services/userServices.js";
+import path from "path";
 import {
   getApprovedProducts,
   getProduct,
@@ -8,7 +9,12 @@ import {
 import { totalOrders, getOrders } from "../services/orderServices.js";
 
 export const renderAboutUs = (req, res) => {
-  res.render("Aboutus", { role: req.user.role });
+  res.sendFile(path.join(process.cwd(), 'src', 'public', 'aboutus.html'));
+};
+
+// API endpoint to get user role
+export const getUserRole = (req, res) => {
+  res.json({ role: req.user.role });
 };
 
 export const renderContactUs = (req, res) => {
