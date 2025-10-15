@@ -196,11 +196,7 @@ export const deleteTicket = async (req, res) => {
 };
 
 export const getSettingsAdmin = async (req, res) => {
-  const user = await getUserById(req.user.id);
-  delete user.password;
-  delete user.userId;
-  delete user.role;
-  res.render("settings", { role: admrole, user });
+  res.sendFile(path.join(process.cwd(), "src/views/settings.html"));
 };
 
 // JSON endpoints for the static admin dashboard (used by client-side rendering)
@@ -218,8 +214,8 @@ export const getAdminUsers = async (req, res) => {
     }));
     res.json(safe);
   } catch (e) {
-    console.error('Error fetching admin users:', e);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error("Error fetching admin users:", e);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -228,8 +224,8 @@ export const getAdminOrders = async (req, res) => {
     const orders = await getOrders();
     res.json(orders);
   } catch (e) {
-    console.error('Error fetching orders:', e);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error("Error fetching orders:", e);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -239,7 +235,7 @@ export const getAdminResponses = async (req, res) => {
     const responses = await loadcustData(custrespath);
     res.json(responses);
   } catch (e) {
-    console.error('Error fetching responses:', e);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error("Error fetching responses:", e);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

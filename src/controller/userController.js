@@ -6,6 +6,7 @@ import {
   getProducts,
 } from "../services/productServices.js";
 import { totalOrders, getOrders } from "../services/orderServices.js";
+import path from "path";
 
 export const renderAboutUs = (req, res) => {
   res.render("Aboutus", { role: req.user.role });
@@ -16,7 +17,7 @@ export const renderContactUs = (req, res) => {
 };
 
 export const renderSupportTicket = (req, res) => {
-  res.render("supportTicket", { role: req.user.role });
+  res.sendFile(path.join(process.cwd(), "src/views/supportTicket.html"));
   console.log(req.user.userId);
 };
 

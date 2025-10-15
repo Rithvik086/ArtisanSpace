@@ -127,9 +127,5 @@ export const getMangerListings = (req, res) => {
 };
 
 export const getManagerSettings = async (req, res) => {
-  const user = await getUserById(req.user.id);
-  delete user.password;
-  delete user.userId;
-  delete user.role;
-  res.render("settings", { role: mngrole, user });
+  res.sendFile(path.join(process.cwd(), "src/views/settings.html"));
 };
