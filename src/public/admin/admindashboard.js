@@ -16,20 +16,29 @@ fetch("/api/getProducts")
     products.forEach((product) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-          <td><div class="product-image"><img src="${product.image}" alt="${product.name}"></div></td>
+          <td><div class="product-image"><img src="${product.image}" alt="${
+        product.name
+      }"></div></td>
           <td class="product-name">${product.name}</td>
-          <td>${(product.userId && product.userId.name) ? product.userId.name : ''} (${product.uploadedBy || ''})</td>
+          <td>${
+            product.userId && product.userId.name ? product.userId.name : ""
+          } (${product.uploadedBy || ""})</td>
           <td>${product.quantity}</td>
-          <td><s>₹${product.oldPrice || ''}</s> <br><span class="price">₹${product.newPrice || product.price || ''}</span></td>
-          <td>${product.category || ''}</td>
-          <td><button class="btn delete-btn" onclick="confirmDelete('${product._id}')">Delete</button></td>
+          <td><s>₹${product.oldPrice || ""}</s> <br><span class="price">₹${
+        product.newPrice || product.price || ""
+      }</span></td>
+          <td>${product.category || ""}</td>
+          <td><button class="btn delete-btn" onclick="confirmDelete('${
+            product._id
+          }')">Delete</button></td>
         `;
       tbody.appendChild(tr);
     });
   })
   .catch((err) => {
     const tbody = document.getElementById("products-table-body");
-    if (tbody) tbody.innerHTML = `<tr><td colspan='8' class='text-center'>Error loading products</td></tr>`;
+    if (tbody)
+      tbody.innerHTML = `<tr><td colspan='8' class='text-center'>Error loading products</td></tr>`;
     console.error("Error fetching products:", err);
   });
 
@@ -50,15 +59,29 @@ fetch("/admin/orders")
     orders.forEach((order) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-          <td>#${(order._id || '').toString().slice(-6).toUpperCase()}</td>
-          <td>${order.userId && order.userId.username ? order.userId.username : 'Unknown'}</td>
-          <td>${order.purchasedAt ? new Date(order.purchasedAt).toLocaleDateString('en-IN') : ''}</td>
-          <td>${order.products && order.products.length ? order.products.length : 0} item${order.products && order.products.length > 1 ? 's' : ''}</td>
-          <td>₹${order.money ? order.money.toFixed(2) : ''}</td>
-          <td><span class="status-badge ${(order.status || '').toLowerCase()}">${order.status || ''}</span></td>
+          <td>#${(order._id || "").toString().slice(-6).toUpperCase()}</td>
+          <td>${
+            order.userId && order.userId.username
+              ? order.userId.username
+              : "Unknown"
+          }</td>
+          <td>${
+            order.purchasedAt
+              ? new Date(order.purchasedAt).toLocaleDateString("en-IN")
+              : ""
+          }</td>
+          <td>${
+            order.products && order.products.length ? order.products.length : 0
+          } item${order.products && order.products.length > 1 ? "s" : ""}</td>
+          <td>₹${order.money ? order.money.toFixed(2) : ""}</td>
+          <td><span class="status-badge ${(
+            order.status || ""
+          ).toLowerCase()}">${order.status || ""}</span></td>
           <td class="actions">
             <button class="view-btn" data-id="${order._id}">View</button>
-            <button class="delete-order-btn" data-id="${order._id}">Delete</button>
+            <button class="delete-order-btn" data-id="${
+              order._id
+            }">Delete</button>
           </td>
         `;
       tbody.appendChild(tr);
@@ -73,30 +96,42 @@ fetch("/admin/orders")
       });
     });
     document.querySelectorAll(".delete-order-btn").forEach((btn) => {
-
       btn.addEventListener("click", function () {
-        console.log("Delete order button clicked", this.getAttribute("data-id"));
+        console.log(
+          "Delete order button clicked",
+          this.getAttribute("data-id")
+        );
       });
       btn.addEventListener("click", function () {
         const orderId = this.getAttribute("data-id");
         fetch(`/admin/orders/${orderId}`, { method: "DELETE" })
           .then((response) => {
             if (response.ok) {
-              showNotification("Order deleted successfully. Refreshing the page...", "success");
+              showNotification(
+                "Order deleted successfully. Refreshing the page...",
+                "success"
+              );
               window.location.reload();
             } else {
-              showNotification("Failed to delete order. Please try again.", "error");
+              showNotification(
+                "Failed to delete order. Please try again.",
+                "error"
+              );
             }
           })
           .catch((error) => {
-            showNotification("Error deleting order. Please try again.", "error");
+            showNotification(
+              "Error deleting order. Please try again.",
+              "error"
+            );
           });
       });
     });
   })
   .catch((err) => {
     const tbody = document.getElementById("orders-table-body");
-    if (tbody) tbody.innerHTML = `<tr><td colspan='7' class='text-center'>Error loading orders</td></tr>`;
+    if (tbody)
+      tbody.innerHTML = `<tr><td colspan='7' class='text-center'>Error loading orders</td></tr>`;
     console.error("Error fetching orders:", err);
   });
 
@@ -127,23 +162,12 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         tbody.appendChild(tr);
       });
-      // Re-attach delete event listeners
-      document.querySelectorAll(".delete-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          console.log("Delete user button clicked");
-        });
-        btn.addEventListener("click", () => {
-          const userId = btn.getAttribute("data-id");
-          const deleteModal = document.getElementById("delete-modal");
-          if (!deleteModal) return;
-          window.userIdToDelete = userId;
-          deleteModal.classList.add("active");
-        });
-      });
+      // (delete buttons are handled via delegated handler to avoid timing issues)
     })
     .catch((err) => {
       const tbody = document.getElementById("users-table-body");
-      if (tbody) tbody.innerHTML = `<tr><td colspan='4' class='text-center'>Error loading users</td></tr>`;
+      if (tbody)
+        tbody.innerHTML = `<tr><td colspan='4' class='text-center'>Error loading users</td></tr>`;
       console.error("Error fetching users:", err);
     });
   // Tab Switching
@@ -285,6 +309,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModalBtns = document.querySelectorAll(".close-modal");
   const cancelBtns = document.querySelectorAll(".cancel-btn");
 
+  // Delegated handler for delete user buttons inside users table
+  const usersTableBody = document.getElementById("users-table-body");
+  if (usersTableBody) {
+    usersTableBody.addEventListener("click", (e) => {
+      const btn = e.target.closest(".delete-btn");
+      if (!btn) return;
+      const userId = btn.getAttribute("data-id");
+      if (!userId) return;
+      window.userIdToDelete = userId;
+      deleteModal.classList.add("active");
+    });
+  }
+
   // Open Add User Modal
   if (addUserBtn) {
     addUserBtn.addEventListener("click", () => {
@@ -349,11 +386,52 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log("User added successfully");
           window.location.reload();
         } else {
-          alert("Error adding user: " + result.message);
+          // Prefer explicit `error` field from backend, fallback to message
+          const serverMessage =
+            (result.error && String(result.error)) ||
+            (result.message && String(result.message)) ||
+            "Error adding user";
+          const serverErr = document.getElementById("add-user-server-error");
+          if (serverErr) {
+            serverErr.textContent = serverMessage;
+            serverErr.style.display = "block";
+          } else {
+            alert("Error adding user: " + serverMessage);
+          }
+
+          // If server indicates duplicate username/email, mark relevant fields invalid and show respective messages
+          if (/username/i.test(serverMessage)) {
+            const u = document.getElementById("username");
+            if (u) {
+              u.classList.add("input-invalid");
+              const ue = document.getElementById("username-error");
+              if (ue) {
+                ue.textContent = serverMessage;
+                ue.style.display = "block";
+              }
+            }
+          }
+          if (/email/i.test(serverMessage)) {
+            const e = document.getElementById("email");
+            if (e) {
+              e.classList.add("input-invalid");
+              const ee = document.getElementById("email-error");
+              if (ee) {
+                ee.textContent = serverMessage;
+                ee.style.display = "block";
+              }
+            }
+          }
         }
       } catch (error) {
         console.error("Error:", error);
-        alert("Failed to add user. Try again!");
+        const serverErr = document.getElementById("add-user-server-error");
+        if (serverErr) {
+          serverErr.textContent = "Failed to add user. Try again!";
+          serverErr.style.display = "block";
+        } else {
+          alert("Failed to add user. Try again!");
+        }
       }
     });
   }
@@ -364,7 +442,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   deleteButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      console.log("Delete user button clicked (modal)", btn.getAttribute("data-id"));
+      console.log(
+        "Delete user button clicked (modal)",
+        btn.getAttribute("data-id")
+      );
       userIdToDelete = btn.getAttribute("data-id");
       deleteModal.classList.add("active");
     });
@@ -374,11 +455,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteConfirmBtn = document.querySelector(".delete-confirm-btn");
   if (deleteConfirmBtn) {
     deleteConfirmBtn.addEventListener("click", async () => {
-      if (userIdToDelete) {
-        console.log("Delete user confirmed", userIdToDelete);
+      const idToDelete = userIdToDelete || window.userIdToDelete;
+      if (idToDelete) {
+        console.log("Delete user confirmed", idToDelete);
         try {
           // Send delete request to backend API
-          const response = await fetch(`/admin/delete-user/${userIdToDelete}`, {
+          const response = await fetch(`/admin/delete-user/${idToDelete}`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
@@ -389,6 +471,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (result.success) {
             console.log("User deleted successfully");
+            // clear both variables to avoid stale state
+            userIdToDelete = null;
+            if (window.userIdToDelete) delete window.userIdToDelete;
             window.location.reload();
           } else {
             alert("Error deleting user: " + result.message);
