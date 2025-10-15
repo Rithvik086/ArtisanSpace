@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <%- include ('partials/navbar2'), {role} %>
+  <div id="navbar"></div>
   <main>
     <div class="container">
       <div class="image-section">
@@ -47,7 +47,7 @@
     </div>
 
   </main>
-  <%- include ('partials/footer') %>
+  <div id="footer"></div>
 
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbw5dQlZ0fAvn3kYpbdIIBOqKn67jXfzun9ofTkQI5recF2Wn4X26wIX9dz92X8Rsbg/exec'
@@ -69,6 +69,47 @@
           alert('Error submitting form. Please try again.')
         })
     })
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load navbar
+      fetch('/customer/partials/navbar2')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navbar').innerHTML = html;
+          // Execute navbar JavaScript after loading
+          initializeNavbar();
+        })
+        .catch(error => console.error('Error loading navbar:', error));
+
+      // Load footer
+      fetch('/customer/partials/footer')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('footer').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading footer:', error));
+    });
+
+    // Function to initialize navbar functionality after dynamic loading
+    function initializeNavbar() {
+      const barsIcon = document.querySelector(".fa-bars");
+      const dropdownMenu = document.querySelector(".dropdown-menu");
+
+      if (barsIcon && dropdownMenu) {
+        barsIcon.addEventListener("click", (event) => {
+          dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+          event.stopPropagation();
+        });
+
+        document.addEventListener("click", () => {
+          dropdownMenu.style.display = "none";
+        });
+
+        dropdownMenu.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+      }
+    }
   </script>
 
 
