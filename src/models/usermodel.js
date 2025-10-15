@@ -1,9 +1,4 @@
 import mongoose from "mongoose";
-import Product from "./productmodel.js";
-import Cart from "./cartmodel.js";
-import Ticket from "./supportticketmodel.js";
-import Workshop from "./workshopmodel.js";
-import Request from "./customRequestModel.js";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -47,6 +42,13 @@ userSchema.post("deleteOne", { query: true }, async function (_, next) {
   if (!userId) return next();
 
   try {
+    // Get models by their registered names
+    const Product = mongoose.model("Product");
+    const Cart = mongoose.model("Cart");
+    const Ticket = mongoose.model("Ticket"); // Correct name from supportticketmodel.js
+    const Workshop = mongoose.model("Workshop");
+    const Request = mongoose.model("CustomRequest"); // Correct name from customRequestModel.js
+
     await Promise.all([
       Product.deleteMany({ userId }),
       Cart.deleteMany({ userId }),
@@ -68,4 +70,4 @@ userSchema.post("deleteOne", { query: true }, async function (_, next) {
   }
 });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.models.User || mongoose.model("User", userSchema);

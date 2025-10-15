@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Tickets</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kranky&display=swap">
+
+  <link rel="stylesheet" href="/navbar2.css" />
+  <style>
+    /* Navbar Styles - NOTE: Some of these might now be in navbar2.css */
+    header {
+      background-color: #5c4033;
+      color: #f8ead8;
+      padding: 20px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-container2 {
+      height: 6vh;
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "Baloo Bhai 2", sans-serif;
+      font-size: 16px;
+    }
+
+    .logonav2 {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .nav2 {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav2ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav2ul li {
+      list-style: none;
+    }
+
+    .nav2ul .dropdown {
+      margin-left: 10px;
+    }
+
+    .nav2ul a {
+      color: #f8ead8;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .nav2ul a:hover {
+      background-color: rgba(248, 234, 216, 0.1);
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 40px;
+      left: -50px;
+      background: #f8f9fa;
+      color: black;
+      border-radius: 12px;
+      padding: 10px;
+      width: 120px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      width: 100%;
+      font-size: 16px;
+      text-align: left;
+      text-decoration: none;
+      color: black;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: rgba(92, 64, 51, 0.1);
+    }
+
+    .dropdown-item i {
+      margin-right: 8px;
+      color: #5c4033;
+    }
+
+    .dropdown-item p {
+      color: #5c4033;
+      margin: 0;
+    }
+
+    /* Footer Styles */
+    .footer {
+      font-family: "Baloo Bhai 2", sans-serif;
+      margin-top: auto;
+    }
+
+    .topfooter {
+      background-color: #f8ead8;
+      color: black;
+      width: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: start;
+      padding: 40px 0px;
+      flex-wrap: wrap;
+    }
+
+    .topfooter1 {
+      max-width: 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .topfooter1 .logop {
+      font-family: "Kranky", "Baloo Bhai 2", "sans-serif";
+      font-weight: bold;
+      font-size: 40px;
+    }
+
+    .topfooter p {
+      width: 260px;
+      font-size: 16px;
+      margin: 5px 0;
+    }
+
+    .footerhelp .help {
+      color: #5c4033;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    .footerhelp {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 16px;
+    }
+
+    .ourinfo {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 16px;
+    }
+
+    .ourinfo .info {
+      color: #5c4033;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    .bottomfooter {
+      text-align: center;
+      color: white;
+      width: 100%;
+      background-color: #5c4033;
+      padding: 20px 0;
+    }
+
+    /* Page Styles */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: "Baloo Bhai 2", sans-serif;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .ticket-card {
+      transition: transform 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .ticket-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .timestamp {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-container2">
+      <div class="logonav2">ArtisanSpace</div>
+      <nav class="nav2">
+        <ul class="nav2ul">
+          <li><a href="/admin">Dashboard</a></li>
+          <li><a href="/admin/content-moderation">Content Moderation</a></li>
+          <li><a href="/admin/support-ticket">Support-ticket</a></li>
+          <li class="dropdown">
+            <i class="fa-solid fa-bars fa-lg"></i>
+            <div class="dropdown-menu">
+              <a href="/admin/settings" class="dropdown-item settings-btn">
+                <i class="fa-solid fa-gear"></i>
+                <p>Settings</p>
+              </a>
+              <a href="/logout" class="dropdown-item logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <p>Logout</p>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container py-5">
+      <div class="row mb-4">
+        <div class="col">
+          <h1 class="display-5 fw-bold">Support Tickets</h1>
+          <p class="text-muted">Manage all support requests from your dashboard</p>
+        </div>
+      </div>
+
+      <div class="text-center my-5" id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading tickets...</p>
+      </div>
+
+      <div class="row" id="ticketsContainer"></div>
+
+      <div class="alert alert-info" id="noTicketsAlert" style="display: none;">
+        <p class="mb-0">No support tickets found. When tickets are created, they will appear here.</p>
+      </div>
+
+      <div id="modalsContainer"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="topfooter">
+      <div class="topfooter1">
+        <p class="logop">AS</p>
+        <p>
+          It is a long established fact that a reader will be distracted by
+          the readable content of a page when looking at its layout.
+        </p>
+      </div>
+      <div class="footerhelp">
+        <p class="help">Help</p>
+        <a href="/aboutus" style="text-decoration: none; color: black">
+          <p>About Us</p>
+        </a>
+        <a href="/contactus" style="text-decoration: none; color: black;">
+          <p>Contact</p>
+        </a>
+        <a href="/supportTicket" style="text-decoration: none; color: black;">
+          <p>Support Ticket</p>
+        </a>
+      </div>
+      <div class="ourinfo">
+        <p class="info">Our Information</p>
+        <p>IIIT SriCity</p>
+        <p>+91 0000000000</p>
+        <p>Artisanspace09@gmail.com</p>
+      </div>
+    </div>
+    <div class="bottomfooter">
+      Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
+    </div>
+  </footer>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // --- START: Added Navbar Script ---
+      const barsIcon = document.querySelector(".fa-bars");
+      const dropdownMenu = document.querySelector(".dropdown-menu");
+
+      if (barsIcon && dropdownMenu) {
+        barsIcon.addEventListener("click", (event) => {
+          dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+          event.stopPropagation();
+        });
+
+        document.addEventListener("click", () => {
+          dropdownMenu.style.display = "none";
+        });
+
+        dropdownMenu.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+      }
+      // --- END: Added Navbar Script ---
+
+      console.log('[AdminSupportTicket] Page loaded.');
+
+      // Fetch tickets on page load
+      fetchTickets();
+    });
+
+    // Fetch tickets from the backend
+    async function fetchTickets() {
+      const loadingSpinner = document.getElementById('loadingSpinner');
+      const ticketsContainer = document.getElementById('ticketsContainer');
+      const noTicketsAlert = document.getElementById('noTicketsAlert');
+      const modalsContainer = document.getElementById('modalsContainer');
+
+      try {
+        console.log('[AdminSupportTicket] Fetching tickets...');
+
+        // Make API call to get tickets
+        const response = await fetch('/admin/support-ticket/api', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include' // Include cookies for authentication
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Use the populated userId object from the backend
+        const tickets = data.tickets ? data.tickets.map(ticket => ({
+            ...ticket,
+            username: ticket.userId.username,
+            email: ticket.userId.email,
+            role: ticket.role // Role is directly on the ticket
+        })) : [];
+
+        console.log(`[AdminSupportTicket] Fetched ${tickets.length} tickets.`);
+
+        // Hide loading spinner
+        loadingSpinner.style.display = 'none';
+
+        if (tickets.length === 0) {
+          noTicketsAlert.style.display = 'block';
+        } else {
+          // Render tickets
+          tickets.forEach(ticket => {
+            renderTicket(ticket, ticketsContainer, modalsContainer);
+          });
+        }
+      } catch (error) {
+        console.error('[AdminSupportTicket] Error fetching tickets:', error);
+        loadingSpinner.style.display = 'none';
+
+        // Show error message
+        ticketsContainer.innerHTML = `
+          <div class="col-12">
+            <div class="alert alert-danger">
+              <strong>Error loading tickets!</strong> ${error.message}
+              <br>Please refresh the page or contact support.
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Render a single ticket
+    function renderTicket(ticket, container, modalsContainer) {
+      const ticketId = ticket._id;
+      const createdAt = new Date(ticket.createdAt).toLocaleString();
+
+      // Create ticket card
+      const ticketCard = `
+        <div class="col-md-6 col-lg-4" id="ticket-${ticketId}">
+          <div class="card ticket-card">
+            <div class="card-header bg-light">
+              <span class="fw-bold">${escapeHtml(ticket.subject)}</span>
+              <span class="badge bg-primary">${escapeHtml(ticket.category)}</span>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <h5 class="card-title">${escapeHtml(ticket.username)}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                  <span class="badge bg-secondary">${escapeHtml(ticket.role)}</span>
+                  <a href="mailto:${escapeHtml(ticket.email)}" class="text-decoration-none">${escapeHtml(ticket.email)}</a>
+                </h6>
+              </div>
+              <p class="card-text">${escapeHtml(ticket.description)}</p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <p class="timestamp mb-0">received at: ${createdAt}</p>
+                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal${ticketId}">
+                  Resolve
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Create modal
+      const modal = `
+        <div class="modal fade" id="confirmModal${ticketId}" tabindex="-1" aria-labelledby="confirmModalLabel${ticketId}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel${ticketId}">Confirm Resolution</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure this ticket is resolved?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="resolveTicket('${ticketId}')">Confirm</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.insertAdjacentHTML('beforeend', ticketCard);
+      modalsContainer.insertAdjacentHTML('beforeend', modal);
+    }
+
+    // Function to resolve tickets
+    async function resolveTicket(ticketId) {
+      try {
+        console.log(`[AdminSupportTicket] Resolving ticket ${ticketId}`);
+
+        // Make DELETE request to backend
+        const response = await fetch('/admin/support-ticket', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `_method=DELETE&ticketId=${ticketId}`,
+          credentials: 'include'
+        });
+
+        if (response.redirected) {
+             // If the response is a redirect, it means the server-side deletion was successful.
+             // We can proceed to remove the ticket from the UI.
+        } else if (!response.ok) {
+             throw new Error('Failed to resolve ticket');
+        }
+
+
+        // Close modal
+        const modalEl = document.getElementById(`confirmModal${ticketId}`);
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) {
+          modal.hide();
+        }
+
+        // Remove ticket card from DOM
+        const ticketCard = document.getElementById(`ticket-${ticketId}`);
+        if (ticketCard) {
+          ticketCard.remove();
+        }
+        
+        // Remove the modal from the DOM after it's hidden to clean up
+        const modalBackdrop = document.querySelector('.modal-backdrop');
+        if (modalBackdrop) {
+          modalBackdrop.remove();
+        }
+        if (modalEl) {
+          modalEl.remove();
+        }
+
+
+        // Check if there are no more tickets
+        const ticketsContainer = document.getElementById('ticketsContainer');
+        if (ticketsContainer.children.length === 0) {
+          document.getElementById('noTicketsAlert').style.display = 'block';
+        }
+
+        console.log(`[AdminSupportTicket] Ticket ${ticketId} resolved successfully`);
+      } catch (error) {
+        console.error(`[AdminSupportTicket] Error resolving ticket:`, error);
+        alert('Failed to resolve ticket. Please try again.');
+      }
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        if (text === null || text === undefined) {
+            return '';
+        }
+        const div = document.createElement('div');
+        div.textContent = text.toString();
+        return div.innerHTML;
+    }
+  </script>
+</body>
+
+</html>

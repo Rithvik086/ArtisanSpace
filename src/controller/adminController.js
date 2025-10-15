@@ -21,6 +21,7 @@ import {
   getOrderByOrderId,
   getOrders,
 } from "../services/orderServices.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const custrespath = path.resolve(__dirname, "../../customerresponse.json");
@@ -28,37 +29,36 @@ const custrespath = path.resolve(__dirname, "../../customerresponse.json");
 const admrole = "admin";
 
 export const getAdminDashboard = async (req, res) => {
-  await updateResponse(custrespath);
-  const responses = await loadcustData(custrespath);
-  const userlist = await getUsers();
-  const products = await getProducts();
-  const orders = await getOrders();
-  // Serve the static admin HTML. Client-side JS will fetch the data via JSON endpoints.
-  res.sendFile(path.join(__dirname, "../public/admin/admindashboard.html"));
+  // This path is correct because admindashboard.html IS in the public folder.
+  res.sendFile(path.join(__dirname, "../../public/admin/admindashboard.html"));
 };
 
-export const getOrdersPage = async (req, res) => {
+// --- MODIFIED FUNCTION ---
+export const getOrdersPageStatic = (req, res) => {
+  // CORRECTED PATH: Now points to src/views/admin/
+  res.sendFile(path.join(__dirname, "../views/admin/orderDetails.html"));
+};
+
+export const getOrderDetailsAPI = async (req, res) => {
   const orderId = req.params.orderId;
   try {
     const order = await getOrderByOrderId(orderId);
-
     if (!order) {
-      return res.status(404).send("Order not found");
+      return res.status(404).json({ success: false, message: "Order not found" });
     }
-    res.render("admin/orderDetails", { role: admrole, order });
+    res.json(order);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("API Error fetching order details:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 export const deleteOrder = async (req, res) => {
   try {
     const orderId = req.params.orderId;
-
     const response = await deleteOrderById(orderId);
     if (response.success) {
-      return res
-        .status(200)
-        .json({ success: true, message: "Order deleted successfully" });
+      return res.status(200).json({ success: true, message: "Order deleted successfully" });
     }
     res.status(400).json({
       success: false,
@@ -76,9 +76,7 @@ export const changeStatus = async (req, res) => {
   try {
     const response = await changeOrderStatus(orderId, status);
     if (response.success) {
-      return res
-        .status(200)
-        .json({ success: true, message: "Status updated successfully" });
+      return res.status(200).json({ success: true, message: "Status updated successfully" });
     }
     res.status(400).json({
       success: false,
@@ -91,7 +89,6 @@ export const changeStatus = async (req, res) => {
 };
 
 export const addUserHandler = async (req, res) => {
-  // console.log("Received data:", req.body);
   const { name, username, mobile_no, email, role, pass } = req.body;
   const hashpass = await bcrypt.hash(pass, 9);
   try {
@@ -102,13 +99,12 @@ export const addUserHandler = async (req, res) => {
       hashpass,
       mobile_no,
       role
-    ); // Assuming addUser returns a success status
-
+    );
     if (result.success) {
       res.status(200).json({
         success: true,
         message: "User added successfully",
-        userData: result.user, // Send back user data if needed
+        userData: result.user,
       });
     } else {
       res.status(400).json({
@@ -127,7 +123,6 @@ export const addUserHandler = async (req, res) => {
 
 export const deletUser = async (req, res) => {
   const userId = req.params.userID;
-
   try {
     const result = await removeUser(userId);
     if (result.success) {
@@ -149,7 +144,6 @@ export const deletUser = async (req, res) => {
       error: error.message,
     });
   }
-  // return res.redirect("/admin/")
 };
 
 export const getAndHandleContentModerationAdmin = async (req, res) => {
@@ -157,7 +151,6 @@ export const getAndHandleContentModerationAdmin = async (req, res) => {
     if (req.headers["x-requested-with"] === "XMLHttpRequest") {
       const { action, productId } = req.query;
       let msg = { success: false };
-
       if (action === "approve") {
         msg = await approveProduct(productId);
       } else if (action === "disapprove") {
@@ -165,9 +158,7 @@ export const getAndHandleContentModerationAdmin = async (req, res) => {
       } else if (action === "remove") {
         msg = await deleteProduct(productId);
       } else {
-        return res
-          .status(400)
-          .json({ success: false, error: "Invalid action" });
+        return res.status(400).json({ success: false, error: "Invalid action" });
       }
       if (msg.success) {
         res.status(200).json({ success: true });
@@ -182,16 +173,27 @@ export const getAndHandleContentModerationAdmin = async (req, res) => {
   }
 };
 
+// --- MODIFIED FUNCTION ---
 export const getSupportTickets = async (req, res) => {
-  let tickets = await getTickets();
-  res.render("admin/adminsupportticket", { role: admrole, tickets });
+    // CORRECTED PATH: Now points to src/views/admin/
+    res.sendFile(path.join(__dirname, "../views/admin/adminsupportticket.html"));
+};
+
+export const getSupportTicketsAPI = async (req, res) => {
+  try {
+    let tickets = await getTickets();
+    res.json({ tickets });
+  } catch (error) {
+    console.error('Error fetching tickets API:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 };
 
 export const deleteTicket = async (req, res) => {
   if (req.body._method === "DELETE") {
     const { ticketId } = req.body;
     await removeTicket(ticketId);
-    return res.redirect("/admin/support-ticket"); // Redirect after deletion
+    return res.redirect("/admin/support-ticket");
   }
 };
 
@@ -207,7 +209,6 @@ export const getSettingsAdmin = async (req, res) => {
 export const getAdminUsers = async (req, res) => {
   try {
     const users = await getUsers();
-    // sanitize users before sending
     const safe = users.map((u) => ({
       _id: u._id,
       username: u.username,

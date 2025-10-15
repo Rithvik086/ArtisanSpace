@@ -5,10 +5,13 @@ import { fileURLToPath } from "url";
 import authorizerole from "../middleware/roleMiddleware.js";
 
 import {
-  getOrdersPage,
+  // Renamed the page controller and added the new API controller
+  getOrdersPageStatic,
+  getOrderDetailsAPI,
   addUserHandler,
   deletUser,
   getSupportTickets,
+  getSupportTicketsAPI,
   deleteTicket,
   getSettingsAdmin,
   changeStatus,
@@ -35,15 +38,20 @@ router.get("/", (req, res) => {
 router.get('/users', getAdminUsers);
 router.get('/orders', getAdminOrders);
 router.get('/responses', getAdminResponses);
-router.get("/orders/:orderId", getOrdersPage);
+
+router.get("/orders/:orderId", getOrdersPageStatic);
+
+router.get("/api/orders/:orderId", getOrderDetailsAPI);
+
+
 router.delete("/orders/:orderId", deleteOrder);
 router.put("/orders/:orderId/status", changeStatus);
 router.post("/add-user", addUserHandler);
 router.delete("/delete-user/:userID", deletUser);
 router.get("/content-moderation", getAndHandleContentModerationAdmin);
+router.get("/support-ticket/api", getSupportTicketsAPI);
 router.get("/support-ticket", getSupportTickets);
 router.post("/support-ticket", deleteTicket);
 
 router.get("/settings", getSettingsAdmin);
-
 export default router;
