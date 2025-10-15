@@ -12,6 +12,7 @@ import {
   getWorkshopsController,
   getArtisanWorkshopsAPI,
   getArtisanRequestByIdAPI,
+  getViewDetailsController,
   getArtisanCustomRequestsAPI,
   handleWorksopAction,
   getCustomRequestsController,
