@@ -47,11 +47,15 @@ app.use("/", authroutes);
 app.use("/", useroutes);
 
 app.all("*", (req, res) => {
-  res.status(404).render("accessdenied");
+  res.status(404).sendFile(path.join(process.cwd(), 'src', 'public', 'accessdenied.html'));
 });
 
 app.use((err, req, res, next) => {
   console.error(err);
+  // If an EJS view lookup failed (old code still calling res.render), fall back to static access denied page
+  if (err && err.message && err.message.includes('Failed to lookup view')) {
+    return res.status(404).sendFile(path.join(process.cwd(), 'src', 'public', 'accessdenied.html'));
+  }
   res.status(500).send({
     success: false,
     message: "Internal Server Error",

@@ -347,6 +347,21 @@
       document.getElementById('navbar-placeholder').innerHTML = createNavbar(role);
       document.getElementById('footer-placeholder').innerHTML = createFooter(role);
 
+      // Wire hamburger / dropdown behavior (same as dashboard)
+      const barsIcons = document.querySelectorAll('.fa-bars');
+      barsIcons.forEach(icon => {
+        icon.addEventListener('click', (event) => {
+          const menu = icon.closest('li') && icon.closest('li').querySelector('.dropdown-menu');
+          if (menu) menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+          event.stopPropagation();
+        });
+      });
+
+      // Hide dropdowns on outside click
+      document.addEventListener('click', () => document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none'));
+      // Prevent clicks inside dropdown menu from closing immediately
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.addEventListener('click', e => e.stopPropagation()));
+
       const data = await fetchJson('/artisan/api/workshops');
       if (!data) {
         document.getElementById('available-loading').textContent = 'Failed to load workshops';
