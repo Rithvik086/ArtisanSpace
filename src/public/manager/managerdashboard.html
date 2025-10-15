@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/navbar2.css" />
+  <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="/manager/managerdashboard.css">
+  <style>
+    .error-input {
+      border: 1px solid red !important;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin: 5px 0 0;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      color: #666;
+    }
+
+    .error {
+      text-align: center;
+      padding: 20px;
+      color: #d32f2f;
+      background-color: #ffebee;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="navbar"></div>
+  <div class="container">
+    <h1 class="dashboard-title">Dashboard Overview</h1>
+    <section class="stats-section">
+      <h2>Dashboard Overview</h2>
+      <div class="statcards">
+        <div class="scard">
+          <h3>Total Sales</h3>
+          <canvas id="totalSalesChart"></canvas>
+          <p class="stat-value">₹</p>
+        </div>
+        <div class="stat-card">
+          <h3>Monthly Orders</h3>
+          <canvas id="monthlyOrdersChart"></canvas>
+          <p class="stat-value"></p>
+        </div>
+        <div class="stat-card">
+          <h3>Products</h3>
+          <canvas id="productsChart"></canvas>
+          <p class="stat-value"></p>
+        </div>
+        <div class="stat-card">
+          <h3>Customers</h3>
+          <canvas id="customersChart"></canvas>
+          <p class="stat-value"></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="tabs-container">
+      <button id="usersTabBtn" class="tab-button active">Manage Users</button>
+      <button id="productsTabBtn" class="tab-button">Manage Products</button>
+    </div>
+
+    <section id="usersTab" class="users-section">
+      <section class="users-section">
+        <div class="users-header">
+          <h2 class="users-title">Manage Users<span id="userCount">0</span></h2>
+        </div>
+
+        <table id="userTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <tr id="noUserRow">
+              <td colspan="4">Loading users...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <section id="productsTab" class="products-section" style="display: none;">
+      <section class="products-section">
+        <div class="products-header">
+          <h2 class="products-title">Manage Products<span id="productCountSpan">0</span></h2>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">Loading products...</div>
+        <div id="error" class="error" style="display: none;"></div>
+
+        <table id="productTable">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Original Price</th>
+              <th>Website Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productTableBody">
+            <tr id="noProductRow">
+              <td colspan="8">Loading products...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <!-- Modal for delete confirmation -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 class="modal-title">Confirm Deletion</h3>
+        <p class="modal-text" id="deleteModalText">Are you sure you want to delete this item?</p>
+        <div class="modal-actions">
+          <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-confirm" id="confirmDeleteBtn" onclick="deleteProductFromModal()">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="editModal" class="modal">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 class="modal-title">Edit Product</h3>
+        <form id="editProductForm">
+          <label for="editProductName">Name:</label>
+          <input type="text" id="editProductName" name="name" required />
+          <p id="editProductNameError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Product name must only contain letters, numbers, spaces, and hyphens, and be between 3 and 30 characters long.
+          </p>
+
+          <label for="editProductOldPrice">Original Price:</label>
+          <input type="text" id="editProductOldPrice" name="oldPrice" required />
+          <p id="editProductOldPriceError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Price must be a valid number with up to two decimal places
+          </p>
+
+          <label for="editProductNewPrice">Website Price:</label>
+          <input type="text" id="editProductNewPrice" name="newPrice" required />
+          <p id="editProductNewPriceError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Price must be a valid number with up to two decimal places and less than Original Price
+          </p>
+
+          <label for="editProductQuantity">Stock:</label>
+          <input type="number" id="editProductQuantity" name="quantity" required />
+          <p id="editProductQuantityError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Quantity must be a positive integer greater than 0
+          </p>
+
+          <label for="editProductDescription">Description:</label>
+          <input type="text" id="editProductDescription" name="description" required />
+          <p id="editProductDescriptionError" style="color: red; font-size: 14px; margin: 5px 0 0; display: none;">
+            Description must be between 10 and 500 characters and only contain letters, numbers, spaces, and basic punctuation.
+          </p>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-cancel" onclick="closeEditModal()">Cancel</button>
+            <button type="submit" class="btn btn-confirm">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <div class="notification-container" id="notificationContainer"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load navbar
+      fetch('/manager/partials/navbar2')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navbar').innerHTML = html;
+          // Attach dropdown listeners
+          const barsIcon = document.querySelector(".fa-bars");
+          const dropdownMenu = document.querySelector(".dropdown-menu");
+          if (barsIcon && dropdownMenu) {
+            barsIcon.addEventListener("click", (event) => {
+              dropdownMenu.classList.toggle('show');
+              event.stopPropagation();
+            });
+            document.addEventListener("click", () => {
+              dropdownMenu.classList.remove('show');
+            });
+            dropdownMenu.addEventListener("click", (event) => {
+              event.stopPropagation();
+            });
+          }
+        })
+        .catch(error => console.error('Error loading navbar:', error));
+
+      // Load footer
+      fetch('/manager/partials/footer')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('footer').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading footer:', error));
+
+      // Load users
+      fetch('/manager/api/users')
+        .then(response => response.json())
+        .then(users => {
+          populateUsers(users);
+        })
+        .catch(error => console.error('Error loading users:', error));
+
+      // Load products
+      loadProducts();
+    });
+
+    function populateUsers(users) {
+      const tbody = document.getElementById('userTableBody');
+      const noUserRow = document.getElementById('noUserRow');
+      const userCount = document.getElementById('userCount');
+
+      userCount.textContent = users.length;
+
+      if (users.length > 0) {
+        noUserRow.style.display = 'none';
+        tbody.innerHTML = users.map(user => `
+          <tr data-user-id="${user._id.toString()}">
+            <td>${user.username}</td>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td>
+              <button class="btn btn-delete" onclick="confirmUserDelete('${user._id.toString()}')">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        noUserRow.innerHTML = '<td colspan="4">No users found</td>';
+      }
+    }
+
+    // Load products data from API
+    async function loadProducts() {
+      const loadingElement = document.getElementById('loading');
+      const errorElement = document.getElementById('error');
+      const tableBody = document.getElementById('productTableBody');
+      const productCountSpan = document.getElementById('productCountSpan');
+
+      try {
+        loadingElement.style.display = 'block';
+        errorElement.style.display = 'none';
+
+        const response = await fetch('/manager/api/products');
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+
+        const products = await response.json();
+
+        loadingElement.style.display = 'none';
+
+        // Update product count
+        productCountSpan.textContent = products.length;
+
+        // Clear existing content
+        tableBody.innerHTML = '';
+
+        if (products.length === 0) {
+          tableBody.innerHTML = '<tr id="noProductRow"><td colspan="8">No products found</td></tr>';
+          return;
+        }
+
+        // Populate table with products
+        products.forEach(product => {
+          const row = document.createElement('tr');
+          row.setAttribute('data-product-id', product._id);
+          row.innerHTML = `
+            <td>${product.category || 'N/A'}</td>
+            <td><img src="${product.image}" alt="Product Image" class="product-image"></td>
+            <td>${product.name}</td>
+            <td>₹${product.oldPrice}</td>
+            <td>₹${product.newPrice}</td>
+            <td>${product.quantity}</td>
+            <td>
+              <span class="status-badge status-${product.status}">
+                ${product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-edit" onclick="openEditModal('${product._id}', '${product.name.replace(/'/g, "\\'")}', '${product.oldPrice}', '${product.newPrice}', '${product.quantity}','${product.description.replace(/'/g, "\\'")}')">Edit</button>
+              <button class="btn btn-delete" onclick="confirmDelete('${product._id}')">Delete</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+      } catch (error) {
+        console.error('Error loading products:', error);
+        loadingElement.style.display = 'none';
+        errorElement.style.display = 'block';
+        errorElement.textContent = 'Failed to load products. Please try again later.';
+      }
+    }
+
+    function populateProducts(products) {
+      if (!Array.isArray(products)) {
+        console.error('Products is not an array:', products);
+        document.getElementById('noProductRow').innerHTML = '<td colspan="8">Error loading products</td>';
+        return;
+      }
+      const tbody = document.getElementById('productTableBody');
+      const noProductRow = document.getElementById('noProductRow');
+      const productCount = document.getElementById('productCountSpan');
+      const productCountSpan = document.getElementById('productCountSpan');
+
+      productCount.textContent = products.length;
+      productCountSpan.textContent = products.length;
+
+      if (products.length > 0) {
+        noProductRow.style.display = 'none';
+        tbody.innerHTML = products.map(product => {
+          if (!product._id) {
+            console.error('Product missing _id:', product);
+            return '';
+          }
+          return `
+          <tr data-product-id="${product._id.toString()}">
+            <td>${product.category || 'N/A'}</td>
+            <td><img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px; object-fit: cover;"></td>
+            <td>${product.name}</td>
+            <td>₹${product.oldPrice}</td>
+            <td>₹${product.newPrice}</td>
+            <td>${product.quantity}</td>
+            <td>${product.status || 'Active'}</td>
+            <td>
+              <button class="btn btn-edit" onclick="editProduct('${product._id.toString()}')">Edit</button>
+              <button class="btn btn-delete" onclick="confirmProductDelete('${product._id.toString()}')">Delete</button>
+            </td>
+          </tr>`;
+        }).join('');
+      } else {
+        noProductRow.innerHTML = '<td colspan="8">No products found</td>';
+      }
+    }
+
+    // Tab switching
+    document.getElementById('usersTabBtn').addEventListener('click', () => {
+      document.getElementById('usersTab').style.display = 'block';
+      document.getElementById('productsTab').style.display = 'none';
+      document.getElementById('usersTabBtn').classList.add('active');
+      document.getElementById('productsTabBtn').classList.remove('active');
+    });
+
+    document.getElementById('productsTabBtn').addEventListener('click', () => {
+      document.getElementById('usersTab').style.display = 'none';
+      document.getElementById('productsTab').style.display = 'block';
+      document.getElementById('productsTabBtn').classList.add('active');
+      document.getElementById('usersTabBtn').classList.remove('active');
+    });
+
+    // Modal functions
+    function confirmUserDelete(userId) {
+      document.getElementById('deleteModalText').textContent = 'Are you sure you want to delete this user?';
+      document.getElementById('confirmDeleteBtn').onclick = () => deleteUser(userId);
+      document.getElementById('deleteModal').style.display = 'block';
+    }
+
+    function confirmDelete(productId) {
+      const modal = document.getElementById("deleteModal");
+      document.getElementById("deleteModalText").textContent =
+        "Are you sure you want to delete this item?";
+
+      document.getElementById("confirmDeleteBtn").onclick = () =>
+        deleteProduct(productId);
+
+      modal.style.display = "flex";
+    }
+
+    function openEditModal(
+      productId,
+      name,
+      oldPrice,
+      newPrice,
+      quantity,
+      description
+    ) {
+      document.getElementById("editProductName").value = name;
+      document.getElementById("editProductOldPrice").value = oldPrice;
+      document.getElementById("editProductNewPrice").value = newPrice;
+      document.getElementById("editProductQuantity").value = quantity;
+      document.getElementById("editProductDescription").value = description;
+
+      const productNameregex = /^[a-zA-Z0-9\s-]+$/;
+      const priceregex = /^\d+(\.\d{1,2})?$/;
+      const descriptionregex = /^[a-zA-Z0-9\s.,'"\-!?()]+$/;
+      const quantityregex = /^[1-9][0-9]*$/;
+
+      const editForm = document.getElementById("editProductForm");
+      editForm.onsubmit = function (event) {
+        event.preventDefault();
+
+        let hasError = false;
+
+        // Reset previous error states
+        document.getElementById("editProductName").classList.remove("error-input");
+        document.getElementById("editProductNameError").style.display = "none";
+        document
+          .getElementById("editProductOldPrice")
+          .classList.remove("error-input");
+        document.getElementById("editProductOldPriceError").style.display = "none";
+        document
+          .getElementById("editProductNewPrice")
+          .classList.remove("error-input");
+        document.getElementById("editProductNewPriceError").style.display = "none";
+        document
+          .getElementById("editProductDescription")
+          .classList.remove("error-input");
+        document.getElementById("editProductDescriptionError").style.display =
+          "none";
+        document
+          .getElementById("editProductQuantity")
+          .classList.remove("error-input");
+        document.getElementById("editProductQuantityError").style.display = "none";
+
+        if (
+          !productNameregex.test(document.getElementById("editProductName").value)
+        ) {
+          document.getElementById("editProductNameError").style.display = "block";
+          document.getElementById("editProductName").classList.add("error-input");
+          document.getElementById("editProductName").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          hasError = true;
+        }
+
+        if (
+          !priceregex.test(document.getElementById("editProductOldPrice").value)
+        ) {
+          document.getElementById("editProductOldPriceError").style.display =
+            "block";
+          document
+            .getElementById("editProductOldPrice")
+            .classList.add("error-input");
+          document.getElementById("editProductOldPrice").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          hasError = true;
+        }
+
+        if (
+          !priceregex.test(document.getElementById("editProductNewPrice").value) ||
+          parseFloat(document.getElementById("editProductNewPrice").value) >
+            parseFloat(document.getElementById("editProductOldPrice").value)
+        ) {
+          document.getElementById("editProductNewPriceError").style.display =
+            "block";
+          document
+            .getElementById("editProductNewPrice")
+            .classList.add("error-input");
+          document.getElementById("editProductNewPrice").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          hasError = true;
+        }
+
+        if (
+          !descriptionregex.test(
+            document.getElementById("editProductDescription").value
+          )
+        ) {
+          document.getElementById("editProductDescriptionError").style.display =
+            "block";
+          document
+            .getElementById("editProductDescription")
+            .classList.add("error-input");
+          document.getElementById("editProductDescription").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          hasError = true;
+        }
+
+        if (
+          !quantityregex.test(document.getElementById("editProductQuantity").value)
+        ) {
+          document.getElementById("editProductQuantityError").style.display =
+            "block";
+          document
+            .getElementById("editProductQuantity")
+            .classList.add("error-input");
+          document.getElementById("editProductQuantity").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          hasError = true;
+        }
+
+        if (hasError) return;
+
+        event.preventDefault();
+        const updatedProduct = {
+          id: productId,
+          name: document.getElementById("editProductName").value,
+          oldPrice: document.getElementById("editProductOldPrice").value,
+          newPrice: document.getElementById("editProductNewPrice").value,
+          quantity: document.getElementById("editProductQuantity").value,
+          description: document.getElementById("editProductDescription").value,
+        };
+        updateProduct(updatedProduct);
+      };
+
+      document.getElementById("editModal").style.display = "flex";
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    // Function to send updated product data to the server
+    function updateProduct(product) {
+      fetch(`/manager/edit-product/${product.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(product),
+      })
+        .then((response) => {
+          if (response.ok) {
+            showNotification("Product updated successfully!", "success");
+            setTimeout(() => {
+              location.reload();
+            }, 1500);
+          } else {
+            showNotification(
+              "Failed to update product. Please check your input.",
+              "error"
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating product:", error);
+          alert("An error occurred while updating the product.");
+        });
+    }
+
+    async function deleteUser(userId) {
+      try {
+        const response = await fetch(`/manager/delete-user/${userId}`, { method: 'DELETE' });
+        if (response.ok) {
+          showNotification('User deleted successfully', 'success');
+          // Reload users
+          fetch('/manager/api/users')
+            .then(response => response.json())
+            .then(users => populateUsers(users));
+        } else {
+          showNotification('Failed to delete user', 'error');
+        }
+      } catch (error) {
+        showNotification('Error deleting user', 'error');
+      }
+      closeModal();
+    }
+
+    window.deleteProduct = async function deleteProduct(productId) {
+      try {
+        const response = await fetch(`/manager/delete-product/${productId}`, {
+          method: "POST",
+        });
+
+        if (response.ok) {
+          showNotification(
+            "Product deleted successfully. Refreshing the page...",
+            "success"
+          );
+          window.location.reload();
+        } else {
+          console.error("Failed to delete product");
+          showNotification("Failed to delete product. Please try again.", "error");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+
+      closeModal();
+    };
+
+    function deleteProductFromModal() {
+      const productId = document.getElementById('deleteModal').dataset.productId;
+      deleteProduct(productId);
+    }
+
+    function closeModal() {
+      document.getElementById('deleteModal').style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+      const modal = document.getElementById("deleteModal");
+      if (event.target === modal) {
+        closeModal();
+      }
+
+      const editModal = document.getElementById("editModal");
+      if (event.target === editModal) {
+        closeEditModal();
+      }
+    };
+
+    function showNotification(message, type) {
+      const container = document.getElementById('notificationContainer');
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      container.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => container.removeChild(notification), 500);
+      }, 3000);
+    }
+
+    // Add notification styles dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 40px;
+  z-index: 1000;
+}
+
+.notification {
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  animation: slide-in 0.3s ease-out forwards;
+}
+
+.notification.success {
+  background-color: #28a745;
+}
+
+.notification.error {
+  background-color: #dc3545;
+}
+
+.notification.fade-out {
+  animation: fade-out 0.5s ease-out forwards;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 8px;
+      text-align: center;
+    }.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-content label {
+  text-align: left;
+  font-weight: bold;
+}
+
+.modal-content input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+@keyframes slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+`;
+    document.head.appendChild(style);
+  </script>
+
+  <script src="/manager/managerdashboard.js"></script>
+</body>
+
+</html>

@@ -18,7 +18,7 @@ export const getUserRole = (req, res) => {
 };
 
 export const renderContactUs = (req, res) => {
-  res.render("customercontactus", { role: req.user.role });
+  res.sendFile(path.join(process.cwd(), "src/public/customercontactus.html"));
 };
 
 export const renderSupportTicket = (req, res) => {
@@ -100,13 +100,27 @@ export const productPage = async (req, res) => {
     const productId = req.params.productId;
     let product = await getProduct(productId);
 
-    res.render("productPage", {
-      product,
-      role: "customer",
-      userId: req.user.id,
-    });
+    // Serve the static HTML file - user authentication will be handled client-side
+    res.sendFile(path.join(process.cwd(), 'src', 'public', 'productPage.html'));
   } catch (err) {
     console.error("failed to get project", err);
+    res.status(500).sendFile(path.join(process.cwd(), 'src', 'public', 'accessdenied.html'));
+  }
+};
+
+export const getProductApi = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const product = await getProduct(productId);
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json(product);
+  } catch (err) {
+    console.error("Failed to get product:", err);
+    res.status(500).json({ error: "Failed to fetch product" });
   }
 };
 

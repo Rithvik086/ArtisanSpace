@@ -17,6 +17,7 @@ import {
   getOrdersChart,
   getProductsChart,
   getProductsApi,
+  getProductApi,
 } from "../controller/userController.js";
 const router = express.Router();
 router.get("/aboutus", renderAboutUs);
@@ -34,6 +35,7 @@ router.post("/submit-ticket", submitSuppotTicket);
 router.post("/update-profile", updatProfile);
 router.get("/delete-account", deleteAccount);
 router.get("/products/:productId", productPage);
+router.get("/api/products/:productId", getProductApi);
 router.get("/api/customer_chart", getCustomerChart);
 router.get("/api/orders_chart", getOrdersChart);
 router.get("/api/products_chart", getProductsChart);

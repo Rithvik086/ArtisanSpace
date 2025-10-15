@@ -44,7 +44,9 @@ export const getOrderDetailsAPI = async (req, res) => {
   try {
     const order = await getOrderByOrderId(orderId);
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
     res.json(order);
   } catch (error) {
@@ -58,7 +60,9 @@ export const deleteOrder = async (req, res) => {
     const orderId = req.params.orderId;
     const response = await deleteOrderById(orderId);
     if (response.success) {
-      return res.status(200).json({ success: true, message: "Order deleted successfully" });
+      return res
+        .status(200)
+        .json({ success: true, message: "Order deleted successfully" });
     }
     res.status(400).json({
       success: false,
@@ -76,7 +80,9 @@ export const changeStatus = async (req, res) => {
   try {
     const response = await changeOrderStatus(orderId, status);
     if (response.success) {
-      return res.status(200).json({ success: true, message: "Status updated successfully" });
+      return res
+        .status(200)
+        .json({ success: true, message: "Status updated successfully" });
     }
     res.status(400).json({
       success: false,
@@ -151,6 +157,7 @@ export const getAndHandleContentModerationAdmin = async (req, res) => {
     if (req.headers["x-requested-with"] === "XMLHttpRequest") {
       const { action, productId } = req.query;
       let msg = { success: false };
+
       if (action === "approve") {
         msg = await approveProduct(productId);
       } else if (action === "disapprove") {
@@ -158,7 +165,9 @@ export const getAndHandleContentModerationAdmin = async (req, res) => {
       } else if (action === "remove") {
         msg = await deleteProduct(productId);
       } else {
-        return res.status(400).json({ success: false, error: "Invalid action" });
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid action" });
       }
       if (msg.success) {
         res.status(200).json({ success: true });
@@ -166,7 +175,9 @@ export const getAndHandleContentModerationAdmin = async (req, res) => {
         res.status(500).json({ success: false });
       }
     } else {
-      res.render("manager/managerContentModeration", { role: admrole });
+      res.sendFile(
+        path.join(__dirname, "../public/manager/managerContentModeration.html")
+      );
     }
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
@@ -175,8 +186,8 @@ export const getAndHandleContentModerationAdmin = async (req, res) => {
 
 // --- MODIFIED FUNCTION ---
 export const getSupportTickets = async (req, res) => {
-    // CORRECTED PATH: Now points to src/views/admin/
-    res.sendFile(path.join(__dirname, "../views/admin/adminsupportticket.html"));
+  // CORRECTED PATH: Now points to src/views/admin/
+  res.sendFile(path.join(__dirname, "../views/admin/adminsupportticket.html"));
 };
 
 export const getSupportTicketsAPI = async (req, res) => {
@@ -184,8 +195,8 @@ export const getSupportTicketsAPI = async (req, res) => {
     let tickets = await getTickets();
     res.json({ tickets });
   } catch (error) {
-    console.error('Error fetching tickets API:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error("Error fetching tickets API:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 

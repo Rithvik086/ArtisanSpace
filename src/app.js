@@ -31,6 +31,19 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", redirectBasedOnRole);
 
+// Public partial routes for homepage
+app.get("/partials/navbar", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/partials/navbar.html"));
+});
+
+app.get("/partials/footer", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/partials/footer.html"));
+});
+
+app.get("/partials/header", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/partials/header.html"));
+});
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -47,14 +60,18 @@ app.use("/", authroutes);
 app.use("/", useroutes);
 
 app.all("*", (req, res) => {
-  res.status(404).sendFile(path.join(process.cwd(), 'src', 'public', 'accessdenied.html'));
+  res
+    .status(404)
+    .sendFile(path.join(process.cwd(), "src", "public", "accessdenied.html"));
 });
 
 app.use((err, req, res, next) => {
   console.error(err);
   // If an EJS view lookup failed (old code still calling res.render), fall back to static access denied page
-  if (err && err.message && err.message.includes('Failed to lookup view')) {
-    return res.status(404).sendFile(path.join(process.cwd(), 'src', 'public', 'accessdenied.html'));
+  if (err && err.message && err.message.includes("Failed to lookup view")) {
+    return res
+      .status(404)
+      .sendFile(path.join(process.cwd(), "src", "public", "accessdenied.html"));
   }
   res.status(500).send({
     success: false,

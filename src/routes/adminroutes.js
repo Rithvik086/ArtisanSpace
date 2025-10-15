@@ -55,7 +55,6 @@ router.post("/support-ticket", deleteTicket);
 router.get("/settings", getSettingsAdmin);
 // Partial route for admin footer (so admin pages can fetch the shared footer)
 router.get("/partials/footer", (req, res) => {
-  const role = req.user && req.user.role ? req.user.role : "admin";
-  res.render("partials/footer", { role });
+  res.sendFile(path.join(process.cwd(), "src/public/partials/footer.html"));
 });
 export default router;

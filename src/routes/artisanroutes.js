@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import upload from "../middleware/multer.js";
 import authorizerole from "../middleware/roleMiddleware.js";
 
@@ -32,12 +33,12 @@ router.get("/", getArtisanDashboard);
 router.get("/api/products", getArtisanProductsAPI);
 
 // API endpoint for custom requests data
-router.get('/api/customrequests', getArtisanCustomRequestsAPI);
+router.get("/api/customrequests", getArtisanCustomRequestsAPI);
 // API to fetch single request by id
-router.get('/api/customrequests/:id', getArtisanRequestByIdAPI);
+router.get("/api/customrequests/:id", getArtisanRequestByIdAPI);
 
 // API endpoint for workshops data
-router.get('/api/workshops', getArtisanWorkshopsAPI);
+router.get("/api/workshops", getArtisanWorkshopsAPI);
 
 router.put("/edit-product/:id", editProductController);
 
@@ -52,7 +53,7 @@ router.get("/workshops/:action/:workshopId", handleWorksopAction);
 
 router.get("/customrequests", getCustomRequestsController);
 // Serve static details page (client will fetch data from API)
-router.get('/customrequests/view/:id', getViewDetailsController);
+router.get("/customrequests/view/:id", getViewDetailsController);
 
 router.post("/customrequests", approveCustomRequest);
 router.get("/customrequests/:requestId", deleteCustomRequest);
@@ -60,13 +61,13 @@ router.get("/customrequests/:requestId", deleteCustomRequest);
 router.get("/settings", getSettingsArtisan);
 
 router.get("/partials/navbar2", (req, res) => {
-  const role = req.user && req.user.role ? req.user.role : "artisan";
-  res.render("partials/navbar2", { role });
+  res.sendFile(
+    path.join(process.cwd(), "src/public/partials/navbar2-artisan.html")
+  );
 });
 
 router.get("/partials/footer", (req, res) => {
-  const role = req.user && req.user.role ? req.user.role : "artisan";
-  res.render("partials/footer", { role });
+  res.sendFile(path.join(process.cwd(), "src/public/partials/footer.html"));
 });
 
 export default router;
