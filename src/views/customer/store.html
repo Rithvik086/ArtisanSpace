@@ -143,11 +143,15 @@
 
         const response = await fetch(`/customer/api/products?${params}`);
         const data = await response.json();
+        // Normalize products response (could be array or object with products)
+        const productsArray = Array.isArray(data)
+          ? data
+          : (data && Array.isArray(data.products) ? data.products : []);
 
-        renderProducts(data.products);
-        renderPagination(data.currentPage, data.totalPages);
-        currentPage = data.currentPage;
-        totalPages = data.totalPages;
+        renderProducts(productsArray);
+        renderPagination(data.currentPage || 1, data.totalPages || 1);
+        currentPage = data.currentPage || 1;
+        totalPages = data.totalPages || 1;
 
         // Update URL
         const newUrl = new URL(window.location);
@@ -299,7 +303,9 @@
       try {
         const response = await fetch("/customer/api/products?limit=all");
         const data = await response.json();
-        const products = data.products;
+        const products = Array.isArray(data)
+          ? data
+          : (data && Array.isArray(data.products) ? data.products : []);
 
         const options = {
           keys: ['name', 'description', 'category'],

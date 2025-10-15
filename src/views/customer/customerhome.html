@@ -365,7 +365,22 @@
       const slider = document.querySelector(".slider");
       try {
         const productsResponse = await fetch("/customer/api/products");
-        const products = await productsResponse.json();
+        const productsData = await productsResponse.json();
+        // Normalize response shape: API may return an array or an object { products, ... }
+        let products = [];
+        if (Array.isArray(productsData)) {
+          products = productsData;
+        } else if (productsData && Array.isArray(productsData.products)) {
+          products = productsData.products;
+        } else if (productsData && productsData.products) {
+          // fallback: if products is an object (unlikely), take its values
+          try {
+            products = Object.values(productsData.products);
+          } catch (e) {
+            products = [];
+          }
+        }
+
         slider.innerHTML = "";
         products.forEach(product => {
           const a = document.createElement('a');
