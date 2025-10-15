@@ -62,7 +62,17 @@ export const getCartController = async (req, res) => {
 
 export const editCart = async (req, res) => {
   try {
-    const { userId, productId, action, amount } = req.query;
+    // Use the authenticated user's id instead of trusting a query param
+    const userId = req.user && req.user.id;
+    const { productId, action, amount } = req.query;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    if (!productId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "productId is required" });
+    }
     let msg;
     if (action === "add") {
       msg = await addItem(userId, productId);
