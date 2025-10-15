@@ -210,18 +210,43 @@ export const getCustomRequestsController = async (req, res) => {
 
     const acceptedRequests = await getRequests(true, currentArtisanId);
 
-    // Render the dashboard with both sets of requests
-    res.render("artisan/artisancustomorder", {
-      role: astrole,
-      availableRequests,
-      acceptedRequests,
-      currentArtisanId,
-    });
+    // Serve the static HTML page (client will fetch data via API)
+    res.sendFile(path.join(process.cwd(), 'src', 'public', 'artisan', 'artisancustomorder.html'));
   } catch (error) {
     console.error("Error fetching requests:", error);
     res.status(500).render("error", {
       message: "Failed to load dashboard. Please try again later.",
     });
+  }
+};
+
+// API endpoint to return custom requests for the current artisan
+export const getArtisanCustomRequestsAPI = async (req, res) => {
+  try {
+    const currentArtisanId = req.user.id;
+    if (!currentArtisanId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const availableRequests = await getRequests(false);
+    const acceptedRequests = await getRequests(true, currentArtisanId);
+
+    // Map requests to include explicit requester info to avoid frontend population issues
+    const mapReq = (r) => {
+      const obj = r && r.toObject ? r.toObject() : r;
+      const requester = (obj.userId && typeof obj.userId === 'object') ? {
+        username: obj.userId.username || null,
+        email: obj.userId.email || null,
+        mobile_no: obj.userId.mobile_no || null,
+      } : null;
+      return { ...obj, requester };
+    };
+
+    const availableMapped = (availableRequests || []).map(mapReq);
+    const acceptedMapped = (acceptedRequests || []).map(mapReq);
+
+    res.status(200).json({ availableRequests: availableMapped, acceptedRequests: acceptedMapped, currentArtisanId });
+  } catch (error) {
+    console.error('Error fetching custom requests:', error);
+    res.status(500).json({ error: 'Failed to fetch custom requests' });
   }
 };
 
