@@ -260,7 +260,7 @@
               <td class="truncate-description" title="<%= request.description %>"><%= request.description %></td>
               <td><span class="badge badge-budget">₹<%= request.budget %></span></td>
               <td><span class="badge badge-date"><%= request.requiredBy %></span></td>
-              <td><%= request.userId.username || 'Unknown User' %></td>
+              <td><%= request.userId && request.userId.username ? request.userId.username : 'Unknown User' %></td>
               <td>
                 <div class="action-buttons">
                   <form id="requestForm-<%= request._id.toString() %>" class="request-form" style="width: 100%;">
