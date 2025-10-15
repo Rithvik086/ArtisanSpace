@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details - ArtisanSpace</title>
+  <link rel="stylesheet" href="/navbar2.css" /> 
+  <link rel="stylesheet" href="/footer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #5c6bc0;
+      --secondary-color: #7986cb;
+      --accent-color: #3949ab;
+      --light-gray: #f5f5f5;
+      --dark-gray: #616161;
+      --text-color: #333;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --danger-color: #f44336;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: var(--text-color);
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 30px;
+    }
+
+    .order-id {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .order-date {
+      color: var(--dark-gray);
+    }
+
+    .order-status {
+      margin-top: 10px;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .pending {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
+
+    .processing {
+      background-color: #e3f2fd;
+      color: #0d47a1;
+    }
+
+    .shipped {
+      background-color: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .delivered {
+      background-color: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .cancelled {
+      background-color: #ffebee;
+      color: #b71c1c;
+    }
+
+    .order-sections {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+    }
+
+    .order-details,
+    .customer-details {
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .order-items {
+      margin-bottom: 30px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: 100px 1fr 120px 120px;
+      gap: 15px;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item-image {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .item-name {
+      font-weight: 600;
+    }
+
+    .item-seller {
+      color: var(--dark-gray);
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .item-price,
+    .item-quantity,
+    .item-total {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .order-summary {
+      margin-top: 30px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .summary-row.total {
+      border-top: 2px solid #eee;
+      border-bottom: none;
+      padding-top: 15px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .customer-info {
+      margin-bottom: 30px;
+    }
+
+    .info-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .info-label {
+      width: 120px;
+      font-weight: 600;
+      color: var(--dark-gray);
+    }
+
+    .info-value {
+      flex: 1;
+    }
+
+    .shipping-address {
+      padding: 15px;
+      background-color: var(--light-gray);
+      border-radius: 4px;
+      margin-bottom: 30px;
+    }
+    
+    #shipping-address-container {
+      /* This container will be populated by JS */
+    }
+
+    .address-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .payment-info {
+      padding: 15px;
+      background-color: var(--light-gray);
+      border-radius: 4px;
+    }
+
+    .action-buttons {
+      margin-top: 30px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 4px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .primary-btn {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .primary-btn:hover {
+      background-color: var(--accent-color);
+    }
+
+    .outline-btn {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .outline-btn:hover {
+      background-color: var(--light-gray);
+    }
+
+    #update-status-form {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    #status-select {
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      background-color: white;
+    }
+
+    .tracking-info {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: var(--light-gray);
+      border-radius: 4px;
+      /* Initially hidden, shown by JS if applicable */
+      display: none; 
+    }
+
+    @media (max-width: 768px) {
+      .order-sections {
+        grid-template-columns: 1fr;
+      }
+
+      .item {
+        grid-template-columns: 80px 1fr;
+      }
+
+      .item-price,
+      .item-quantity {
+        grid-column: 2;
+        text-align: left;
+      }
+
+      .item-total {
+        grid-column: 1/3;
+        text-align: right;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-container2">
+      <div class="logonav2">ArtisanSpace</div>
+      <nav class="nav2">
+        <ul class="nav2ul">
+          <li><a href="/admin">Dashboard</a></li>
+          <li><a href="/admin/content-moderation">Content Moderation</a></li>
+          <li><a href="/admin/support-ticket">Support-ticket</a></li>
+          <li class="dropdown">
+            <i class="fa-solid fa-bars fa-lg"></i>
+            <div class="dropdown-menu">
+              <a href="/admin/settings" class="dropdown-item settings-btn">
+                <i class="fa-solid fa-gear"></i>
+                <p>Settings</p>
+              </a>
+              <a href="/logout" class="dropdown-item logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <p>Logout</p>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="order-header">
+      <div>
+        <h1 class="order-id" id="order-id-display">Order #...</h1>
+        <div class="order-date" id="order-date-display">Placed on ...</div>
+        <div class="order-status">
+          <span class="status-badge" id="order-status-badge">...</span>
+        </div>
+      </div>
+      <div id="update-status-form">
+        <select id="status-select" name="status">
+          <option value="pending">Pending</option>
+          <option value="processing">Processing</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button class="btn primary-btn" id="update-status-btn">Update Status</button>
+      </div>
+    </div>
+
+    <div class="order-sections">
+      <div class="order-details">
+        <h2 class="section-title">Order Items</h2>
+        <div class="order-items" id="order-items-container">
+          </div>
+
+        <div class="order-summary">
+          <h2 class="section-title">Order Summary</h2>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">₹0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span id="summary-shipping">₹0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax (5%)</span>
+            <span id="summary-tax">₹0.00</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="summary-total">₹0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="customer-details">
+        <div class="customer-info">
+          <h2 class="section-title">Customer Information</h2>
+          <div class="info-row">
+            <span class="info-label">Name:</span>
+            <span class="info-value" id="customer-name">...</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Username:</span>
+            <span class="info-value" id="customer-username">...</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Email:</span>
+            <span class="info-value" id="customer-email">...</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Phone:</span>
+            <span class="info-value" id="customer-phone">...</span>
+          </div>
+        </div>
+
+        <div class="shipping-info">
+          <h2 class="section-title">Shipping Information</h2>
+          <div class="shipping-address" id="shipping-address-container">
+              </div>
+          
+          <div class="tracking-info" id="tracking-info-container">
+            <div class="address-title">Tracking Information</div>
+            <div class="info-row">
+              <span class="info-label">Carrier:</span>
+              <span class="info-value" id="tracking-carrier">...</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Tracking #:</span>
+              <span class="info-value" id="tracking-number">...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="payment-info">
+          <h2 class="section-title">Payment Information</h2>
+          <div class="info-row">
+            <span class="info-label">Method:</span>
+            <span class="info-value" id="payment-method">...</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Status:</span>
+            <span class="info-value" id="payment-status">...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn outline-btn" id="print-btn" onclick="window.print()">Print Invoice</button>
+      <button class="btn outline-btn" id="back-btn" onclick="window.history.back()">Back</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="topfooter">
+      <div class="topfooter1">
+        <p class="logop">AS</p>
+        <p>
+          It is a long established fact that a reader will be distracted by
+          the readable content of a page when looking at its layout.
+        </p>
+      </div>
+      <div class="footerhelp">
+        <p class="help">Help</p>
+        <a href="/aboutus" style="text-decoration: none; color: black">
+          <p>AboutUs</p>
+        </a>
+      </div>
+      <div class="ourinfo">
+        <p class="info">Our Information</p>
+        <p>IIIT SriCity</p>
+        <p>+91 0000000000</p>
+        <p>Artisanspace09@gmail.com</p>
+      </div>
+    </div>
+    <div class="bottomfooter">
+      Copyright &copy; 2025 All Rights Reserved by ArtisanSpace
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get the order ID from the URL path (e.g., /admin/orders/12345)
+      const pathParts = window.location.pathname.split('/');
+      const orderId = pathParts[pathParts.length - 1];
+
+      const statusSelect = document.getElementById('status-select');
+      const updateStatusBtn = document.getElementById('update-status-btn');
+      
+      // Function to fetch order data and render it on the page
+      async function fetchAndRenderOrder() {
+        if (!orderId) {
+            document.querySelector('main').innerHTML = '<h1>No Order ID provided.</h1>';
+            return;
+        }
+
+        try {
+          // Fetch data from the new API endpoint
+          const response = await fetch(`/admin/api/orders/${orderId}`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch order data. Status: ${response.status}`);
+          }
+          const order = await response.json();
+          renderOrderDetails(order);
+
+        } catch (error) {
+          console.error('Error fetching order details:', error);
+          document.querySelector('main').innerHTML = `<h1>Error loading order details: ${error.message}</h1>`;
+        }
+      }
+
+      // Function to populate the HTML with fetched data
+      function renderOrderDetails(order) {
+        // Header
+        document.getElementById('order-id-display').textContent = `Order #${order._id.toString().slice(-6).toUpperCase()}`;
+        document.getElementById('order-date-display').textContent = `Placed on ${new Date(order.purchasedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+        
+        const statusBadge = document.getElementById('order-status-badge');
+        statusBadge.textContent = order.status;
+        statusBadge.className = `status-badge ${order.status.toLowerCase()}`;
+        
+        statusSelect.value = order.status; // Set dropdown to current status
+
+        // Order Items
+        const itemsContainer = document.getElementById('order-items-container');
+        itemsContainer.innerHTML = ''; // Clear previous content
+        let subtotal = 0;
+        order.products.forEach(product => {
+            // Ensure newPrice is a number
+            const price = Number(product.productId.newPrice) || 0;
+            subtotal += price * product.quantity;
+            const itemHTML = `
+                <div class="item">
+                    <img src="${product.productId.image}" alt="${product.productId.name}" class="item-image">
+                    <div class="item-info">
+                        <div class="item-name">${product.productId.name}</div>
+                        <div class="item-seller">Category: ${product.productId.category}</div>
+                        <div class="item-seller">Material: ${product.productId.material}</div>
+                    </div>
+                    <div class="item-price">₹${price.toFixed(2)}</div>
+                    <div class="item-quantity">Qty: ${product.quantity}</div>
+                </div>
+            `;
+            itemsContainer.innerHTML += itemHTML;
+        });
+
+        // Order Summary
+        const shipping = 50;
+        const tax = Math.round(subtotal * 0.05 * 100) / 100;
+        document.getElementById('summary-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+        document.getElementById('summary-shipping').textContent = `₹${shipping.toFixed(2)}`;
+        document.getElementById('summary-tax').textContent = `₹${tax.toFixed(2)}`;
+        document.getElementById('summary-total').textContent = `₹${order.money.toFixed(2)}`;
+
+        // Customer Details
+        document.getElementById('customer-name').textContent = order.userId.name;
+        document.getElementById('customer-username').textContent = order.userId.username;
+        document.getElementById('customer-email').textContent = order.userId.email;
+        document.getElementById('customer-phone').textContent = order.userId.mobile_no || 'N/A';
+
+        // Shipping Address
+        const addressContainer = document.getElementById('shipping-address-container');
+        addressContainer.innerHTML = '<div class="address-title">Delivery Address</div>'; // Reset
+        if(order.userId.address) {
+            const addressParts = order.userId.address.split('|').map(part => part.trim());
+            const addressLabels = { 0: 'Building/House:', 1: 'Street/Area:', 2: 'City:', 3: 'State:', 4: 'Pincode:', 5: 'Country:'};
+            addressParts.forEach((part, index) => {
+                addressContainer.innerHTML += `
+                    <div class="info-row">
+                        <span class="info-label">${addressLabels[index] || ''}</span>
+                        <span class="info-value">${part}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // Tracking Info (conditional)
+        const trackingContainer = document.getElementById('tracking-info-container');
+        if (order.status === 'shipped' || order.status === 'delivered') {
+            trackingContainer.style.display = 'block';
+            document.getElementById('tracking-carrier').textContent = order.tracking?.carrier || 'Standard Shipping';
+            document.getElementById('tracking-number').textContent = order.tracking?.number || 'N/A';
+        } else {
+            trackingContainer.style.display = 'none';
+        }
+
+        // Payment Info
+        document.getElementById('payment-method').textContent = order.paymentMethod || 'Cash on Delivery';
+        document.getElementById('payment-status').textContent = order.paymentStatus || 'Pending';
+      }
+
+      // Event listener for the update status button
+      updateStatusBtn.addEventListener('click', async function () {
+        const newStatus = statusSelect.value;
+        try {
+          const response = await fetch(`/admin/orders/${orderId}/status`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+          });
+
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert('Failed to update order status');
+          }
+        } catch (error) {
+          console.error('Error updating order status:', error);
+          alert('An error occurred while updating order status');
+        }
+      });
+      
+      // Initial fetch and render
+      fetchAndRenderOrder();
+
+      // Navbar dropdown script
+      const barsIcon = document.querySelector(".fa-bars");
+      const dropdownMenu = document.querySelector(".dropdown-menu");
+
+      barsIcon.addEventListener("click", (event) => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+        event.stopPropagation();
+      });
+
+      document.addEventListener("click", () => {
+        dropdownMenu.style.display = "none";
+      });
+    });
+  </script>
+</body>
+
+</html>

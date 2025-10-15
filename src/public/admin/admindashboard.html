@@ -9,6 +9,27 @@
   <link rel="stylesheet" href="/navbar2.css" />
   <link rel="stylesheet" href="/footer.css" />
   <link rel="stylesheet" href="/admin/admindashboard.css">
+  <style>
+    /* Instant validation styles for Add User modal */
+    .validation-message {
+      color: #b91c1c; /* red */
+      font-size: 0.85rem;
+      margin-top: 4px;
+      display: none;
+    }
+    .input-invalid {
+      border-color: #b91c1c !important;
+      box-shadow: 0 0 0 1px rgba(185,28,28,0.12);
+    }
+    .input-valid {
+      border-color: #16a34a !important;
+      box-shadow: 0 0 0 1px rgba(22,163,74,0.08);
+    }
+    #add-user-form .submit-btn[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 
 <body>
@@ -247,21 +268,26 @@
       <span id="close-modal" class="close-modal">&times;</span>
       <h2>Add New User</h2>
       <form id="add-user-form">
+        <div class="validation-message" id="add-user-server-error" style="display:none;margin-bottom:8px;"></div>
         <div class="form-group">
           <label for="username">Username</label>
           <input type="text" id="username" name="username" required>
+          <div class="validation-message" id="username-error">Username may only contain letters, numbers, underscores and hyphens (3-30 chars).</div>
         </div>
         <div class="form-group">
           <label for="name">Name</label>
           <input type="text" id="name" name="name" required>
+          <div class="validation-message" id="name-error">Name should only contain letters and spaces (2-50 chars).</div>
         </div>
         <div class="form-group">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" required>
+          <div class="validation-message" id="email-error">Please enter a valid email address.</div>
         </div>
         <div class="form-group">
           <label for="mobile_no">Mobile No</label>
           <input type="text" id="mobile_no" name="mobile_no" required>
+          <div class="validation-message" id="mobile_error">Please enter a valid 10-digit mobile number.</div>
         </div>
         <div class="form-group">
           <label for="role">Role</label>
@@ -276,10 +302,11 @@
         <div class="form-group">
           <label for="password">Password</label>
           <input type="password" id="pass" name="pass" required>
+          <div class="validation-message" id="password-error">Password must be at least 8 characters and include a number and a letter.</div>
         </div>
         <div class="form-actions">
           <button type="button" class="cancel-btn">Cancel</button>
-          <button type="submit" class="submit-btn">Add User</button>
+          <button type="submit" class="submit-btn" id="add-user-submit">Add User</button>
         </div>
       </form>
     </div>
@@ -367,6 +394,132 @@
           });
       });
     </script>
+
+      <script>
+        // Instant validation for Add User modal
+        (function() {
+          const modal = document.getElementById('add-user-modal');
+          const openBtn = document.getElementById('add-user-btn');
+          const closeElems = document.querySelectorAll('#add-user-modal .close-modal, #add-user-modal .cancel-btn');
+          const form = document.getElementById('add-user-form');
+          const submitBtn = document.getElementById('add-user-submit');
+
+          // Validation regexes
+          const usernameRe = /^[a-zA-Z0-9_-]{3,30}$/;
+          const nameRe = /^[a-zA-Z\s]{2,50}$/;
+          const mobileRe = /^[0-9]{10}$/;
+          const passwordRe = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]{8,}$/;
+
+          function findErrorElement(input, messageId) {
+            const candidates = [];
+            if (messageId) candidates.push(messageId);
+            candidates.push(input.id + '-error');
+            candidates.push(input.id + '_error');
+            candidates.push(input.id.replace(/_/g, '') + '-error');
+            candidates.push(input.id.replace(/_/g, '') + '_error');
+            // special-case common mappings
+            if (input.id === 'pass') candidates.push('password-error');
+            if (input.id === 'mobile_no') candidates.push('mobile_error');
+
+            for (const id of candidates) {
+              if (!id) continue;
+              const el = document.getElementById(id);
+              if (el) return el;
+            }
+            return null;
+          }
+
+          function markValid(input) {
+            input.classList.remove('input-invalid');
+            input.classList.add('input-valid');
+            const err = findErrorElement(input);
+            if (err) err.style.display = 'none';
+          }
+
+          function markInvalid(input, messageId) {
+            input.classList.remove('input-valid');
+            input.classList.add('input-invalid');
+            const err = findErrorElement(input, messageId);
+            if (err) err.style.display = 'block';
+          }
+
+          function validateField(input) {
+            const val = (input.value || '').trim();
+            switch (input.id) {
+              case 'username':
+                if (usernameRe.test(val)) { markValid(input); return true; }
+                markInvalid(input, 'username-error'); return false;
+              case 'name':
+                if (nameRe.test(val)) { markValid(input); return true; }
+                markInvalid(input, 'name-error'); return false;
+              case 'email':
+                // rely on browser validity + basic pattern
+                if (input.checkValidity()) { markValid(input); return true; }
+                markInvalid(input, 'email-error'); return false;
+              case 'mobile_no':
+                if (mobileRe.test(val)) { markValid(input); return true; }
+                markInvalid(input, 'mobile_error'); return false;
+              case 'pass':
+                if (passwordRe.test(val)) { markValid(input); return true; }
+                markInvalid(input, 'password-error'); return false;
+              default:
+                return true;
+            }
+          }
+
+          function updateSubmitState() {
+            const inputs = Array.from(form.querySelectorAll('input[required], select[required]'));
+            const allValid = inputs.every(i => validateField(i));
+            submitBtn.disabled = !allValid;
+          }
+
+          // Open modal
+          if (openBtn) {
+            openBtn.addEventListener('click', () => { modal.classList.add('active'); });
+          }
+
+          // Close modal handlers
+          closeElems.forEach(el => el.addEventListener('click', () => { modal.classList.remove('active'); }));
+
+          // Attach input listeners
+          ['username', 'name', 'email', 'mobile_no', 'pass'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('input', () => { 
+              validateField(el); 
+              updateSubmitState(); 
+              const serverErr = document.getElementById('add-user-server-error'); if (serverErr) serverErr.style.display = 'none';
+              // reset field-specific messages to defaults when editing username/email
+              if (id === 'username') {
+                const ue = document.getElementById('username-error'); if (ue) { ue.textContent = 'Username may only contain letters, numbers, underscores and hyphens (3-30 chars).'; }
+              }
+              if (id === 'email') {
+                const ee = document.getElementById('email-error'); if (ee) { ee.textContent = 'Please enter a valid email address.'; }
+              }
+            });
+            el.addEventListener('blur', () => { validateField(el); updateSubmitState(); });
+          });
+
+      // Disable submit until valid and hide any pre-existing validation messages
+      if (submitBtn) submitBtn.disabled = true;
+      Array.from(form.querySelectorAll('.validation-message')).forEach(e => e.style.display = 'none');
+
+          // Form submit handler: prevent submit if invalid
+          if (form) {
+            form.addEventListener('submit', function(e) {
+              const inputs = Array.from(form.querySelectorAll('input[required], select[required]'));
+              const allValid = inputs.every(i => validateField(i));
+              updateSubmitState();
+              if (!allValid) {
+                e.preventDefault();
+                // focus the first invalid field
+                const firstInvalid = inputs.find(i => i.classList.contains('input-invalid'));
+                if (firstInvalid) firstInvalid.focus();
+              }
+            });
+          }
+        })();
+      </script>
 
 </body>
 

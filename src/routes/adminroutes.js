@@ -5,10 +5,13 @@ import { fileURLToPath } from "url";
 import authorizerole from "../middleware/roleMiddleware.js";
 
 import {
-  getOrdersPage,
+  // Renamed the page controller and added the new API controller
+  getOrdersPageStatic,
+  getOrderDetailsAPI,
   addUserHandler,
   deletUser,
   getSupportTickets,
+  getSupportTicketsAPI,
   deleteTicket,
   getSettingsAdmin,
   changeStatus,
@@ -32,18 +35,27 @@ router.get("/", (req, res) => {
 });
 
 // JSON endpoints used by the static dashboard
-router.get('/users', getAdminUsers);
-router.get('/orders', getAdminOrders);
-router.get('/responses', getAdminResponses);
-router.get("/orders/:orderId", getOrdersPage);
+router.get("/users", getAdminUsers);
+router.get("/orders", getAdminOrders);
+router.get("/responses", getAdminResponses);
+
+router.get("/orders/:orderId", getOrdersPageStatic);
+
+router.get("/api/orders/:orderId", getOrderDetailsAPI);
+
 router.delete("/orders/:orderId", deleteOrder);
 router.put("/orders/:orderId/status", changeStatus);
 router.post("/add-user", addUserHandler);
 router.delete("/delete-user/:userID", deletUser);
 router.get("/content-moderation", getAndHandleContentModerationAdmin);
+router.get("/support-ticket/api", getSupportTicketsAPI);
 router.get("/support-ticket", getSupportTickets);
 router.post("/support-ticket", deleteTicket);
 
 router.get("/settings", getSettingsAdmin);
-
+// Partial route for admin footer (so admin pages can fetch the shared footer)
+router.get("/partials/footer", (req, res) => {
+  const role = req.user && req.user.role ? req.user.role : "admin";
+  res.render("partials/footer", { role });
+});
 export default router;
