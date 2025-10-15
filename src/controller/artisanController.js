@@ -10,7 +10,7 @@ import {
   getAvailableWorkshops,
   getAcceptedWorkshops,
   acceptWorkshop,
-  removeWorkshop,
+  removeWorkshop,  
   getWorkshopById,
 } from "../services/workshopServices.js";
 import {

@@ -159,7 +159,7 @@
     }
 
     .status.pending {
-      background-color: #fff3c4;
+      background-color: #fff3c5;
       color: #92400e;
     }
 
@@ -220,7 +220,7 @@
 </head>
 
 <body>
-  <%- include('../partials/navbar2', { role }) %>
+  <div id="navbar"></div>
 
   <main>
     <div class="mainimage">
@@ -263,187 +263,103 @@
 
       <div class="tab-content active" id="orders">
         <h2><i class="fas fa-shopping-bag"></i> Your Orders</h2>
-        <div class="cards-container">
-          <% if (orders && orders.length > 0) { %>
-          <% orders.forEach((order, index) => { %>
-          <div class="card" data-id="<%= order._id.toString() %>">
-            <% if (index === 0) { %>
-            <div class="card-badge">
-              <i class="fas fa-star"></i>
-            </div>
-            <% } %>
-            <div class="card-header">
-              <h3><i class="fas fa-receipt"></i> Order #<%= order._id.toString().slice(-6).toUpperCase() %></h3>
-              <span class="status <%= order.status.toLowerCase() %>"><%= order.status %></span>
-            </div>
-            <div class="card-body">
-              <p><strong><i class="fas fa-box-open"></i> Products:</strong></p>
-              <ul class="order-products-list">
-                <% order.products.forEach(product => { %>
-                <li>
-                  <div class="product-item">
-                    <div class="product-image">
-                      <img src="<%= product.productId.image %>" alt="<%= product.productId.name %>">
-                    </div>
-                    <div class="product-details">
-                      <strong><%= product.productId.name %></strong>
-                      <span class="quantity">x<%= product.quantity %></span>
-                      <span class="price">₹<%= (product.productId.newPrice * product.quantity).toFixed(2) %></span>
-                    </div>
-                  </div>
-                </li>
-                <% }) %>
-              </ul>
-              <div class="order-summary">
-                <p class="order-date"><i class="far fa-calendar-alt"></i> <%= new Date(order.purchasedAt).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'}) %></p>
-                <p class="order-total"><i class="fas fa-rupee-sign"></i> <%= order.money.toFixed(2) %></p>
-              </div>
-            </div>
-            <div class="card-footer">
-              <% if (order.status === 'delivered') { %>
-              <div class="order-actions">
-                <button class="btn outline" onclick="window.location.href='/customer/orders/<%= order._id.toString() %>'">
-                  <i class="fas fa-eye"></i> View Details
-                </button>
-              </div>
-              <% } else { %>
-              <div class="order-status-info">
-                <% if (order.status === 'pending') { %>
-                <i class="fas fa-clock"></i> Your order is waiting to be processed
-                <% } else if (order.status === 'processing') { %>
-                <i class="fas fa-cog fa-spin"></i> Your order is being processed
-                <% } else if (order.status === 'shipped') { %>
-                <i class="fas fa-truck"></i> Your order is on the way
-                <% } %>
-              </div>
-              <button class="btn outline" onclick="window.location.href='/customer/orders/<%= order._id.toString() %>'">
-                <i class="fas fa-eye"></i> View Details
-              </button>
-              <% } %>
-            </div>
-          </div>
-          <% }) %>
-          <% } else { %>
-          <div class="empty-state">
-            <i class="fas fa-shopping-basket" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
-            <p>You don't have any orders yet.</p>
-            <a href="/customer/store"><button class="btn primary"><i class="fas fa-store"></i> Shop Now</button></a>
-          </div>
-          <% } %>
+        <div class="cards-container" id="orders-container">
+          <!-- Orders will be loaded here -->
         </div>
       </div>
 
       <div class="tab-content" id="requests">
         <h2><i class="fas fa-palette"></i> Your Custom Requests</h2>
-        <div class="cards-container">
-          <% if (requests && requests.length > 0) { %>
-          <% requests.forEach(request => { %>
-          <div class="card">
-            <div class="card-header">
-              <h3><i class="fas fa-paint-brush"></i> <%= request.title %></h3>
-              <span class="status <%= request.isAccepted ? 'accepted' : 'pending' %>">
-                <%= request.isAccepted ? 'Accepted' : 'Pending' %>
-              </span>
-            </div>
-            <% if (request.image) { %>
-            <div class="card-image">
-              <img src="<%= request.image %>" alt="<%= request.title %>">
-            </div>
-            <% } %>
-            <div class="card-body">
-              <p><strong><i class="fas fa-tag"></i> Type:</strong> <%= request.type %></p>
-              <p><strong><i class="fas fa-align-left"></i> Description:</strong> <%= request.description %></p>
-              <p><strong><i class="fas fa-rupee-sign"></i> Budget:</strong> <%= request.budget %></p>
-              <p><strong><i class="fas fa-calendar-check"></i> Required By:</strong> <%= request.requiredBy %></p>
-            </div>
-            <div class="card-footer">
-              <!-- No actions currently defined -->
-            </div>
-          </div>
-          <% }) %>
-          <% } else { %>
-          <div class="empty-state">
-            <i class="fas fa-paint-brush" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
-            <p>You don't have any custom requests yet.</p>
-            <a href="/customer/customorder"><button class="btn primary"><i class="fas fa-plus-circle"></i> Create Request</button></a>
-          </div>
-          <% } %>
+        <div class="cards-container" id="requests-container">
+          <!-- Requests will be loaded here -->
         </div>
       </div>
 
       <div class="tab-content" id="workshops">
         <h2><i class="fas fa-chalkboard-teacher"></i> Your Workshops</h2>
-        <div class="cards-container">
-          <% if (workshops && workshops.length > 0) { %>
-          <% workshops.forEach(workshop => { %>
-          <div class="card">
-            <div class="card-header">
-              <h3><i class="fas fa-graduation-cap"></i> <%= workshop.workshopTitle %></h3>
-              <span class="status <%= workshop.status === 1 ? 'accepted' : 'pending' %>">
-                <%= workshop.status === 1 ? 'Accepted' : 'Pending' %>
-              </span>
-            </div>
-            <div class="card-body">
-              <p><strong><i class="fas fa-align-left"></i> Description:</strong> <%= workshop.workshopDescription %></p>
-              <p><strong><i class="fas fa-calendar-day"></i> Date:</strong> <%= workshop.date %></p>
-              <p><strong><i class="fas fa-clock"></i> Time:</strong> <%= workshop.time %></p>
-              <% if (workshop.status === 1 && workshop.acceptedAt) { %>
-              <p><strong><i class="fas fa-check-circle"></i> Accepted On:</strong> <%= workshop.acceptedAt %></p>
-              <% } %>
-            </div>
-            <div class="card-footer">
-              <!-- No actions currently defined -->
-            </div>
-          </div>
-          <% }) %>
-          <% } else { %>
-          <div class="empty-state">
-            <i class="fas fa-chalkboard" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
-            <p>You don't have any workshops yet.</p>
-            <a href="/customer/workshop"><button class="btn primary"><i class="fas fa-plus-circle"></i> Book Workshop</button></a>
-          </div>
-          <% } %>
+        <div class="cards-container" id="workshops-container">
+          <!-- Workshops will be loaded here -->
         </div>
       </div>
     </div>
   </main>
-  <%- include("../partials/footer") %>
+  <div id="footer"></div>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Make cards clickable except when clicking on action buttons
-      document.querySelectorAll(".card").forEach((card) => {
-        card.addEventListener("click", (event) => {
-          if (!event.target.closest('button')) {
-            const orderId = card.getAttribute("data-id");
-            if (orderId) {
-              window.location.href = `/customer/orders/${orderId}`;
-            }
-          }
-        });
-      });
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Fetch and load navbar
+      try {
+        const navbarResponse = await fetch('/customer/partials/navbar2');
+        const navbarHtml = await navbarResponse.text();
+        document.getElementById('navbar').innerHTML = navbarHtml;
+      } catch (error) {
+        console.error('Error loading navbar:', error);
+      }
 
-      document.querySelectorAll(".card button").forEach(button => {
-        button.addEventListener("click", (e) => {
-          e.stopPropagation();
-        });
+      // Fetch and load footer
+      try {
+        const footerResponse = await fetch('/customer/partials/footer');
+        const footerHtml = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerHtml;
+      } catch (error) {
+        console.error('Error loading footer:', error);
+      }
+
+      // Fetch orders
+      try {
+        const ordersResponse = await fetch('/customer/api/orders');
+        const orders = await ordersResponse.json();
+        renderOrders(orders);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+
+      // Fetch requests
+      try {
+        const requestsResponse = await fetch('/customer/api/requests');
+        const requests = await requestsResponse.json();
+        renderRequests(requests);
+      } catch (error) {
+        console.error('Error fetching requests:', error);
+      }
+
+      // Fetch workshops
+      try {
+        const workshopsResponse = await fetch('/customer/api/workshops');
+        const workshops = await workshopsResponse.json();
+        renderWorkshops(workshops);
+      } catch (error) {
+        console.error('Error fetching workshops:', error);
+      }
+
+      // Make cards clickable except when clicking on action buttons
+      document.addEventListener("click", (event) => {
+        const card = event.target.closest('.card');
+        if (card && !event.target.closest('button')) {
+          const orderId = card.getAttribute("data-id");
+          if (orderId) {
+            window.location.href = `/customer/orders/${orderId}`;
+          }
+        }
       });
 
       // Dynamically load slider products
       const slider = document.querySelector(".slider");
-      fetch("/customer/api/products")
-        .then(res => res.json())
-        .then(products => {
-          slider.innerHTML = "";
-          products.forEach(product => {
-            const a = document.createElement('a');
-            a.href = `/products/${product._id}`;
-            const img = document.createElement('img');
-            img.src = product.image;
-            img.alt = product.name;
-            a.appendChild(img);
-            slider.appendChild(a);
-          });
+      try {
+        const productsResponse = await fetch("/customer/api/products");
+        const products = await productsResponse.json();
+        slider.innerHTML = "";
+        products.forEach(product => {
+          const a = document.createElement('a');
+          a.href = `/products/${product._id}`;
+          const img = document.createElement('img');
+          img.src = product.image;
+          img.alt = product.name;
+          a.appendChild(img);
+          slider.appendChild(a);
         });
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
 
       function moveSlider() {
         const firstImage = slider.firstElementChild;
@@ -459,6 +375,137 @@
       }
       setInterval(moveSlider, 4000);
     });
+
+    function renderOrders(orders) {
+      const container = document.getElementById('orders-container');
+      if (orders && orders.length > 0) {
+        container.innerHTML = orders.map((order, index) => `
+          <div class="card" data-id="${order._id}">
+            ${index === 0 ? '<div class="card-badge"><i class="fas fa-star"></i></div>' : ''}
+            <div class="card-header">
+              <h3><i class="fas fa-receipt"></i> Order #${order._id.slice(-6).toUpperCase()}</h3>
+              <span class="status ${order.status.toLowerCase()}">${order.status}</span>
+            </div>
+            <div class="card-body">
+              <p><strong><i class="fas fa-box-open"></i> Products:</strong></p>
+              <ul class="order-products-list">
+                ${order.products.map(product => `
+                  <li>
+                    <div class="product-item">
+                      <div class="product-image">
+                        <img src="${product.productId.image}" alt="${product.productId.name}">
+                      </div>
+                      <div class="product-details">
+                        <strong>${product.productId.name}</strong>
+                        <span class="quantity">x${product.quantity}</span>
+                        <span class="price">₹${(product.productId.newPrice * product.quantity).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </li>
+                `).join('')}
+              </ul>
+              <div class="order-summary">
+                <p class="order-date"><i class="far fa-calendar-alt"></i> ${new Date(order.purchasedAt).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'})}</p>
+                <p class="order-total"><i class="fas fa-rupee-sign"></i> ${order.money.toFixed(2)}</p>
+              </div>
+            </div>
+            <div class="card-footer">
+              ${order.status === 'delivered' ? `
+                <div class="order-actions">
+                  <button class="btn outline" onclick="window.location.href='/customer/orders/${order._id}'">
+                    <i class="fas fa-eye"></i> View Details
+                  </button>
+                </div>
+              ` : `
+                <div class="order-status-info">
+                  ${order.status === 'pending' ? '<i class="fas fa-clock"></i> Your order is waiting to be processed' :
+                    order.status === 'processing' ? '<i class="fas fa-cog fa-spin"></i> Your order is being processed' :
+                    order.status === 'shipped' ? '<i class="fas fa-truck"></i> Your order is on the way' : ''}
+                </div>
+                <button class="btn outline" onclick="window.location.href='/customer/orders/${order._id}'">
+                  <i class="fas fa-eye"></i> View Details
+                </button>
+              `}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-shopping-basket" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <p>You don't have any orders yet.</p>
+            <a href="/customer/store"><button class="btn primary"><i class="fas fa-store"></i> Shop Now</button></a>
+          </div>
+        `;
+      }
+    }
+
+    function renderRequests(requests) {
+      const container = document.getElementById('requests-container');
+      if (requests && requests.length > 0) {
+        container.innerHTML = requests.map(request => `
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-paint-brush"></i> ${request.title}</h3>
+              <span class="status ${request.isAccepted ? 'accepted' : 'pending'}">
+                ${request.isAccepted ? 'Accepted' : 'Pending'}
+              </span>
+            </div>
+            ${request.image ? `<div class="card-image"><img src="${request.image}" alt="${request.title}"></div>` : ''}
+            <div class="card-body">
+              <p><strong><i class="fas fa-tag"></i> Type:</strong> ${request.type}</p>
+              <p><strong><i class="fas fa-align-left"></i> Description:</strong> ${request.description}</p>
+              <p><strong><i class="fas fa-rupee-sign"></i> Budget:</strong> ${request.budget}</p>
+              <p><strong><i class="fas fa-calendar-check"></i> Required By:</strong> ${request.requiredBy}</p>
+            </div>
+            <div class="card-footer">
+              <!-- No actions currently defined -->
+            </div>
+          </div>
+        `).join('');
+      } else {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-paint-brush" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <p>You don't have any custom requests yet.</p>
+            <a href="/customer/customorder"><button class="btn primary"><i class="fas fa-plus-circle"></i> Create Request</button></a>
+          </div>
+        `;
+      }
+    }
+
+    function renderWorkshops(workshops) {
+      const container = document.getElementById('workshops-container');
+      if (workshops && workshops.length > 0) {
+        container.innerHTML = workshops.map(workshop => `
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-graduation-cap"></i> ${workshop.workshopTitle}</h3>
+              <span class="status ${workshop.status === 1 ? 'accepted' : 'pending'}">
+                ${workshop.status === 1 ? 'Accepted' : 'Pending'}
+              </span>
+            </div>
+            <div class="card-body">
+              <p><strong><i class="fas fa-align-left"></i> Description:</strong> ${workshop.workshopDescription}</p>
+              <p><strong><i class="fas fa-calendar-day"></i> Date:</strong> ${workshop.date}</p>
+              <p><strong><i class="fas fa-clock"></i> Time:</strong> ${workshop.time}</p>
+              ${workshop.status === 1 && workshop.acceptedAt ? `<p><strong><i class="fas fa-check-circle"></i> Accepted On:</strong> ${workshop.acceptedAt}</p>` : ''}
+            </div>
+            <div class="card-footer">
+              <!-- No actions currently defined -->
+            </div>
+          </div>
+        `).join('');
+      } else {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-chalkboard" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <p>You don't have any workshops yet.</p>
+            <a href="/customer/workshop"><button class="btn primary"><i class="fas fa-plus-circle"></i> Book Workshop</button></a>
+          </div>
+        `;
+      }
+    }
   </script>
 
   <!-- // new script  -->

@@ -148,7 +148,11 @@ export async function changeProductAmount(userId, productId, amount) {
         { new: true, runValidators: true, session }
       );
       await session.commitTransaction();
-      return { success: true, message: "Inventory limit reached!" };
+      return {
+        success: true,
+        message: "Inventory limit reached!",
+        quantity: productQuantity,
+      };
     } else {
       await Cart.findOneAndUpdate(
         { userId, "products.productId": productId },

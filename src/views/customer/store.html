@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Store</title>
+  <link rel="stylesheet" href="/navbar2.css">
+  <link rel="stylesheet" href="/customer/store.css">
+  <link rel="stylesheet" href="/footer.css">
+</head>
+
+<body>
+  <div id="navbar"></div>
+
+  <main>
+    <div class="left">
+      <form id="filter-form">
+        <h3>Filter Products</h3>
+
+        <div class="filter-category">
+          <h4>Category</h4>
+          <label>
+            <input type="checkbox" name="category" value="statue"> Statue
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="painting"> Painting
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="footware"> Footware
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="pottery"> Pottery
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="toys"> Toys
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="headware"> Headware
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="musical instrument">
+            Musical Instrument
+          </label>
+          <label>
+            <input type="checkbox" name="category" value="other">
+            Others
+          </label>
+        </div>
+      </form>
+    </div>
+
+    <div class="right">
+      <div class="search-bar-container">
+        <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products" />
+        <p class="search-validation-message" id="searchValidationMessage">Please enter a valid search term (only letters, numbers, spaces, and hyphens allowed)</p>
+        <ul id="resultsList"></ul>
+      </div>
+      <div class="content">
+        <ul class="product-list" id="product-list">
+          <!-- Products will be loaded here -->
+        </ul>
+        <ul class="pagination" id="pagination">
+          <!-- Pagination will be loaded here -->
+        </ul>
+
+      </div>
+    </div>
+  </main>
+  <div class="notification-container"></div>
+  <div id="footer"></div>
+
+  <script>
+    let userId;
+    let currentPage = 1;
+    let totalPages = 1;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Fetch navbar
+      try {
+        const navbarResponse = await fetch('/customer/partials/navbar2');
+        const navbarHtml = await navbarResponse.text();
+        document.getElementById('navbar').innerHTML = navbarHtml;
+      } catch (error) {
+        console.error('Error loading navbar:', error);
+      }
+
+      // Fetch footer
+      try {
+        const footerResponse = await fetch('/customer/partials/footer');
+        const footerHtml = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerHtml;
+      } catch (error) {
+        console.error('Error loading footer:', error);
+      }
+
+      // Fetch user ID
+      try {
+        const userResponse = await fetch('/customer/api/user');
+        const user = await userResponse.json();
+        userId = user.id;
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+
+      // Get initial params from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.getAll('category');
+      currentPage = parseInt(urlParams.get('page')) || 1;
+
+      // Load products
+      await loadProducts(category, currentPage);
+
+      // Set up filters
+      setupFilters();
+    });
+
+    async function loadProducts(category, page) {
+      try {
+        const params = new URLSearchParams();
+        category.forEach(cat => params.append('category', cat));
+        params.set('page', page);
+        params.set('limit', 12);
+
+        const response = await fetch(`/customer/api/products?${params}`);
+        const data = await response.json();
+
+        renderProducts(data.products);
+        renderPagination(data.currentPage, data.totalPages);
+        currentPage = data.currentPage;
+        totalPages = data.totalPages;
+
+        // Update URL
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('category');
+        category.forEach(cat => newUrl.searchParams.append('category', cat));
+        newUrl.searchParams.set('page', page);
+        window.history.replaceState(null, '', newUrl);
+      } catch (error) {
+        console.error('Error loading products:', error);
+      }
+    }
+
+    function renderProducts(products) {
+      const container = document.getElementById('product-list');
+      container.innerHTML = products.map(product => {
+        const discountPercent = product.oldPrice > product.newPrice ? Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100) : 0;
+        const rating = Math.floor(Math.random() * 2) + 3; // Random rating between 3-5
+        const stars = Array.from({length: 5}, (_, i) => `<i class="${i < rating ? 'fas' : 'far'} fa-star"></i>`).join('');
+
+        return `
+          <li>
+            <div class="product-card">
+              <a href="/products/${product._id}" class="product-image-link">
+                <img src="${product.image}" alt="${product.name}" />
+                ${discountPercent > 0 ? `<span class="discount-badge">-${discountPercent}%</span>` : ''}
+              </a>
+              <div class="details">
+                <a href="/products/${product._id}" class="product-title-link">
+                  <h3 title="${product.name}">${product.name}</h3>
+                </a>
+                <div class="product-meta">
+                  <span class="product-category">${product.category}</span>
+                  ${product.material ? `<span class="product-material">${product.material}</span>` : ''}
+                </div>
+                <div class="product-rating">
+                  ${stars}
+                </div>
+                <div class="price">
+                  ${product.oldPrice > product.newPrice ? `<span class="old-price">₹${product.oldPrice}</span>` : ''}
+                  <span class="new-price">₹${product.newPrice}</span>
+                </div>
+                <button onclick="updateCart('${userId}', '${product._id}')" class="add-to-cart-btn">
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+              </div>
+            </div>
+          </li>
+        `;
+      }).join('');
+    }
+
+    function renderPagination(currentPage, totalPages) {
+      const container = document.getElementById('pagination');
+      let html = '';
+      if (currentPage > 1) {
+        html += `<a href="#" onclick="changePage(${currentPage - 1})">Previous</a>`;
+      }
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<a href="#" onclick="changePage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</a>`;
+      }
+      if (currentPage < totalPages) {
+        html += `<a href="#" onclick="changePage(${currentPage + 1})">Next</a>`;
+      }
+      container.innerHTML = html;
+    }
+
+    function changePage(page) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.getAll('category');
+      loadProducts(category, page);
+    }
+
+    function setupFilters() {
+      const checkboxes = document.querySelectorAll('input[name="category"]');
+      let timeout = 300;
+
+      // Retain selected checkboxes
+      const urlParams = new URLSearchParams(window.location.search);
+      checkboxes.forEach(checkbox => {
+        if (urlParams.getAll('category').includes(checkbox.value)) {
+          checkbox.checked = true;
+        }
+        checkbox.addEventListener('change', () => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            const selected = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
+            loadProducts(selected, 1); // Reset to page 1
+          }, 500);
+        });
+      });
+    }
+
+    async function updateCart(userId, productId) {
+      try {
+        const response = await fetch(`/customer/store?userId=${userId}&productId=${productId}`, {
+          method: "POST"
+        });
+        const data = await response.json();
+        if (data.success) {
+          showNotification("Product Added to cart!", "success");
+        } else {
+          showNotification(data.message || "Failed to Add. Try Again", "error");
+        }
+      } catch (error) {
+        console.error('Error updating cart:', error);
+      }
+    }
+
+    function showNotification(message, type) {
+      let notificationContainer = document.querySelector(".notification-container");
+      if (!notificationContainer) {
+        notificationContainer = document.createElement("div");
+        notificationContainer.className = "notification-container";
+        document.body.appendChild(notificationContainer);
+      }
+      if ([...notificationContainer.children].some(n => n.textContent === message)) return;
+      const notification = document.createElement("div");
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      notificationContainer.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add("fade-out");
+        setTimeout(() => notification.remove(), 500);
+      }, 3000);
+    }
+
+    // Add notification styles
+    if (!document.querySelector("#notification-style")) {
+      const style = document.createElement("style");
+      style.id = "notification-style";
+      style.textContent = `
+        .notification-container { position: fixed; top: 20px; right: 40px; z-index: 1000; }
+        .notification { padding: 12px 20px; margin-bottom: 10px; border-radius: 4px; color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: slide-in 0.3s ease-out forwards; }
+        .notification.success { background-color: #28a745; }
+        .notification.error { background-color: #dc3545; }
+        .notification.fade-out { animation: fade-out 0.5s ease-out forwards; }
+        @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+      `;
+      document.head.appendChild(style);
+    }
+  </script>
+
+  <!-- Search script -->
+  <script type="module">
+    import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs';
+
+    async function getProducts() {
+      try {
+        const response = await fetch("/customer/api/products?limit=all");
+        const data = await response.json();
+        const products = data.products;
+
+        const options = {
+          keys: ['name', 'description', 'category'],
+          includeScore: true,
+          threshold: 0.3
+        };
+
+        const fuse = new Fuse(products, options);
+        const searchInput = document.getElementById('searchInput');
+        const resultsList = document.getElementById('resultsList');
+        const validationMessage = document.getElementById('searchValidationMessage');
+
+        const searchPattern = /^[a-zA-Z0-9\s\-]{1,50}$/;
+
+        function validateSearch(query) {
+          if (query.length > 50) {
+            validationMessage.textContent = "Search term must not exceed 50 characters";
+            validationMessage.style.display = "block";
+            searchInput.classList.add('invalid-search');
+            return false;
+          }
+          if (!searchPattern.test(query)) {
+            validationMessage.textContent = "Please use only letters, numbers, spaces, and hyphens";
+            validationMessage.style.display = "block";
+            searchInput.classList.add('invalid-search');
+            return false;
+          }
+          validationMessage.style.display = "none";
+          searchInput.classList.remove('invalid-search');
+          return true;
+        }
+
+        let debounceTimeout;
+        searchInput.addEventListener('input', (event) => {
+          const query = event.target.value.trim();
+          clearTimeout(debounceTimeout);
+          if (query.length === 0) {
+            validationMessage.style.display = "none";
+            searchInput.classList.remove('invalid-search');
+            resultsList.innerHTML = '';
+            resultsList.style.display = 'none';
+            return;
+          }
+          debounceTimeout = setTimeout(() => {
+            if (!validateSearch(query)) {
+              resultsList.innerHTML = '';
+              resultsList.style.display = 'none';
+              return;
+            }
+            const sanitizedQuery = query.replace(/[^\w\s-]/g, '').trim();
+            if (sanitizedQuery.length === 0) {
+              resultsList.innerHTML = '';
+              resultsList.style.display = 'none';
+              return;
+            }
+            const results = fuse.search(sanitizedQuery);
+            if (results.length > 0) {
+              resultsList.innerHTML = '';
+              results.forEach(result => {
+                const product = result.item;
+                const item = document.createElement("li");
+                item.innerHTML = `
+                  <a href="/products/${product._id || ''}" class="search-result-link">
+                    <div class="search-result-item">
+                      <img src="${product.image || '/images/product-placeholder.jpg'}" alt="${product.name}" class="search-result-image">
+                      <div class="search-result-info">
+                        <h4>${product.name}</h4>
+                        <p class="category">${product.category || ''}</p>
+                        <p class="price">₹${product.newPrice || product.price || ''}</p>
+                      </div>
+                    </div>
+                  </a>
+                `;
+                resultsList.appendChild(item);
+              });
+              resultsList.style.display = 'block';
+            } else {
+              resultsList.innerHTML = '<li class="no-results">No products found</li>';
+              resultsList.style.display = 'block';
+            }
+          }, 300);
+        });
+
+        searchInput.addEventListener('keypress', (event) => {
+          if (event.key === 'Enter') {
+            const query = searchInput.value.trim();
+            event.preventDefault();
+            if (validateSearch(query)) {
+              clearTimeout(debounceTimeout);
+              searchInput.dispatchEvent(new Event('input'));
+            }
+          }
+        });
+
+        document.addEventListener('click', (event) => {
+          if (!searchInput.contains(event.target) && !resultsList.contains(event.target)) {
+            resultsList.style.display = 'none';
+          }
+        });
+
+        resultsList.addEventListener('click', (event) => {
+          event.stopPropagation();
+        });
+
+        searchInput.addEventListener('focus', () => {
+          if (searchInput.value.trim() && validateSearch(searchInput.value.trim())) {
+            resultsList.style.display = 'block';
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        showNotification("Could not load search functionality", "error");
+      }
+    }
+
+    await getProducts();
+  </script>
+</body>
+
+</html>
